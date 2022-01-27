@@ -1,0 +1,29 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.0.1
+    hooks:
+      - id: trailing-whitespace
+        args: [--markdown-linebreak-ext=md]
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-added-large-files
+      - id: check-merge-conflict
+
+  - repo: https://github.com/jumanjihouse/pre-commit-hooks
+    rev: 2.1.5
+    hooks:
+      - id: shellcheck
+        args:
+          - -x
+
+  - repo: https://github.com/zahorniak/pre-commit-circleci.git
+    rev: v0.3
+    hooks:
+      - id: circleci_validate
+
+  - repo: https://github.com/bjd2385/circleci-orb-pre-commit-hook
+    rev: v1.0.0
+    hooks:
+      - id: circleci-orb-validate
+        args:
+          - src

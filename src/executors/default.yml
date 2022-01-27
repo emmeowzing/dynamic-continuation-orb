@@ -1,0 +1,8 @@
+description: base default CircleCI executor.
+parameters:
+  tag:
+    default: stable-20.04
+    description: Default Ubuntu 20.04 executor.
+    type: string
+docker:
+  - image: 'cimg/base:<< parameters.tag >>'

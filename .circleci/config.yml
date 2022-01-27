@@ -1,0 +1,66 @@
+version: 2.1
+
+parameters:
+  workspace:
+    type: string
+    default: bjd2385
+
+  orb-version:
+    type: string
+    default: 0.1.0
+
+orbs:
+  orb-tools: circleci/orb-tools@10.1.0
+  shellcheck: circleci/shellcheck@2.0
+
+workflows:
+  on-commit:
+    jobs:
+      # Run a bunch of tests against this repo
+      - orb-tools/lint:
+          filters:
+            branches:
+              ignore:
+                - master
+
+      - orb-tools/pack:
+          persist-to-workspace: false
+          store-artifacts: false
+          validate: true
+          filters:
+            branches:
+              ignore:
+                - master
+
+      - shellcheck/check:
+          dir: ./src/scripts
+          exclude: SC2148
+          filters:
+            branches:
+              ignore:
+                - master
+
+  on-merge:
+    jobs:
+      - orb-tools/pack:
+          destination-orb-path: orb.yml
+          persist-to-workspace: true
+          source-dir: src
+          store-artifacts: false
+          validate: true
+          filters:
+            branches:
+              only:
+                - master
+      - orb-tools/publish:
+          attach-workspace: true
+          orb-path: workspace/orb.yml
+          validate: false
+          orb-ref: << pipeline.parameters.workspace >>/ORB_NAME@<< pipeline.parameters.orb-version >>
+          requires:
+            - orb-tools/pack
+          context: orb-publishing
+          filters:
+            branches:
+              only:
+                - master
