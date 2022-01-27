@@ -1,0 +1,8 @@
+description: base python CircleCI executor.
+parameters:
+  tag:
+    default: "3.10"
+    description: Latest Python 3.
+    type: string
+docker:
+  - image: cimg/base:<< parameters.tag >>

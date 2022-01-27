@@ -1,10 +1,10 @@
 repository:
-  name: circleci-orb-template
-  description: template repository for publishing orbs
-  homepage: https://github.com/bjd2385/circleci-orb-template
+  name: dynamic-split-config-orb
+  description: CircleCI orb for dynamically executing workflows upon code changes in specified directories
+  homepage: https://circleci.com/developer/orbs/orb/bjd2385/dynamic-split-config-orb
 
   # A comma-separated list of topics to set on the repository
-  topics: circleci, orb
+  topics: circleci, orb, dynamic, continuation
   private: true
   has_issues: true
   has_projects: false
@@ -26,7 +26,7 @@ labels:
     description: An issue with the system 🐛.
 
   - name: feature
-    color: '#336699'
+    color: "#336699"
     description: New functionality.
 
 branches:
@@ -34,7 +34,7 @@ branches:
     protection:
       required_pull_request_reviews:
         # The number of approvals required. (1-6)
-        required_approving_review_count: 1
+        required_approving_review_count: 2
         # Dismiss approved reviews automatically when a new commit is pushed.
         dismiss_stale_reviews: true
         # Blocks merge until code owners have reviewed.

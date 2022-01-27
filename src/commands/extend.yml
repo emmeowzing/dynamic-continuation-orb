@@ -1,0 +1,24 @@
+description: |
+  Extend the current workflow with a continuation in the specified directory, if and only if the code has been modified.
+parameters:
+  path:
+    type: string
+    description: Path relative to the root of the repository to check for changed files.
+  override:
+    type: string
+    description: Relative path within << parameters.path >> to the CircleCI config to execute.
+    default: .circleci/config.yml
+  extension:
+    type: string
+    description: |+
+      File extensions to filter by. If you wish to check multiple file extensions for changed files in a directory,
+      use a matrix and the corresponding job.
+    default: ""
+steps:
+  - run:
+      description: Install yq
+      command: |+
+        pip install yq
+  - run:
+      description: Merge configs.
+      command: << include(./scripts/merge.sh) >>

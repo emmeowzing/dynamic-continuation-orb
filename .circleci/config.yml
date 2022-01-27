@@ -56,7 +56,7 @@ workflows:
           attach-workspace: true
           orb-path: workspace/orb.yml
           validate: false
-          orb-ref: << pipeline.parameters.workspace >>/ORB_NAME@<< pipeline.parameters.orb-version >>
+          orb-ref: << pipeline.parameters.workspace >>/dynamic-split-config-orb@<< pipeline.parameters.orb-version >>
           requires:
             - orb-tools/pack
           context: orb-publishing
