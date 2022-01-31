@@ -1,7 +1,7 @@
 {
-  "name": "dynamic-split-config-orb",
+  "name": "dynamic-continuation-orb",
   "description": "CircleCI orb for dynamically executing workflows upon code changes in specified directories",
-  "repository": "https://github.com/bjd2385/dynamic-split-config-orb",
+  "repository": "https://github.com/bjd2385/dynamic-continuation-orb",
   "license": "GPL-3-Clause",
   "scripts": {
     "install:pre-commit-hooks": "pre-commit install --install-hooks --allow-missing-config -t pre-commit -t prepare-commit-msg"

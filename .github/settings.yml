@@ -1,7 +1,7 @@
 repository:
-  name: dynamic-split-config-orb
+  name: dynamic-continuation-orb
   description: CircleCI orb for dynamically executing workflows upon code changes in specified directories
-  homepage: https://circleci.com/developer/orbs/orb/bjd2385/dynamic-split-config-orb
+  homepage: https://circleci.com/developer/orbs/orb/bjd2385/dynamic-continuation-orb
 
   # A comma-separated list of topics to set on the repository
   topics: circleci, orb, dynamic, continuation

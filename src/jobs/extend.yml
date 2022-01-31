@@ -1,0 +1,50 @@
+description: |
+  Extend the default CircleCI config at .circleci/config.yml to include other 'modules'. Modules are paths in a repository
+  that themselves must contain <module/.circleci/config.yml's.
+executor: default
+parameters:
+  modules:
+    description: Directories which should be tested for changes; one directory per line. Each directory must have `.circleci/config.yml`.
+    type: string
+  force-all:
+    description: Emergency valve - forcibly build all the modules
+    type: boolean
+    default: false
+  modules-filtered:
+    description: Path to the file where the filtered list of modules is generated
+    type: string
+    default: /tmp/modules-filtered.txt
+  shared-config:
+    description: Path to the config providing shared resources (such as prerequisite jobs and common commands)
+    type: string
+    default: .circleci/config.yml
+  continue-config:
+    description: Path to the internally-used config for continuation
+    type: string
+    default: .circleci/continue-config.yml
+  cache:
+    description: Cache the generated, reduced continuation config.
+    type: boolean
+    default: false
+  cache-key:
+    description: Override the default caching key, if caching is enabled.
+    type: string
+    default: continue-config-{{ .Environment.CIRCLE_PROJECT_REPONAME }}-{{ .Environment.CIRCLE_WORKFLOW_ID }}
+steps:
+  - checkout
+  - run:
+      name: Install yq
+      command: pip install yq
+  - filter-modules:
+      modules: << parameters.modules >>
+      modules-filtered: << parameters.modules-filtered >>
+      force-all: << parameters.force-all >>
+  - merge-module-configs:
+      modules: << parameters.modules-filtered >>
+      shared-config: << parameters.shared-config >>
+      continue-config: << parameters.continue-config >>
+      cache: << parameters.cache >>
+      cache-key: << parameters.cache-key >>
+  - continuation/continue:
+      configuration_path: << parameters.continue-config >>
+      parameters: '{"run-setup":false}'

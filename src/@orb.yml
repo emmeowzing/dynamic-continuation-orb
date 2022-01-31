@@ -5,8 +5,8 @@ description: |
 
 # This information will be displayed in the orb registry and is not mandatory.
 display:
-  home_url: https://circleci.com/developer/orbs/orb/bjd2385/dynamic-split-config-orb
-  source_url: https://github.com/bjd2385/dynamic-split-config-orb
+  home_url: https://circleci.com/developer/orbs/orb/bjd2385/dynamic-continuation-orb
+  source_url: https://github.com/bjd2385/dynamic-continuation-orb
 
 orbs:
   continuation: circleci/continuation@0.2.0
