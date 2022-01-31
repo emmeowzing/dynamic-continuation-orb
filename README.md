@@ -24,12 +24,12 @@ workflows:
 
 from here, move any jobs, workflows, or orbs, to their new configs in containing directories.
 
-> Note: Not all configs must be valid. Because the additional configs are called in separate workflow(s), only the final, merged image need be valid if checked via `circleci config validate /path/to/continuation-config.yml`. This said, it's
-probably best if you have a valid config in each module, for ease of development.
+> **Note:** Not all module configs must be valid. Because the additional configs are called in separate workflow(s), only the final, merged image need be valid if checked via `circleci config validate /path/to/generated/config.yml`. This said, it's
+> probably best if you have a valid config in each module, for ease of development.
 
 #### Example
 
-For example, if you have a directory layout such as
+If you have a directory layout
 
 ```
 .circleci/config.yml
