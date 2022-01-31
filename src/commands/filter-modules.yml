@@ -22,6 +22,6 @@ steps:
       name: Generate the list of modules having changes
       command: |
         cat \<< EOD | sed -e '/^$/d' | while read row; do module="$(echo "$row" | awk '{ print $1 }')"; if [ << parameters.force-all >> == 'true' ] || [ "$(git diff-tree --no-commit-id --name-only -r HEAD "$module")" != "" ]; then echo "$row" | sed -e 's/ /\n/g' >> << parameters.modules-filtered >>; fi; done
-        # Add each module to `modules-filtered` if 1) `force-all` is set to `true`, or 2) there is a diff against the previous commit
+        # Add each module to `modules-filtered` if 1) `force-all` is set to `true`, or 2) there is a diff against HEAD
         << parameters.modules >>
         EOD
