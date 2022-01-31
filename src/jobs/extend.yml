@@ -31,6 +31,10 @@ parameters:
     description: Override the default caching key, if caching is enabled.
     type: string
     default: continue-config-{{ .Environment.CIRCLE_PROJECT_REPONAME }}-{{ .Environment.CIRCLE_WORKFLOW_ID }}
+  default-branch:
+    description: Default branch of the repository.
+    type: string
+    default: master
 steps:
   - checkout
   - run:
@@ -40,6 +44,7 @@ steps:
       modules: << parameters.modules >>
       modules-filtered: << parameters.modules-filtered >>
       force-all: << parameters.force-all >>
+      default-branch: << parameters.default-branch >>
   - merge-module-configs:
       modules: << parameters.modules-filtered >>
       continue-config: << parameters.continue-config >>
