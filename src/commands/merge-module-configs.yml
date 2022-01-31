@@ -33,9 +33,9 @@ steps:
         sed -i -e 's/$/\/.circleci\/config.yml/g' "<< parameters.modules >>"
 
         xargs -a "<< parameters.modules >>" yq -y -s 'reduce .[] as $item ({}; . * $item)' | tee "<< parameters.continue-config >>"
-        yq -i '.version = 2.1' << parameters.continue-config >>
+        yq -i -y '.version = 2.1' << parameters.continue-config >>
         yq d << parameters.continue-config >> setup
-        yq -i '.workflows.version = 2' << parameters.continue-config >>
+        yq -i -y '.workflows.version = 2' << parameters.continue-config >>
   - when:
       condition: << parameters.cache >>
       steps:
