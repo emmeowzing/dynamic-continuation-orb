@@ -2,6 +2,7 @@ description: |
   Extend the default CircleCI config at .circleci/config.yml to include other 'modules'. Modules are paths in a repository
   that themselves must contain <module/.circleci/config.yml's.
 executor: default
+resource_class: small
 parameters:
   modules:
     description: Directories which should be tested for changes; one directory per line. Each directory must have `.circleci/config.yml`.

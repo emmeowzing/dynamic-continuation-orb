@@ -29,8 +29,10 @@ steps:
             circleci-agent step halt
             exit 0
         fi
-        # Convert a list of dirs to a list of config.yml
-        awk -i inplace '{ printf(".circleci/%s.yml\n", $0) }'
+
+        # Convert a list of dirs to a list of config files under .circleci/.
+        awk '{ printf(".circleci/%s.yml\n", $0) }' << parameters.modules >> > /tmp/$CIRCLE_WORKFLOW_ID.txt
+        mv /tmp/$CIRCLE_WORKFLOW_ID.txt << parameters.modules >>
 
         xargs -a "<< parameters.modules >>" yq -y -s 'reduce .[] as $item ({}; . * $item)' | tee "<< parameters.continue-config >>"
 
