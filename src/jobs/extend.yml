@@ -41,7 +41,6 @@ steps:
       force-all: << parameters.force-all >>
   - merge-module-configs:
       modules: << parameters.modules-filtered >>
-      shared-config: << parameters.shared-config >>
       continue-config: << parameters.continue-config >>
       cache: << parameters.cache >>
       cache-key: << parameters.cache-key >>
