@@ -2,7 +2,7 @@
 
 This orb is based on a [published example](https://github.com/circle-makotom/circle-advanced-setup-workflow) of advanced configuration with continuations from CircleCI.
 
-The orb's intended use is toward the simplification of the default `.circleci/config.yml` by allowing users to add additional configs in other directories in a repo that run only when the code therein contains actual changes. This approach offers engineers reduced pipeline execution time, and by extension, reduced CI costs.
+The orb's intended use is toward the simplification of the default `.circleci/config.yml` by allowing users to add additional configs under `.circleci` matching top-level directories that run only when the code therein contains actual changes. This approach offers engineers reduced pipeline execution time, and by extension, reduced CI costs.
 
 ### How it works
 
@@ -19,10 +19,10 @@ workflows:
     jobs:
       - dynamic/extend:
           modules: |
-            ... list of directories, separated by newlines, that contain their own .circleci/config.yml
+            ... list of config file names under .circleci/.
 ```
 
-from here, move any jobs, workflows, or orbs, to their new configs in containing directories.
+from here, move any jobs, workflows, or orbs, to their new configs with matching top-level directory names.
 
 > **Note:** Not all module configs must be valid. Because the additional configs are called in separate workflow(s), only the final, merged image need be valid if checked via `circleci config validate /path/to/generated/config.yml`. This said, it's
 > probably best if you have a valid config in each module, for ease of development.
@@ -42,8 +42,11 @@ with the addition of this orb, a user could define targeted configs
 
 ```
 .circleci/config.yml
-terraform/.circleci/config.yml
-scripts/.circleci/config.yml
+.circleci/terraform.yml
+.circleci/scripts.yml
+.circleci/src.yml
+terraform/
+scripts/
 src/
 ```
 
