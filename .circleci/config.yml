@@ -7,7 +7,7 @@ parameters:
 
   orb-version:
     type: string
-    default: 0.1.1
+    default: 0.1.2
 
 orbs:
   orb-tools: circleci/orb-tools@10.1.0

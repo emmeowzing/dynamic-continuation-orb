@@ -10,13 +10,12 @@ You'll need to add this orb, as well as an `extend` job to your workflow (likely
 
 ```
 orbs:
-  dynamic: hqo/dynamic-continuation:1.0.0
+  dynamic: hqo/dynamic-continuation@1.0.0
 
 workflows:
   on-commit:
     jobs:
       - dynamic/extend:
-          executor: dynamic/default
           modules: |
             ... list of directories, separated by newlines, that contain their own .circleci/config.yml
 ```
