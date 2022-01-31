@@ -47,4 +47,3 @@ steps:
       cache-key: << parameters.cache-key >>
   - continuation/continue:
       configuration_path: << parameters.continue-config >>
-      parameters: '{"run-setup":false}'
