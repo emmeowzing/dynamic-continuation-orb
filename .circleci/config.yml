@@ -92,7 +92,7 @@ jobs:
             git tag "$NEW_TAG"
             git push origin "$NEW_TAG"
 
-            gh auth login --with-token <(echo "$GITHUB_TOKEN")
+            echo "$GITHUB_TOKEN" | gh auth login --with-token
             gh release create "$NEW_TAG" --generate-notes
 
 workflows:
