@@ -41,6 +41,9 @@ jobs:
     resource_class: small
     steps:
       - checkout
+      - add_ssh_keys:
+          fingerprints:
+            - "94:5d:42:d3:fa:87:43:8a:e2:45:26:31:a4:bf:c4:ed"
       - run:
           name: Autoincrement repository's latest tag minor version
           command: |+
@@ -123,7 +126,6 @@ workflows:
     jobs:
       # Auto-increment minor tag to kick off on-tag workflow.
       - autoincrement-minor-tag:
-          context: github
           filters:
             branches:
               only: master
