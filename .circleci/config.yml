@@ -12,7 +12,6 @@ parameters:
 orbs:
   orb-tools: circleci/orb-tools@11.1.2
   shellcheck: circleci/shellcheck@3.1.0
-  gh: circleci/github-cli@2.1.0
 
 executors:
   default:
@@ -42,8 +41,11 @@ jobs:
     resource_class: small
     steps:
       - checkout
-      - gh/install:
-          version: $GH_CLI_VERSION
+      - run:
+          name: Install gh CLI
+          command: |+
+            wget https://github.com/cli/cli/releases/download/v2.9.0/gh_2.9.0_linux_amd64.deb -O gh.deb
+            sudo dpkg -i gh.deb
       - add_ssh_keys:
           fingerprints:
             - "94:5d:42:d3:fa:87:43:8a:e2:45:26:31:a4:bf:c4:ed"
