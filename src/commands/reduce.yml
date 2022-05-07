@@ -1,0 +1,69 @@
+description: |
+  Merge modules' configs, if there are changed files in the directory, into an additional config under .circleci/ in the
+  checked-out source,
+parameters:
+  modules:
+    description: Path to the file for the list of the modules to build
+    type: string
+    default: /tmp/modules-filtered.txt
+  root-config:
+    description: Provides the ability to map root repository changes (./) to a config file name. Defaults to app.yml.
+    type: string
+    default: app
+  continue-config:
+    description: Path to the internally-used config for continuation
+    type: string
+    default: .circleci/continue-config.yml
+  debug:
+    description: Dump the generated config from reducing the set of modules across changes to stdout for debugging purposes.
+    type: boolean
+    default: false
+  cache:
+    description: Whether or not to cache (i.e. you're calling these commands in your own job, not 'extend').
+    type: boolean
+    default: true
+steps:
+  - when:
+      condition: << parameters.cache >>
+      steps:
+        - restore_cache:
+            key: modules-filtered-{{ .Environment.CIRCLE_WORKFLOW_ID }}
+  - run:
+      name: Install yq
+      command: pip install yq
+  - run:
+      name: Merge configs
+      command: |
+        # If `modules` is unavailable, stop this job without continuation
+        if [ ! -f "<< parameters.modules >>" ] || [ ! -s "<< parameters.modules >>" ]
+        then
+            echo 'Nothing to merge. Halting the job.'
+            circleci-agent step halt
+            exit 0
+        fi
+
+        # Convert a list of dirs to a list of config files under .circleci/.
+        awk '{
+            # Replace a period (the root of a repository is being targeted by a workflow) with the specified '<< parameters.root-config >>.yml'.
+            if ($0 ~ /^\.$/) {
+                printf ".circleci/<< parameters.root-config >>.yml\n"
+            } else {
+                printf(".circleci/%s.yml\n", $0)
+            }
+        }' << parameters.modules >> > /tmp/$CIRCLE_WORKFLOW_ID.txt
+        mv /tmp/$CIRCLE_WORKFLOW_ID.txt << parameters.modules >>
+
+        xargs -a "<< parameters.modules >>" yq -y -s 'reduce .[] as $item ({}; . * $item)' | tee "<< parameters.continue-config >>"
+
+        # Ensure a minimal, valid config schema on the final, reduced config.
+        yq -i -y '.version = 2.1' << parameters.continue-config >>
+        yq 'del(.setup)' << parameters.continue-config >>
+        yq -i -y '.workflows.version = 2' << parameters.continue-config >>
+  - when:
+      condition: << parameters.debug >>
+      steps:
+        - run:
+            name: "Debug: dump generated config"
+            command: |
+              printf "Generated config:\\n\\n"
+              cat << parameters.continue-config >>
