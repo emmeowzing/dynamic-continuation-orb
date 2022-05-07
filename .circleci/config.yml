@@ -137,7 +137,7 @@ workflows:
           context: github
           filters:
             branches:
-              ignore: master
+              only: master
 
   on-commit:
     jobs:
