@@ -41,6 +41,11 @@ jobs:
     resource_class: small
     steps:
       - checkout
+      - run:
+          name: Install gh CLI
+          command: |+
+            wget https://github.com/cli/cli/releases/download/v2.9.0/gh_2.9.0_linux_amd64.deb -O gh.deb
+            sudo dpkg -i gh.deb
       - add_ssh_keys:
           fingerprints:
             - "94:5d:42:d3:fa:87:43:8a:e2:45:26:31:a4:bf:c4:ed"
@@ -87,6 +92,9 @@ jobs:
             git tag "$NEW_TAG"
             git push origin "$NEW_TAG"
 
+            gh auth login --with-token <(echo "$GITHUB_TOKEN")
+            gh release create "$NEW_TAG" --generate-notes
+
 workflows:
   on-tag:
     jobs:
@@ -126,6 +134,7 @@ workflows:
     jobs:
       # Auto-increment minor tag to kick off on-tag workflow.
       - autoincrement-minor-tag:
+          context: github
           filters:
             branches:
               only: master
