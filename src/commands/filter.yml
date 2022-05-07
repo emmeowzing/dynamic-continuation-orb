@@ -1,0 +1,131 @@
+description: |
+  Filter the list of modules (directories) provided in the shared config to those that contain changes.
+parameters:
+  modules:
+    description: Directories which should be built upon changes.
+    type: string
+  modules-filtered:
+    description: Path to the file where the filtered list of modules is generated
+    type: string
+    default: /tmp/modules-filtered.txt
+  force-all:
+    description: Forcibly build all the modules
+    type: boolean
+    default: false
+  default-branch:
+    description: The default branch of the repository.
+    type: string
+    default: master
+  debug:
+    description: Print git diff-tree output, filtered or unfiltered, to stdout for debugging purposes.
+    type: boolean
+    default: false
+  wildmatch-version:
+    description: Wildmatch package version to install. For available versions, check PyPI - https://pypi.org/project/wildmatch/#description
+    type: string
+    default: 0.2.6
+  circle-token:
+    description: Token to authenticate with CircleCI
+    type: string
+    default: $CIRCLE_TOKEN
+  circle-organization:
+    description: CircleCI organization to query with your API key.
+    type: string
+    default: $CIRCLE_ORGANIZATION
+  root-config:
+    description: Provides the ability to map root repository changes (./) to a config file name.
+    type: string
+    default: app
+  cache:
+    description: Whether or not to cache (i.e. you're calling these commands in your own job, not 'extend').
+    type: boolean
+    default: true
+steps:
+  - run:
+      name: Install wildmatch v<< parameters.wildmatch-version >>
+      command: pip install wildmatch==<< parameters.wildmatch-version >>
+  - run:
+      name: Generate a list of changed modules
+      command: |
+        if << parameters.debug >>; then
+            echo "<< parameters.modules >>" | awk NF | while read module; do
+                if [ "${module}" = "." ]; then
+                    if [ ! -f "<< parameters.root-config >>.ignore" ]; then
+                        touch ".circleci/<< parameters.root-config >>.ignore"
+                    fi
+                    printf "%s\\n\\n" "<< parameters.root-config >>:"
+                    git diff-tree --no-commit-id --name-only -r HEAD << parameters.default-branch >> "$module" | awk NF | wildmatch -c ".circleci/<< parameters.root-config >>.ignore"
+                    printf "\\n\\n"
+                else
+                    if [ ! -f "${module}.ignore" ]; then
+                        touch ".circleci/${module}.ignore"
+                    fi
+                    printf "%s\\n\\n" "${module}:"
+                    git diff-tree --no-commit-id --name-only -r HEAD << parameters.default-branch >> "$module" | awk NF | wildmatch -c ".circleci/${module}.ignore"
+                    printf "\\n\\n"
+                fi
+            done
+        fi
+
+        if [ ! "<< parameters.circle-token >>" ]; then
+            printf "Must set CircleCI token for successful authentication.\\n"
+            exit 1
+        fi
+
+        # Add each module to `modules-filtered` if 1) `force-all` is set to `true`, or 2) there is a diff against master at HEAD, or 3) no workflow runs have occurred on the default branch for this project in the past 90 days.
+        if [ ! << parameters.force-all >> ] && [ $(curl -s --request GET --url "https://circleci.com/api/v2/insights/gh/<< parameters.circle-organization >>/${CIRCLE_PROJECT_REPONAME}/workflows?reporting-window=last-90-days" --header "Circle-Token: << parameters.circle-token >>" | '[ .items[].name ] | length') -eq 0 ]; then
+            printf "There are no workflow runs on the default branch in the past 90 days. Running all workflows.\\n"
+            echo "<< parameters.modules >>" | awk NF | while read row; do
+                module="$(echo "$row" | awk '{ print $1 }')"
+                echo "$module" >> << parameters.modules-filtered >>
+            done
+        else
+            echo "<< parameters.modules >>" | awk NF | while read row; do
+                module="$(echo "$row" | awk '{ print $1 }')"
+
+                # Handle root module "."
+                if [ "${module}" = "." ]; then
+                    if [ ! -f "<< parameters.root-config >>.ignore" ]; then
+                        touch ".circleci/<< parameters.root-config >>.ignore"
+                    fi
+
+                    if [ "$CIRCLE_BRANCH" = "<< parameters.default-branch >>" ]; then
+                        if << parameters.force-all >> || [ "$(git diff-tree --no-commit-id --name-only -r HEAD~1 << parameters.default-branch >> "$module" | awk NF | wildmatch -c ".circleci/<< parameters.root-config >>.ignore")" != "" ] || [ "$(git diff-tree --no-commit-id --name-only -r HEAD~1 << parameters.default-branch >> .circleci/"$module".* | awk NF)" != "" ]; then
+                            echo "$module" >> << parameters.modules-filtered >>
+                            printf "%s\\n" "$module"
+                        fi
+                    else
+                        if << parameters.force-all >> || [ "$(git diff-tree --no-commit-id --name-only -r HEAD << parameters.default-branch >> "$module" | awk NF | wildmatch -c ".circleci/<< parameters.root-config >>.ignore")" != "" ] || [ "$(git diff-tree --no-commit-id --name-only -r HEAD << parameters.default-branch >> .circleci/"$module".* | awk NF)" != "" ]; then
+                            echo "$module" >> << parameters.modules-filtered >>
+                            printf "%s\\n" "$module"
+                        fi
+                    fi
+
+                    continue
+                fi
+
+                # Handle non-root modules
+                if [ ! -f ".cirlceci/${module}.ignore" ]; then
+                    touch ".circleci/${module}.ignore"
+                fi
+
+                if [ "$CIRCLE_BRANCH" = "<< parameters.default-branch >>" ]; then
+                    if << parameters.force-all >> || [ "$(git diff-tree --no-commit-id --name-only -r HEAD~1 << parameters.default-branch >> "$module" | awk NF | wildmatch -c ".circleci/${module}.ignore")" != "" ] || [ "$(git diff-tree --no-commit-id --name-only -r HEAD~1 << parameters.default-branch >> .circleci/"$module".* | awk NF)" != "" ]; then
+                        echo "$module" >> << parameters.modules-filtered >>
+                        printf "%s\\n" "$module"
+                    fi
+                else
+                    if << parameters.force-all >> || [ "$(git diff-tree --no-commit-id --name-only -r HEAD << parameters.default-branch >> "$module" | awk NF | wildmatch -c ".circleci/${module}.ignore")" != "" ] || [ "$(git diff-tree --no-commit-id --name-only -r HEAD << parameters.default-branch >> .circleci/"$module".* | awk NF)" != "" ]; then
+                        echo "$module" >> << parameters.modules-filtered >>
+                        printf "%s\\n" "$module"
+                    fi
+                fi
+            done
+        fi
+  - when:
+      condition: << parameters.cache >>
+      steps:
+        - save_cache:
+            paths:
+              - << parameters.modules-filtered >>
+            key: modules-filtered-{{ .Environment.CIRCLE_WORKFLOW_ID }}

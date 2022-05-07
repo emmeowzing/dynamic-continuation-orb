@@ -1,54 +1,65 @@
 description: |
-  Extend the default CircleCI config at .circleci/config.yml to include other 'modules'. Modules are paths in a repository
-  that themselves must contain <module/.circleci/config.yml's.
+  Extend the default CircleCI config at .circleci/config.yml to include other 'modules'.
 executor: default
 resource_class: small
 parameters:
+  # filter
   modules:
-    description: Directories which should be tested for changes; one directory per line. Each directory must have `.circleci/config.yml`.
+    description: Directories which should be tested for changes; one directory per line.
     type: string
   force-all:
     description: Emergency valve - forcibly build all the modules
     type: boolean
     default: false
-  modules-filtered:
-    description: Path to the file where the filtered list of modules is generated
-    type: string
-    default: /tmp/modules-filtered.txt
-  shared-config:
-    description: Path to the config providing shared resources (such as prerequisite jobs and common commands)
-    type: string
-    default: .circleci/config.yml
-  continue-config:
-    description: Path to the internally-used config for continuation
-    type: string
-    default: .circleci/continue-config.yml
-  cache:
-    description: Cache the generated, reduced continuation config.
-    type: boolean
-    default: false
-  cache-key:
-    description: Override the default caching key, if caching is enabled.
-    type: string
-    default: continue-config-{{ .Environment.CIRCLE_PROJECT_REPONAME }}-{{ .Environment.CIRCLE_WORKFLOW_ID }}
   default-branch:
     description: Default branch of the repository.
     type: string
     default: master
+  wildmatch-version:
+    description: Wildmatch package version to install. For available versions, check PyPI - https://pypi.org/project/wildmatch/#description
+    type: string
+    default: 0.2.6
+  circle-token:
+    description: Token to authenticate with CircleCI
+    type: string
+    default: $CIRCLE_TOKEN
+
+  # reduce
+  continue-config:
+    description: Path to the internally-used config for continuation
+    type: string
+    default: .circleci/continue-config.yml
+
+  # both
+  root-config:
+    description: Provides the ability to map root repository changes (./) to a config file name. Name should be left without extension.
+    type: string
+    default: app
+  modules-filtered:
+    description: Path to the file where the filtered list of modules is generated
+    type: string
+    default: /tmp/modules-filtered.txt
+  debug:
+    description: Dump the reduced config to stdout for debugging purposes.
+    type: boolean
+    default: false
 steps:
   - checkout
-  - run:
-      name: Install yq
-      command: pip install yq
-  - filter-modules:
+  - jq/install
+  - filter:
       modules: << parameters.modules >>
       modules-filtered: << parameters.modules-filtered >>
       force-all: << parameters.force-all >>
       default-branch: << parameters.default-branch >>
-  - merge-module-configs:
+      root-config: << parameters.root-config >>
+      debug: << parameters.debug >>
+      wildmatch-version: << parameters.wildmatch-version >>
+      cache: false
+  - reduce:
       modules: << parameters.modules-filtered >>
       continue-config: << parameters.continue-config >>
-      cache: << parameters.cache >>
-      cache-key: << parameters.cache-key >>
+      root-config: << parameters.root-config >>
+      debug: << parameters.debug >>
+      cache: false
   - continuation/continue:
       configuration_path: << parameters.continue-config >>

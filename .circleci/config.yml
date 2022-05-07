@@ -5,62 +5,161 @@ parameters:
     type: string
     default: bjd2385
 
-  orb-version:
+  orb-name:
     type: string
-    default: 2.0.1
+    default: dynamic-continuation
 
 orbs:
-  orb-tools: circleci/orb-tools@10.1.0
-  shellcheck: circleci/shellcheck@2.0
+  orb-tools: circleci/orb-tools@11.1.2
+  shellcheck: circleci/shellcheck@3.1.0
+
+executors:
+  default:
+    docker:
+      - image: cimg/base:stable
+
+commands:
+  check_version:
+    steps:
+      - run:
+          name: Install / upgrade the CircleCI CLI
+          command: curl -fLSs https://raw.githubusercontent.com/CircleCI-Public/circleci-cli/master/install.sh | sudo bash
+      - run:
+          name: Assert tag version is unpublished
+          command: |
+            [[ "$(circleci orb list << pipeline.parameters.workspace >> | grep "<< pipeline.parameters.workspace >>/<< pipeline.parameters.orb-name >>" | grep -oE "[0-9].[0-9].[0-9]")" != "${CIRCLE_TAG}" ]]
+
+jobs:
+  check_version:
+    executor: default
+    resource_class: small
+    steps:
+      - check_version
+
+  autoincrement-minor-tag:
+    executor: default
+    resource_class: small
+    steps:
+      - checkout
+      - run:
+          name: Autoincrement repository's latest tag minor version
+          command: |+
+            git fetch --all --tags
+            RES="$(git show-ref --tags)"
+
+            if [ -z "$RES" ]; then
+                NEW_TAG="v1.0.0"
+            else
+                mapfile -d " " -t LATEST_TAG < <(git tag | sort -V | tail -1 | sed 's/\./ /g')
+
+                if [ "${#LATEST_TAG[@]}" -ne 3 ]; then
+                    printf "Must follow semver convention /v?[0-9]{3}.[0-9]{3}.[0-9]{3}/ to parse.\\n" 1>&2
+                    exit 1
+                fi
+
+                one="${LATEST_TAG[0]//v/}"
+                two="${LATEST_TAG[1]}"
+                three="${LATEST_TAG[2]}"
+
+                # Increment versions mod 1k.
+                if [ "$three" == "999" ]; then
+                    if [ "$two" == "999" ]; then
+                        three=0
+                        two=0
+                        ((one++))
+                    else
+                        ((two++))
+                        three=0
+                    fi
+                elif [ "$two" == "999" ] && [ "$three" == "999" ]; then
+                    ((one++))
+                    two=0
+                else
+                    ((three++))
+                fi
+
+                NEW_TAG="v${one}.${two}.${three}"
+            fi
+
+            git tag "$NEW_TAG"
+            git push origin "$NEW_TAG"
 
 workflows:
+  on-tag:
+    jobs:
+      - check_version:
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^v[0-9]+\.[0-9]+\.[0-9]+$/
+
+      - orb-tools/pack:
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^v[0-9]+\.[0-9]+\.[0-9]+$/
+
+      - orb-tools/publish:
+          name: publish production orb
+          enable-pr-comment: false
+          vcs-type: << pipeline.project.type >>
+          orb-name: << pipeline.parameters.workspace >>/<< pipeline.parameters.orb-name >>
+          pub-type: production
+          requires:
+            - orb-tools/pack
+            - check_version
+          context:
+            - development
+            - orb-publishing
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^v[0-9]+\.[0-9]+\.[0-9]+$/
+
+  on-merge:
+    jobs:
+      # Auto-increment minor tag to kick off on-tag workflow.
+      - autoincrement-minor-tag:
+          filters:
+            branches:
+              only: master
+
   on-commit:
     jobs:
       # Run a bunch of tests against this repo
       - orb-tools/lint:
           filters:
             branches:
-              ignore:
-                - master
+              ignore: master
 
       - orb-tools/pack:
-          persist-to-workspace: false
-          store-artifacts: false
-          validate: true
           filters:
             branches:
-              ignore:
-                - master
+              ignore: master
 
       - shellcheck/check:
           dir: ./src/scripts
           exclude: SC2148
           filters:
             branches:
-              ignore:
-                - master
+              ignore: master
 
-  on-merge:
-    jobs:
-      - orb-tools/pack:
-          destination-orb-path: orb.yml
-          persist-to-workspace: true
-          source-dir: src
-          store-artifacts: false
-          validate: true
-          filters:
-            branches:
-              only:
-                - master
       - orb-tools/publish:
-          attach-workspace: true
-          orb-path: workspace/orb.yml
-          validate: false
-          orb-ref: << pipeline.parameters.workspace >>/dynamic-continuation@<< pipeline.parameters.orb-version >>
+          name: publish development orb
+          enable-pr-comment: true
+          vcs-type: << pipeline.project.type >>
+          orb-name: << pipeline.parameters.workspace >>/<< pipeline.parameters.orb-name >>
+          pub-type: dev
           requires:
             - orb-tools/pack
-          context: orb-publishing
+            - orb-tools/lint
+            - shellcheck/check
+          context:
+            - orb-publishing
+            - github
           filters:
             branches:
-              only:
-                - master
+              ignore: master
