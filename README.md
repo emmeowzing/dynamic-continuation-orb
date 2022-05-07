@@ -27,6 +27,13 @@ from here, move any jobs, workflows, or orbs, to their new configs, again with m
 
 > **Aside:** Not all module configs must be valid. Because the additional configs are called in separate workflow(s), only the final, merged image need be valid if checked via `circleci config validate /path/to/generated/config.yml`. This said, it's probably best if you have a valid config in each module, for ease of development.
 
+#### For what cases will the orb run my workflow?
+
+The orb will run a specified workflow (we'll call it `<module>`) if any of the following conditions are met.
+
+1. If `.circleci/<module>.yml` changes.
+2. If there have been no workflows on the repository's default branch in the past 90 days.
+
 #### Example
 
 If you have a directory layout
@@ -56,7 +63,7 @@ that, once again, only execute when any code changes are introduced to the conta
 
 At times, there may be files that change in modules that should _not_ cause workflows to run. These could include, as an example, updated markdown or README-like files.
 
-To solve this problem, this orb has the ability to read an optional `.gitignore`-like filter on each module to prevent detected changed files on your PR from enabling workflows.
+To solve this problem, the orb has the ability to read an optional `.gitignore`-like filter on each module, named `.circleci/<module>.ignore`, to prevent detected changed files on your PR from enabling workflows.
 
 #### Example
 

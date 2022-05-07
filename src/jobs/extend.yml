@@ -23,6 +23,11 @@ parameters:
     description: Token to authenticate with CircleCI
     type: string
     default: $CIRCLE_TOKEN
+  reporting-window:
+    description: The time window used to calculate summary metrics for the default branch of the repository.
+    type: enum
+    enum: [last-7-days, last-90-days, last-24-hours, last-30-days, last-60-days]
+    default: last-90-days
 
   # reduce
   continue-config:
@@ -52,6 +57,7 @@ steps:
       force-all: << parameters.force-all >>
       default-branch: << parameters.default-branch >>
       root-config: << parameters.root-config >>
+      reporting-window: << parameters.reporting-window >>
       debug: << parameters.debug >>
       wildmatch-version: << parameters.wildmatch-version >>
       cache: false
