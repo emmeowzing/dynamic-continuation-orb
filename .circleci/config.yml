@@ -48,7 +48,7 @@ jobs:
             sudo dpkg -i gh.deb
       - add_ssh_keys:
           fingerprints:
-            - "94:5d:42:d3:fa:87:43:8a:e2:45:26:31:a4:bf:c4:ed"
+            - "07:eb:1c:fb:ba:a5:5d:fa:71:4e:0e:5a:80:0b:9f:a8"
       - run:
           name: Autoincrement repository's latest tag minor version
           command: |+
