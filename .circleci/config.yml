@@ -12,6 +12,7 @@ parameters:
 orbs:
   orb-tools: circleci/orb-tools@11.1.2
   shellcheck: circleci/shellcheck@3.1.0
+  gh: circleci/github-cli@2.1.0
 
 executors:
   default:
@@ -41,6 +42,8 @@ jobs:
     resource_class: small
     steps:
       - checkout
+      - gh/install:
+          version: $GH_CLI_VERSION
       - add_ssh_keys:
           fingerprints:
             - "94:5d:42:d3:fa:87:43:8a:e2:45:26:31:a4:bf:c4:ed"
@@ -86,6 +89,9 @@ jobs:
 
             git tag "$NEW_TAG"
             git push origin "$NEW_TAG"
+
+            gh auth login --with-token <(echo "$GITHUB_TOKEN")
+            gh release create "$NEW_TAG" --generate-notes
 
 workflows:
   on-tag:
