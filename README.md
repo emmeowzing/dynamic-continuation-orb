@@ -33,7 +33,7 @@ The orb will run a workflow (we'll call it `<module>`) if any of the following c
 
 1. If `.circleci/<module>.yml` changes.
 2. If there have been no workflows on the repository's default branch in the past 90 days (by default, but [this is configurable](https://circleci.com/docs/api/v2/#operation/getProjectWorkflowMetrics)).
-3. If changes have been detected within the `<module>/`'s directory on your branch against the repository's default branch (defaults to `master`). See below on how to filter by or out specific changed files [below](###filtering-or-ignoring-changed-files).
+3. If changes have been detected within the `<module>/`'s directory on your branch against the repository's default branch (defaults to `master`). See below on how to filter by or out specific changed files [below](#filtering-or-ignoring-changed-files).
 4. If, following merge to the module's default branch, there are changes to `.circleci/<module>.yml` or under `<module>/`, when diffing against the former commit (you must perform a merge commit for this to work properly).
 
 These conditions can be overriden, and all workflows forced to run, if the `force-all` parameter is set to `true` on the `extend` job.
@@ -128,6 +128,23 @@ Note that this requires you define an `app.yml`, at a bare minimum, under `.circ
 .cirlceci/app.ignore        # optional
 terraform/
 ```
+
+### Config validation with `pre-commit`
+
+Standard CircleCI config validation pre-commit hooks will only validate the default config at `.circleci/config.yml`. I recommend using [my pre-commit hook](https://github.com/bjd2385/circleci-config-pre-commit-hook) if you're using this orb in your project as it will further validate reduced configs, if they exist. Append the following to your `.pre-commit-config.yaml`:
+
+```
+- repo: https://github.com/bjd2385/circleci-config-pre-commit-hook
+    rev: v1.0.3
+    hooks:
+      - id: circleci-config-validate
+```
+
+### Live Examples of dynamic-continuation
+
+I use and test this orb in my own projects.
+
+- I have a live example of using this orb with [a root module](#specifying-a-different-workflow-for-your-repositorys-root-directory) in my `astronautcount` Twitter bot repository.
 
 ### Development
 
