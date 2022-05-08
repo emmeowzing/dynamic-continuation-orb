@@ -144,7 +144,7 @@ Standard CircleCI config validation pre-commit hooks will only validate the defa
 
 I use and test this orb in my own projects.
 
-- I have a live example of using this orb with [a root module](#specifying-a-different-workflow-for-your-repositorys-root-directory) in my `astronautcount` Twitter bot repository.
+- I have a live example of using this orb with [a root module](#specifying-a-different-workflow-for-your-repositorys-root-directory) in my [astronaut count](https://github.com/bjd2385/astronautcount/) Twitter bot repository.
 
 ### Development
 
