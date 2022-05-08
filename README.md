@@ -12,7 +12,7 @@ You'll need to add this orb, as well as an `extend` job to your workflow (likely
 setup: true
 
 orbs:
-  dynamic: bjd2385/dynamic-continuation@1.2.4
+  dynamic: bjd2385/dynamic-continuation@3.0.0
 
 workflows:
   on-commit:
