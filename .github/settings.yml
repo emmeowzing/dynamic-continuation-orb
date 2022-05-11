@@ -5,6 +5,7 @@ repository:
   name: dynamic-continuation-orb
   description: CircleCI orb for dynamically executing workflows upon code changes in specified modules
   homepage: https://circleci.com/developer/orbs/orb/bjd2385/dynamic-continuation
+  private: false
 
 teams: []
 

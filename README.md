@@ -25,8 +25,6 @@ workflows:
 
 from here, move any jobs, workflows, or orbs, to their new configs, again with matching top-level directory names.
 
-> **Aside:** Not all module configs must be valid. Because the additional configs are called in separate workflow(s), only the final, merged image need be valid if checked via `circleci config validate /path/to/generated/config.yml`. This said, it's probably best if you have a valid config in each module, for ease of development.
-
 #### When will the orb run my workflows?
 
 The orb will run a workflow (we'll call it `<module>`) if any of the following conditions are met.
