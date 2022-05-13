@@ -113,7 +113,7 @@ jobs:
             # Generate release from tag.
             echo "$GITHUB_TOKEN" | gh auth login --with-token 2>/dev/null
             sleep 1
-            gh release create "$LATEST_TAG" --generate-notes
+            strace gh release create "$LATEST_TAG" --generate-notes
 
   pack-orb:
     # A rewrite of CircleCI's pack step with prepacking - https://github.com/CircleCI-Public/orb-tools-orb/blob/532a5e8fba31e293978ea90a0a97b28f96f2e689/src/jobs/pack.yml#L23
