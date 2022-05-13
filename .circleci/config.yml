@@ -12,6 +12,7 @@ parameters:
 orbs:
   orb-tools: circleci/orb-tools@11.1.2
   shellcheck: circleci/shellcheck@3.1.0
+  circleci-cli: circleci/circleci-cli@0.1.9
 
 executors:
   default:
@@ -29,26 +30,8 @@ commands:
           command: |
             [[ "$(circleci orb list << pipeline.parameters.workspace >> | grep "<< pipeline.parameters.workspace >>/<< pipeline.parameters.orb-name >>" | grep -oE "[0-9].[0-9].[0-9]")" != "${CIRCLE_TAG}" ]]
 
-jobs:
-  check_version:
-    executor: default
-    resource_class: small
+  increment-minor-tag:
     steps:
-      - check_version
-
-  autoincrement-minor-tag:
-    executor: default
-    resource_class: small
-    steps:
-      - checkout
-      - run:
-          name: Install gh CLI
-          command: |+
-            wget https://github.com/cli/cli/releases/download/v2.9.0/gh_2.9.0_linux_amd64.deb -O gh.deb
-            sudo dpkg -i gh.deb
-      - add_ssh_keys:
-          fingerprints:
-            - "07:eb:1c:fb:ba:a5:5d:fa:71:4e:0e:5a:80:0b:9f:a8"
       - run:
           name: Autoincrement repository's latest tag minor version
           command: |+
@@ -92,8 +75,42 @@ jobs:
             git tag "$NEW_TAG"
             git push origin "$NEW_TAG"
 
+jobs:
+  check_version:
+    executor: default
+    resource_class: small
+    steps:
+      - check_version
+
+  autoincrement-minor-tag:
+    executor: default
+    resource_class: small
+    steps:
+      - checkout
+      - run:
+          name: Install gh CLI
+          command: |+
+            wget https://github.com/cli/cli/releases/download/v2.9.0/gh_2.9.0_linux_amd64.deb -O gh.deb
+            sudo dpkg -i gh.deb
+      - add_ssh_keys:
+          fingerprints:
+            - "07:eb:1c:fb:ba:a5:5d:fa:71:4e:0e:5a:80:0b:9f:a8"
+      - increment-minor-tag
+
+  generate-release:
+    executor: default
+    resource_class: small
+    steps:
+      - run:
+          name: Generate release
+          command: |+
+            # Get latest tag.
+            git fetch --all --tags
+            LATEST_TAG="$(git tag | sort -V | tail -1)"
+
+            # Generate release from tag.
             echo "$GITHUB_TOKEN" | gh auth login --with-token
-            gh release create "$NEW_TAG" --generate-notes
+            gh release create "$LATEST_TAG" --generate-notes
 
   pack-orb:
     # A rewrite of CircleCI's pack step with prepacking - https://github.com/CircleCI-Public/orb-tools-orb/blob/532a5e8fba31e293978ea90a0a97b28f96f2e689/src/jobs/pack.yml#L23
@@ -110,11 +127,10 @@ jobs:
         default: ./dist
     steps:
       - checkout
+      - circleci-cli/install
       - run:
           name: Pack orb
           command: |
-            pwd
-            ls -lash
             find << parameters.source-dir >> -maxdepth 1 -mindepth 1 -type d | xargs -I % basename % | xargs -I % ./scripts/pre-pack.sh << parameters.source-dir >> %
             mkdir -p << parameters.output-dir >>
             circleci orb pack --skip-update-check << parameters.source-dir >> > << parameters.output-dir >>/orb.yml
@@ -165,6 +181,15 @@ workflows:
           filters:
             branches:
               only: master
+
+      # Generate a release from the latest tag.
+      - generate-release:
+          context: github
+          filters:
+            branches:
+              only: master
+          requires:
+            - autoincrement-minor-tag
 
   on-commit:
     jobs:
