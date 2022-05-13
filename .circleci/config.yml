@@ -87,11 +87,6 @@ jobs:
     resource_class: small
     steps:
       - checkout
-      - run:
-          name: Install gh CLI
-          command: |+
-            wget https://github.com/cli/cli/releases/download/v2.9.0/gh_2.9.0_linux_amd64.deb -O gh.deb
-            sudo dpkg -i gh.deb
       - add_ssh_keys:
           fingerprints:
             - "07:eb:1c:fb:ba:a5:5d:fa:71:4e:0e:5a:80:0b:9f:a8"
@@ -102,6 +97,11 @@ jobs:
     resource_class: small
     steps:
       - checkout
+      - run:
+          name: Install gh CLI
+          command: |+
+            wget https://github.com/cli/cli/releases/download/v2.9.0/gh_2.9.0_linux_amd64.deb -O gh.deb
+            sudo dpkg -i gh.deb
       - run:
           name: Generate release
           command: |+
