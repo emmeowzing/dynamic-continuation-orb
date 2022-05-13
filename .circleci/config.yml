@@ -95,6 +95,31 @@ jobs:
             echo "$GITHUB_TOKEN" | gh auth login --with-token
             gh release create "$NEW_TAG" --generate-notes
 
+  pack-orb:
+    # A rewrite of CircleCI's pack step with prepacking - https://github.com/CircleCI-Public/orb-tools-orb/blob/532a5e8fba31e293978ea90a0a97b28f96f2e689/src/jobs/pack.yml#L23
+    executor: default
+    resource_class: small
+    parameters:
+      source-dir:
+        description: Directory unpacked orb source resides in.
+        type: string
+        default: ./src
+      output-dir:
+        description: The orb output directory. The orb will be named "orb.yml" in this directory and persisted to the workspace.
+        type: string
+        default: ./dist
+    steps:
+      - run:
+          name: Pack orb
+          command: |
+            find << parameters.source-dir >> -maxdepth 1 -mindepth 1 -type d | xargs -I % basename % | xargs -I % ./scripts/pre-pack.sh << parameters.source-dir >> %
+            mkdir -p << parameters.output-dir >>
+            circleci orb pack --skip-update-check << parameters.source-dir >> > << parameters.output-dir >>/orb.yml
+      - persist_to_workspace:
+          paths:
+            - orb.yml
+          root: << parameters.output-dir >>
+
 workflows:
   on-tag:
     jobs:
@@ -105,7 +130,7 @@ workflows:
             tags:
               only: /^v[0-9]+\.[0-9]+\.[0-9]+$/
 
-      - orb-tools/pack:
+      - pack-orb:
           filters:
             branches:
               ignore: /.*/
@@ -119,7 +144,7 @@ workflows:
           orb-name: << pipeline.parameters.workspace >>/<< pipeline.parameters.orb-name >>
           pub-type: production
           requires:
-            - orb-tools/pack
+            - pack-orb
             - check_version
           context:
             - development
@@ -147,7 +172,7 @@ workflows:
             branches:
               ignore: master
 
-      - orb-tools/pack:
+      - pack-orb:
           filters:
             branches:
               ignore: master
@@ -166,7 +191,7 @@ workflows:
           orb-name: << pipeline.parameters.workspace >>/<< pipeline.parameters.orb-name >>
           pub-type: dev
           requires:
-            - orb-tools/pack
+            - pack-orb
             - orb-tools/lint
             - shellcheck/check
           context:
