@@ -101,6 +101,7 @@ jobs:
     executor: default
     resource_class: small
     steps:
+      - checkout
       - run:
           name: Generate release
           command: |+
