@@ -160,7 +160,6 @@ workflows:
     jobs:
       # Auto-increment minor tag to kick off on-tag workflow.
       - autoincrement-minor-tag:
-          context: github
           filters:
             branches:
               only: master
