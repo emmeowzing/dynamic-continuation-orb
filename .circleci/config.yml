@@ -107,10 +107,11 @@ jobs:
           command: |+
             # Get latest tag.
             git fetch --all --tags
-            LATEST_TAG="$(git tag | sort -V | tail -1)"
+            export LATEST_TAG="$(git tag | sort -V | tail -1)"
+            echo "$LATEST_TAG"
 
             # Generate release from tag.
-            echo "$GITHUB_TOKEN" | gh auth login --with-token
+            echo "$GITHUB_TOKEN" | gh auth login --with-token >/dev/null
             gh release create "$LATEST_TAG" --generate-notes
 
   pack-orb:
