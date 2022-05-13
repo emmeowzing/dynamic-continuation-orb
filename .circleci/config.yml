@@ -113,6 +113,7 @@ jobs:
           name: Pack orb
           command: |
             pwd
+            ls -lash
             find << parameters.source-dir >> -maxdepth 1 -mindepth 1 -type d | xargs -I % basename % | xargs -I % ./scripts/pre-pack.sh << parameters.source-dir >> %
             mkdir -p << parameters.output-dir >>
             circleci orb pack --skip-update-check << parameters.source-dir >> > << parameters.output-dir >>/orb.yml
