@@ -111,8 +111,7 @@ jobs:
             echo "$LATEST_TAG"
 
             # Generate release from tag.
-            echo "$GITHUB_TOKEN" | gh auth login --with-token 2>/dev/null
-            sleep 1
+            echo "$GITHUB_TOKEN" | gh auth login --with-token 2>/dev/null || true
             strace gh release create "$LATEST_TAG" --generate-notes
 
   pack-orb:
