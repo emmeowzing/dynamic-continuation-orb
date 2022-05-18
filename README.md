@@ -6,7 +6,7 @@ The orb's intended use is to aid in the simplification of the default `.circleci
 
 ### How it works
 
-You'll need to add this orb, as well as an `extend` job to your workflow (likely appended to the end), and the `setup` keyword, such as
+You'll need to add this orb, as well as a `continue` job to your workflow (likely appended to the end), and the `setup` keyword, such as
 
 ```
 setup: true
@@ -17,7 +17,7 @@ orbs:
 workflows:
   on-commit:
     jobs:
-      - dynamic/extend:
+      - dynamic/continue:
           context: orb-publishing
           modules: |
             ... list of config file names under .circleci/ with corresponding, top-level directories of the same name.
@@ -34,7 +34,7 @@ The orb will run a workflow (we'll call it `<module>`) if any of the following c
 3. If changes have been detected within the `<module>/`'s directory on your branch against the repository's default branch (defaults to `master`). See below on how to filter by or out specific changed files [below](#filtering-or-ignoring-changed-files).
 4. If, following merge to the module's default branch, there are changes to `.circleci/<module>.yml` or under `<module>/`, when diffing against the former commit (you must perform a merge commit for this to work properly).
 
-These conditions can be overriden, and all workflows forced to run, if the `force-all` parameter is set to `true` on the `extend` job.
+These conditions can be overriden, and all workflows forced to run, if the `force-all` parameter is set to `true` on the `continue` job.
 
 #### Example
 
@@ -90,7 +90,7 @@ These files are automatically referenced, and do not need to be explicitly speci
 workflows:
   on-commit:
     jobs:
-      - dynamic/extend:
+      - dynamic/continue:
           context: orb-publishing
           modules: |
             src
@@ -108,7 +108,7 @@ Many times, we'd like to run a specific workflow against the root of a repositor
 workflows:
   on-commit:
     jobs:
-      - dynamic/extend:
+      - dynamic/continue:
           context: orb-publishing
           root-config: app  # Defaults to 'app.yml' and 'app.ignore' under .circleci/, should the orb detect a '.'- or root-module
           modules: |
@@ -116,7 +116,7 @@ workflows:
             .
 ```
 
-Note that this requires you define an `app.yml`, at a bare minimum, under `.circleci/`, for the orb to process. This is about as complex a CI config can get as well, with the above `extend` job call requiring a directory layout of
+Note that this requires you define an `app.yml`, at a bare minimum, under `.circleci/`, for the orb to process. This is about as complex a CI config can get as well, with the above `continue` job call requiring a directory layout of
 
 ```
 .circleci/config.yml
