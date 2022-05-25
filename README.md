@@ -149,13 +149,19 @@ I use and test this orb in my own projects.
 This orb has been developed in _unpacked_ form. You may view its packed source with
 
 ```shell
-$ circleci orb pack src/ > orb.yml
+$ yarn orb:pack  # creates a file 'orb.yml'
 ```
 
 and further validate the resulting orb definition with
 
 ```shell
-$ circleci orb validate orb.yml
+$ yarn orb:validate
+```
+
+When you're done with your testing, you may clean up the packed source with
+
+```shell
+$ yarn orb:cleaup
 ```
 
 #### Publishing a production-ready version
