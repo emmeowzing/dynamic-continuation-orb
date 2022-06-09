@@ -7,8 +7,6 @@ repository:
   homepage: https://circleci.com/developer/orbs/orb/bjd2385/dynamic-continuation
   private: false
 
-teams: []
-
 branches:
   - name: master
     protection:

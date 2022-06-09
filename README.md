@@ -2,17 +2,17 @@
 
 This orb is based on a [published example](https://github.com/circle-makotom/circle-advanced-setup-workflow) of advanced configuration with continuations from CircleCI.
 
-The orb's intended use is to aid in the simplification of the default `.circleci/config.yml` by allowing users to add additional configs under `.circleci` matching top-level directories that run only when the code therein contains actual changes. This approach offers engineers reduced pipeline execution time, and by extension, reduced CI costs.
+The orb's intended use is to aid in simplifying default `.circleci/config.yml` files by allowing users to add additional configs under `.circleci/` matching top-level directory names that run only when the code therein changes. This approach offers engineers reduced pipeline execution time, and by extension, reduced CI costs.
 
 ### How it works
 
-You'll need to add this orb, as well as a `continue` job to your workflow (likely appended to the end), and the `setup` keyword, such as
+You'll need to add this orb, as well as a `continue` job, to your workflow (likely appended to the end), and the `setup` keyword, such as
 
 ```
 setup: true
 
 orbs:
-  dynamic: bjd2385/dynamic-continuation@3.0.0
+  dynamic: bjd2385/dynamic-continuation@<version>
 
 workflows:
   on-commit:
@@ -23,7 +23,9 @@ workflows:
             ... list of config file names under .circleci/ with corresponding, top-level directories of the same name.
 ```
 
-from here, move any jobs, workflows, or orbs, to their new configs, again with matching top-level directory names.
+You'll also need to enable setup workflows in your project under Advanced Settings.
+
+Now move any jobs, workflows, or orbs, to their new configs, again with matching top-level directory names.
 
 #### When will the orb run my workflows?
 
@@ -166,7 +168,7 @@ $ yarn orb:cleaup
 
 #### Publishing a production-ready version
 
-To publish your changes to the CircleCI registry, tag this repo, incrementing to the required version.
+To publish your changes to the CircleCI registry, simply merge your PR. The pipeline will automatically increment the minor tag, which will kick off a publication workflow; or, tag the repo manually.
 
 #### `pre-commit`
 
