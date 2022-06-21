@@ -14,6 +14,19 @@ parameters:
     description: Path to the internally-used config for continuation
     type: string
     default: .circleci/continue-config.yml
+  circle-organization:
+    description: CircleCI organization to query with your API key.
+    type: string
+    default: $CIRCLE_ORGANIZATION
+  project-type:
+    description: Can be either GitHub (gh) or BitBucket (bb).
+    type: enum
+    enum: [github, bitbucket]
+    default: github
+  circle-token:
+    description: Token to authenticate with CircleCI
+    type: string
+    default: $CIRCLE_TOKEN
   debug:
     description: Dump the generated config from reducing the set of modules across changes to stdout for debugging purposes.
     type: boolean
@@ -59,6 +72,10 @@ steps:
         yq -i -y '.version = 2.1' << parameters.continue-config >>
         yq 'del(.setup)' << parameters.continue-config >>
         yq -i -y '.workflows.version = 2' << parameters.continue-config >>
+  - run:
+      name: CircleCI config validate reduced config
+      command: |
+        circleci config validate << parameters.continue-config >> --org-slug << parameters.project-type >>/<< parameters.circle-organization >> --token << parameters.circle-token >> --skip-update-check
   - when:
       condition: << parameters.debug >>
       steps:

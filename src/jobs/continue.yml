@@ -28,6 +28,10 @@ parameters:
     type: enum
     enum: [last-7-days, last-90-days, last-24-hours, last-30-days, last-60-days]
     default: last-90-days
+  squash-merge-lookbehind:
+    description: Number of commits back to compare against following squash merges.
+    type: string
+    default: "1"
 
   # reduce
   continue-config:
@@ -44,6 +48,15 @@ parameters:
     description: Path to the file where the filtered list of modules is generated
     type: string
     default: /tmp/modules-filtered.txt
+  circle-organization:
+    description: CircleCI organization to query with your API key.
+    type: string
+    default: $CIRCLE_ORGANIZATION
+  project-type:
+    description: Can be either GitHub (gh) or BitBucket (bb).
+    type: enum
+    enum: [github, bitbucket]
+    default: github
   debug:
     description: Dump the reduced config to stdout for debugging purposes.
     type: boolean
@@ -51,6 +64,7 @@ parameters:
 steps:
   - checkout
   - jq/install
+  - circleci/install
   - filter:
       modules: << parameters.modules >>
       modules-filtered: << parameters.modules-filtered >>
@@ -59,12 +73,19 @@ steps:
       root-config: << parameters.root-config >>
       reporting-window: << parameters.reporting-window >>
       debug: << parameters.debug >>
+      circle-organization: << parameters.circle-organization >>
+      circle-token: << parameters.circle-token >>
       wildmatch-version: << parameters.wildmatch-version >>
+      squash-merge-lookbehind: << parameters.squash-merge-lookbehind >>
+      project-type: << parameters.project-type >>
       cache: false
   - reduce:
       modules: << parameters.modules-filtered >>
       continue-config: << parameters.continue-config >>
       root-config: << parameters.root-config >>
+      circle-organization: << parameters.circle-organization >>
+      circle-token: << parameters.circle-token >>
+      project-type: << parameters.project-type >>
       debug: << parameters.debug >>
       cache: false
   - continuation/continue:
