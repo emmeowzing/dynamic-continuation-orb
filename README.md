@@ -154,16 +154,16 @@ This orb has been developed in _unpacked_ form. You may view its packed source w
 $ yarn orb:pack  # creates a file 'orb.yml'
 ```
 
-and further validate the resulting orb definition with
+Validate an orb definition with
 
 ```shell
 $ yarn orb:validate
 ```
 
-When you're done with your testing, you may clean up the packed source with
+When you're done with development, you may clean up the packed source with
 
 ```shell
-$ yarn orb:cleaup
+$ yarn orb:clean
 ```
 
 #### Publishing a production-ready version
