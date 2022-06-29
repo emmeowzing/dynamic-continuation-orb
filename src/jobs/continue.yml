@@ -61,7 +61,7 @@ parameters:
     type: enum
     enum: [github, bitbucket]
     default: github
-  debug:
+  debug-git:
     description: Dump the reduced config to stdout for debugging purposes.
     type: boolean
     default: false
@@ -76,13 +76,13 @@ steps:
       default-branch: << parameters.default-branch >>
       root-config: << parameters.root-config >>
       reporting-window: << parameters.reporting-window >>
-      debug: << parameters.debug >>
       circle-organization: << parameters.circle-organization >>
       circle-token: << parameters.circle-token >>
       wildmatch-version: << parameters.wildmatch-version >>
       squash-merge-lookbehind: << parameters.squash-merge-lookbehind >>
       project-type: << parameters.project-type >>
       include-config-changes: << parameters.include-config-changes >>
+      debug-git: << parameters.debug-git >>
       cache: false
   - reduce:
       modules: << parameters.modules-filtered >>
@@ -91,7 +91,7 @@ steps:
       circle-organization: << parameters.circle-organization >>
       circle-token: << parameters.circle-token >>
       project-type: << parameters.project-type >>
-      debug: << parameters.debug >>
+      debug-git: << parameters.debug-git >>
       cache: false
   - continuation/continue:
       configuration_path: << parameters.continue-config >>

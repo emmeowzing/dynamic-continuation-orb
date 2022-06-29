@@ -50,7 +50,7 @@ parameters:
     type: enum
     enum: [github, bitbucket]
     default: github
-  debug:
+  debug-git:
     description: Print git diff-tree output, filtered or unfiltered, to stdout for debugging purposes.
     type: boolean
     default: false
@@ -62,7 +62,7 @@ steps:
   - run:
       name: Generate changed modules
       command: |
-        if << parameters.debug >>; then
+        if << parameters.debug-git >>; then
             pip install wildmatch==<< parameters.wildmatch-version >>
             echo "<< parameters.modules >>" | awk NF | while read module; do
                 if [ "${module}" = "." ]; then
@@ -96,7 +96,7 @@ steps:
                 echo "$module" >> << parameters.modules-filtered >>
             done
         else
-            if ! << paramaters.debug >>; then pip install wildmatch==<< parameters.wildmatch-version >>; fi
+            if ! << paramaters.debug-git >>; then pip install wildmatch==<< parameters.wildmatch-version >>; fi
             echo "<< parameters.modules >>" | awk NF | while read row; do
                 module="$(echo "$row" | awk '{ print $1 }')"
 
