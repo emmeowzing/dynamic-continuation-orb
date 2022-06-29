@@ -8,10 +8,11 @@
     "install:pre-commit:pip": "pip install pre-commit",
     "install:pre-commit-hooks": "pre-commit install --install-hooks --allow-missing-config -t pre-commit -t prepare-commit-msg",
     "orb:pack": "find src -maxdepth 1 -mindepth 1 -type d | xargs -I % basename % | xargs -I % ./scripts/pre-pack.sh src % && circleci orb pack src/ > orb.yml",
-    "orb:validate": "circleci orb validate orb.yml",
+    "orb:validate": "./scripts/validate.sh",
     "orb:cleanup": "find src -maxdepth 1 -mindepth 1 -type d | xargs -I % basename % | xargs -I % ./scripts/rev-pack.sh src %; yes | rm orb.yml",
     "orb:clean": "yarn orb:cleanup",
     "orb:cleanup:force": "find src -maxdepth 1 -mindepth 1 -type d | xargs -I % basename % | xargs -I % ./scripts/rev-pack.sh src % true; yes | rm orb.yml",
-    "orb:clean:force": "yarn orb:cleanup:force"
+    "orb:clean:force": "yarn orb:cleanup:force",
+    "orb:process": "circleci orb process src/@orb.yml > processed-orb.yml"
   }
 }

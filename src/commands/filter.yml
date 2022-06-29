@@ -16,10 +16,6 @@ parameters:
     description: The default branch of the repository.
     type: string
     default: master
-  debug:
-    description: Print git diff-tree output, filtered or unfiltered, to stdout for debugging purposes.
-    type: boolean
-    default: false
   wildmatch-version:
     description: Wildmatch package version to install. For available versions, check PyPI - https://pypi.org/project/wildmatch/#description
     type: string
@@ -45,11 +41,19 @@ parameters:
     description: Number of commits back to compare against following squash merges.
     type: string
     default: "1"
+  include-config-changes:
+    description: Include CircleCI config changes (e.g., scripts.yml) while checking for changed modules.
+    type: boolean
+    default: true
   project-type:
     description: Can be either GitHub (gh) or BitBucket (bb).
     type: enum
     enum: [github, bitbucket]
     default: github
+  debug:
+    description: Print git diff-tree output, filtered or unfiltered, to stdout for debugging purposes.
+    type: boolean
+    default: false
   cache:
     description: Whether or not to cache (i.e. you're calling these commands in your own job, not 'continue').
     type: boolean
@@ -59,6 +63,7 @@ steps:
       name: Generate changed modules
       command: |
         if << parameters.debug >>; then
+            pip install wildmatch==<< parameters.wildmatch-version >>
             echo "<< parameters.modules >>" | awk NF | while read module; do
                 if [ "${module}" = "." ]; then
                     if [ ! -f "<< parameters.root-config >>.ignore" ]; then
@@ -91,9 +96,8 @@ steps:
                 echo "$module" >> << parameters.modules-filtered >>
             done
         else
+            if ! << parameters.debug >>; then pip install wildmatch==<< parameters.wildmatch-version >>; fi
             echo "<< parameters.modules >>" | awk NF | while read row; do
-                pip install wildmatch==<< parameters.wildmatch-version >>
-
                 module="$(echo "$row" | awk '{ print $1 }')"
 
                 # Handle root module "."
@@ -103,12 +107,12 @@ steps:
                     fi
 
                     if [ "$CIRCLE_BRANCH" = "<< parameters.default-branch >>" ]; then
-                        if << parameters.force-all >> || [ "$(git diff-tree --no-commit-id --name-only -r HEAD~<< parameters.squash-merge-lookbehind >> << parameters.default-branch >> "$module" | awk NF | wildmatch -c ".circleci/<< parameters.root-config >>.ignore")" != "" ] || [ "$(git diff-tree --no-commit-id --name-only -r HEAD~<< parameters.squash-merge-lookbehind >> << parameters.default-branch >> .circleci/"$module".* | awk NF)" != "" ]; then
+                        if << parameters.force-all >> || [ "$(git diff-tree --no-commit-id --name-only -r HEAD~<< parameters.squash-merge-lookbehind >> << parameters.default-branch >> "$module" | awk NF | wildmatch -c ".circleci/<< parameters.root-config >>.ignore")" != "" ] || ([ "$(git diff-tree --no-commit-id --name-only -r HEAD~<< parameters.squash-merge-lookbehind >> << parameters.default-branch >> .circleci/"$module".* | awk NF)" != "" ] && << parameters.include-config-changes >>); then
                             echo "$module" >> << parameters.modules-filtered >>
                             printf "%s\\n" "$module"
                         fi
                     else
-                        if << parameters.force-all >> || [ "$(git diff-tree --no-commit-id --name-only -r HEAD << parameters.default-branch >> "$module" | awk NF | wildmatch -c ".circleci/<< parameters.root-config >>.ignore")" != "" ] || [ "$(git diff-tree --no-commit-id --name-only -r HEAD << parameters.default-branch >> .circleci/"$module".* | awk NF)" != "" ]; then
+                        if << parameters.force-all >> || [ "$(git diff-tree --no-commit-id --name-only -r HEAD << parameters.default-branch >> "$module" | awk NF | wildmatch -c ".circleci/<< parameters.root-config >>.ignore")" != "" ] || ([ "$(git diff-tree --no-commit-id --name-only -r HEAD << parameters.default-branch >> .circleci/"$module".* | awk NF)" != "" ] && << parameters.include-config-changes >>); then
                             echo "$module" >> << parameters.modules-filtered >>
                             printf "%s\\n" "$module"
                         fi
@@ -123,12 +127,12 @@ steps:
                 fi
 
                 if [ "$CIRCLE_BRANCH" = "<< parameters.default-branch >>" ]; then
-                    if << parameters.force-all >> || [ "$(git diff-tree --no-commit-id --name-only -r HEAD~<< parameters.squash-merge-lookbehind >> << parameters.default-branch >> "$module" | awk NF | wildmatch -c ".circleci/${module}.ignore")" != "" ] || [ "$(git diff-tree --no-commit-id --name-only -r HEAD~<< parameters.squash-merge-lookbehind >> << parameters.default-branch >> .circleci/"$module".* | awk NF)" != "" ]; then
+                    if << parameters.force-all >> || [ "$(git diff-tree --no-commit-id --name-only -r HEAD~<< parameters.squash-merge-lookbehind >> << parameters.default-branch >> "$module" | awk NF | wildmatch -c ".circleci/${module}.ignore")" != "" ] || ([ "$(git diff-tree --no-commit-id --name-only -r HEAD~<< parameters.squash-merge-lookbehind >> << parameters.default-branch >> .circleci/"$module".* | awk NF)" != "" ] && << parameters.include-config-changes >>); then
                         echo "$module" >> << parameters.modules-filtered >>
                         printf "%s\\n" "$module"
                     fi
                 else
-                    if << parameters.force-all >> || [ "$(git diff-tree --no-commit-id --name-only -r HEAD << parameters.default-branch >> "$module" | awk NF | wildmatch -c ".circleci/${module}.ignore")" != "" ] || [ "$(git diff-tree --no-commit-id --name-only -r HEAD << parameters.default-branch >> .circleci/"$module".* | awk NF)" != "" ]; then
+                    if << parameters.force-all >> || [ "$(git diff-tree --no-commit-id --name-only -r HEAD << parameters.default-branch >> "$module" | awk NF | wildmatch -c ".circleci/${module}.ignore")" != "" ] || ([ "$(git diff-tree --no-commit-id --name-only -r HEAD << parameters.default-branch >> .circleci/"$module".* | awk NF)" != "" ] && << parameters.include-config-changes >>); then
                         echo "$module" >> << parameters.modules-filtered >>
                         printf "%s\\n" "$module"
                     fi

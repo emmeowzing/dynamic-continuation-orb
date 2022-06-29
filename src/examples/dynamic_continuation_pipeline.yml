@@ -1,0 +1,14 @@
+description: |+
+  Utilize the "continue" job to dynamically execute workflows.
+usage:
+  version: 2.1
+  setup: true
+  orbs:
+    dynamic: bjd2385/dynamic-continuation@3.1.1
+  workflows:
+    on-commit:
+      jobs:
+        - dynamic/continue:
+            context: orb-publishing
+            modules: |
+              src    # Matches both a top-level directory name in the repository and the name (minus .yml extension) of a config file under .circleci/
