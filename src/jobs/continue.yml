@@ -32,6 +32,10 @@ parameters:
     description: Number of commits back to compare against following squash merges.
     type: string
     default: "1"
+  include-config-changes:
+    description: Include CircleCI config changes (e.g., scripts.yml) while checking for changed modules.
+    type: boolean
+    default: true
 
   # reduce
   continue-config:
@@ -78,6 +82,7 @@ steps:
       wildmatch-version: << parameters.wildmatch-version >>
       squash-merge-lookbehind: << parameters.squash-merge-lookbehind >>
       project-type: << parameters.project-type >>
+      include-config-changes: << parameters.include-config-changes >>
       cache: false
   - reduce:
       modules: << parameters.modules-filtered >>
