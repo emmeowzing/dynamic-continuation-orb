@@ -1,0 +1,382 @@
+version: 2.1
+description: |
+    CircleCI orb for dynamically executing workflows upon code changes in specified directories
+display:
+    home_url: https://circleci.com/developer/orbs/orb/bjd2385/dynamic-continuation
+    source_url: https://github.com/bjd2385/dynamic-continuation-orb
+orbs:
+    circleci: circleci/circleci-cli@0.1.9
+    continuation: circleci/continuation@0.3.1
+    jq: circleci/jq@2.2.0
+commands:
+    filter:
+        description: |
+            Filter the list of modules (directories) provided in the shared config to those that contain changes.
+        parameters:
+            cache:
+                default: true
+                description: Whether or not to cache (i.e. you're calling these commands in your own job, not 'continue').
+                type: boolean
+            circle-organization:
+                default: $CIRCLE_ORGANIZATION
+                description: CircleCI organization to query with your API key.
+                type: string
+            circle-token:
+                default: $CIRCLE_TOKEN
+                description: Token to authenticate with CircleCI
+                type: string
+            debug:
+                default: false
+                description: Print git diff-tree output, filtered or unfiltered, to stdout for debugging purposes.
+                type: boolean
+            default-branch:
+                default: master
+                description: The default branch of the repository.
+                type: string
+            force-all:
+                default: false
+                description: Forcibly build all the modules
+                type: boolean
+            include-config-changes:
+                default: true
+                description: Include CircleCI config changes (e.g., scripts.yml) while checking for changed modules.
+                type: boolean
+            modules:
+                description: Directories which should be built upon changes.
+                type: string
+            modules-filtered:
+                default: /tmp/modules-filtered.txt
+                description: Path to the file where the filtered list of modules is generated
+                type: string
+            project-type:
+                default: github
+                description: Can be either GitHub (gh) or BitBucket (bb).
+                enum:
+                    - github
+                    - bitbucket
+                type: enum
+            reporting-window:
+                default: last-90-days
+                description: The time window used to calculate summary metrics for the default branch of the repository.
+                enum:
+                    - last-7-days
+                    - last-90-days
+                    - last-24-hours
+                    - last-30-days
+                    - last-60-days
+                type: enum
+            root-config:
+                default: app
+                description: Provides the ability to map root repository changes (./) to a config file name.
+                type: string
+            squash-merge-lookbehind:
+                default: "1"
+                description: Number of commits back to compare against following squash merges.
+                type: string
+            wildmatch-version:
+                default: 0.2.6
+                description: Wildmatch package version to install. For available versions, check PyPI - https://pypi.org/project/wildmatch/#description
+                type: string
+        steps:
+            - run:
+                command: |
+                    if << parameters.debug >>; then
+                        pip install wildmatch==<< parameters.wildmatch-version >>
+                        echo "<< parameters.modules >>" | awk NF | while read module; do
+                            if [ "${module}" = "." ]; then
+                                if [ ! -f "<< parameters.root-config >>.ignore" ]; then
+                                    touch ".circleci/<< parameters.root-config >>.ignore"
+                                fi
+                                printf "%s\\n\\n" "<< parameters.root-config >>:"
+                                git diff-tree --no-commit-id --name-only -r HEAD << parameters.default-branch >> "$module" | awk NF | wildmatch -c ".circleci/<< parameters.root-config >>.ignore"
+                                printf "\\n\\n"
+                            else
+                                if [ ! -f "${module}.ignore" ]; then
+                                    touch ".circleci/${module}.ignore"
+                                fi
+                                printf "%s\\n\\n" "${module}:"
+                                git diff-tree --no-commit-id --name-only -r HEAD << parameters.default-branch >> "$module" | awk NF | wildmatch -c ".circleci/${module}.ignore"
+                                printf "\\n\\n"
+                            fi
+                        done
+                    fi
+
+                    if [ ! "<< parameters.circle-token >>" ]; then
+                        printf "Must set CircleCI token for successful authentication.\\n"
+                        exit 1
+                    fi
+
+                    # Add each module to `modules-filtered` if 1) `force-all` is set to `true`, or 2) there is a diff against master at HEAD, or 3) no workflow runs have occurred on the default branch for this project in the past << parameters.reporting-window >> days.
+                    if [ ! << parameters.force-all >> ] && [ $(curl -s --request GET --url "https://circleci.com/api/v2/insights/<< parameters.project-type >>/<< parameters.circle-organization >>/${CIRCLE_PROJECT_REPONAME}/workflows?reporting-window=<< parameters.reporting-window >>" --header "Circle-Token: << parameters.circle-token >>" | '[ .items[].name ] | length') -eq 0 ]; then
+                        printf "Running all workflows.\\n"
+                        echo "<< parameters.modules >>" | awk NF | while read row; do
+                            module="$(echo "$row" | awk '{ print $1 }')"
+                            echo "$module" >> << parameters.modules-filtered >>
+                        done
+                    else
+                        if ! << paramaters.debug >>; then pip install wildmatch==<< parameters.wildmatch-version >>; fi
+                        echo "<< parameters.modules >>" | awk NF | while read row; do
+                            module="$(echo "$row" | awk '{ print $1 }')"
+
+                            # Handle root module "."
+                            if [ "${module}" = "." ]; then
+                                if [ ! -f "<< parameters.root-config >>.ignore" ]; then
+                                    touch ".circleci/<< parameters.root-config >>.ignore"
+                                fi
+
+                                if [ "$CIRCLE_BRANCH" = "<< parameters.default-branch >>" ]; then
+                                    if << parameters.force-all >> || [ "$(git diff-tree --no-commit-id --name-only -r HEAD~<< parameters.squash-merge-lookbehind >> << parameters.default-branch >> "$module" | awk NF | wildmatch -c ".circleci/<< parameters.root-config >>.ignore")" != "" ] || ([ "$(git diff-tree --no-commit-id --name-only -r HEAD~<< parameters.squash-merge-lookbehind >> << parameters.default-branch >> .circleci/"$module".* | awk NF)" != "" ] && << parameters.include-config-changes >>); then
+                                        echo "$module" >> << parameters.modules-filtered >>
+                                        printf "%s\\n" "$module"
+                                    fi
+                                else
+                                    if << parameters.force-all >> || [ "$(git diff-tree --no-commit-id --name-only -r HEAD << parameters.default-branch >> "$module" | awk NF | wildmatch -c ".circleci/<< parameters.root-config >>.ignore")" != "" ] || ([ "$(git diff-tree --no-commit-id --name-only -r HEAD << parameters.default-branch >> .circleci/"$module".* | awk NF)" != "" ] && << parameters.include-config-changes >>); then
+                                        echo "$module" >> << parameters.modules-filtered >>
+                                        printf "%s\\n" "$module"
+                                    fi
+                                fi
+
+                                continue
+                            fi
+
+                            # Handle non-root modules
+                            if [ ! -f ".cirlceci/${module}.ignore" ]; then
+                                touch ".circleci/${module}.ignore"
+                            fi
+
+                            if [ "$CIRCLE_BRANCH" = "<< parameters.default-branch >>" ]; then
+                                if << parameters.force-all >> || [ "$(git diff-tree --no-commit-id --name-only -r HEAD~<< parameters.squash-merge-lookbehind >> << parameters.default-branch >> "$module" | awk NF | wildmatch -c ".circleci/${module}.ignore")" != "" ] || ([ "$(git diff-tree --no-commit-id --name-only -r HEAD~<< parameters.squash-merge-lookbehind >> << parameters.default-branch >> .circleci/"$module".* | awk NF)" != "" ] && << parameters.include-config-changes >>); then
+                                    echo "$module" >> << parameters.modules-filtered >>
+                                    printf "%s\\n" "$module"
+                                fi
+                            else
+                                if << parameters.force-all >> || [ "$(git diff-tree --no-commit-id --name-only -r HEAD << parameters.default-branch >> "$module" | awk NF | wildmatch -c ".circleci/${module}.ignore")" != "" ] || ([ "$(git diff-tree --no-commit-id --name-only -r HEAD << parameters.default-branch >> .circleci/"$module".* | awk NF)" != "" ] && << parameters.include-config-changes >>); then
+                                    echo "$module" >> << parameters.modules-filtered >>
+                                    printf "%s\\n" "$module"
+                                fi
+                            fi
+                        done
+                    fi
+                name: Generate changed modules
+            - when:
+                condition: << parameters.cache >>
+                steps:
+                    - save_cache:
+                        key: modules-filtered-{{ .Environment.CIRCLE_WORKFLOW_ID }}
+                        paths:
+                            - << parameters.modules-filtered >>
+    reduce:
+        description: |
+            Merge modules' configs, if there are changed files in the directory, into an additional config under .circleci/ in the
+            checked-out source,
+        parameters:
+            cache:
+                default: true
+                description: Whether or not to cache (i.e. you're calling these commands in your own job, not 'extend').
+                type: boolean
+            circle-organization:
+                default: $CIRCLE_ORGANIZATION
+                description: CircleCI organization to query with your API key.
+                type: string
+            circle-token:
+                default: $CIRCLE_TOKEN
+                description: Token to authenticate with CircleCI
+                type: string
+            continue-config:
+                default: .circleci/continue-config.yml
+                description: Path to the internally-used config for continuation
+                type: string
+            debug:
+                default: false
+                description: Dump the generated config from reducing the set of modules across changes to stdout for debugging purposes.
+                type: boolean
+            modules:
+                default: /tmp/modules-filtered.txt
+                description: Path to the file for the list of the modules to build
+                type: string
+            project-type:
+                default: github
+                description: Can be either GitHub (gh) or BitBucket (bb).
+                enum:
+                    - github
+                    - bitbucket
+                type: enum
+            root-config:
+                default: app
+                description: Provides the ability to map root repository changes (./) to a config file name. Defaults to app.yml.
+                type: string
+        steps:
+            - when:
+                condition: << parameters.cache >>
+                steps:
+                    - restore_cache:
+                        key: modules-filtered-{{ .Environment.CIRCLE_WORKFLOW_ID }}
+            - run:
+                command: pip install yq
+                name: Install yq
+            - run:
+                command: |
+                    # If `modules` is unavailable, stop this job without continuation
+                    if [ ! -f "<< parameters.modules >>" ] || [ ! -s "<< parameters.modules >>" ]
+                    then
+                        echo 'Nothing to merge. Halting the job.'
+                        circleci-agent step halt
+                        exit 0
+                    fi
+
+                    # Convert a list of dirs to a list of config files under .circleci/.
+                    awk '{
+                        # Replace a period (the root of a repository is being targeted by a workflow) with the specified '<< parameters.root-config >>.yml'.
+                        if ($0 ~ /^\.$/) {
+                            printf ".circleci/<< parameters.root-config >>.yml\n"
+                        } else {
+                            printf(".circleci/%s.yml\n", $0)
+                        }
+                    }' << parameters.modules >> > /tmp/$CIRCLE_WORKFLOW_ID.txt
+                    mv /tmp/$CIRCLE_WORKFLOW_ID.txt << parameters.modules >>
+
+                    xargs -a "<< parameters.modules >>" yq -y -s 'reduce .[] as $item ({}; . * $item)' | tee "<< parameters.continue-config >>"
+
+                    # Ensure a minimal, valid config schema on the final, reduced config.
+                    yq -i -y '.version = 2.1' << parameters.continue-config >>
+                    yq 'del(.setup)' << parameters.continue-config >>
+                    yq -i -y '.workflows.version = 2' << parameters.continue-config >>
+                name: Merge configs
+            - run:
+                command: |
+                    circleci config validate << parameters.continue-config >> --org-slug << parameters.project-type >>/<< parameters.circle-organization >> --token << parameters.circle-token >> --skip-update-check
+                name: CircleCI config validate reduced config
+            - when:
+                condition: << parameters.debug >>
+                steps:
+                    - run:
+                        command: |
+                            printf "Generated config:\\n\\n"
+                            cat << parameters.continue-config >>
+                        name: 'Debug: dump generated config'
+executors:
+    default:
+        description: Base python CircleCI executor
+        docker:
+            - image: cimg/python:<< parameters.tag >>
+        parameters:
+            tag:
+                default: "3.10"
+                description: Latest Python 3.
+                type: string
+jobs:
+    continue:
+        description: |
+            Extend the default CircleCI config at .circleci/config.yml to include other 'modules', then submit it as a continuation.
+        executor: default
+        parameters:
+            circle-organization:
+                default: $CIRCLE_ORGANIZATION
+                description: CircleCI organization to query with your API key.
+                type: string
+            circle-token:
+                default: $CIRCLE_TOKEN
+                description: Token to authenticate with CircleCI
+                type: string
+            continue-config:
+                default: .circleci/continue-config.yml
+                description: Path to the internally-used config for continuation
+                type: string
+            debug:
+                default: false
+                description: Dump the reduced config to stdout for debugging purposes.
+                type: boolean
+            default-branch:
+                default: master
+                description: Default branch of the repository.
+                type: string
+            force-all:
+                default: false
+                description: Emergency valve - forcibly build all the modules
+                type: boolean
+            include-config-changes:
+                default: true
+                description: Include CircleCI config changes (e.g., scripts.yml) while checking for changed modules.
+                type: boolean
+            modules:
+                description: Directories which should be tested for changes; one directory per line.
+                type: string
+            modules-filtered:
+                default: /tmp/modules-filtered.txt
+                description: Path to the file where the filtered list of modules is generated
+                type: string
+            project-type:
+                default: github
+                description: Can be either GitHub (gh) or BitBucket (bb).
+                enum:
+                    - github
+                    - bitbucket
+                type: enum
+            reporting-window:
+                default: last-90-days
+                description: The time window used to calculate summary metrics for the default branch of the repository.
+                enum:
+                    - last-7-days
+                    - last-90-days
+                    - last-24-hours
+                    - last-30-days
+                    - last-60-days
+                type: enum
+            root-config:
+                default: app
+                description: Provides the ability to map root repository changes (./) to a config file name. Name should be left without extension.
+                type: string
+            squash-merge-lookbehind:
+                default: "1"
+                description: Number of commits back to compare against following squash merges.
+                type: string
+            wildmatch-version:
+                default: 0.2.6
+                description: Wildmatch package version to install. For available versions, check PyPI - https://pypi.org/project/wildmatch/#description
+                type: string
+        resource_class: small
+        steps:
+            - checkout
+            - jq/install
+            - circleci/install
+            - filter:
+                cache: false
+                circle-organization: << parameters.circle-organization >>
+                circle-token: << parameters.circle-token >>
+                debug: << parameters.debug >>
+                default-branch: << parameters.default-branch >>
+                force-all: << parameters.force-all >>
+                include-config-changes: << parameters.include-config-changes >>
+                modules: << parameters.modules >>
+                modules-filtered: << parameters.modules-filtered >>
+                project-type: << parameters.project-type >>
+                reporting-window: << parameters.reporting-window >>
+                root-config: << parameters.root-config >>
+                squash-merge-lookbehind: << parameters.squash-merge-lookbehind >>
+                wildmatch-version: << parameters.wildmatch-version >>
+            - reduce:
+                cache: false
+                circle-organization: << parameters.circle-organization >>
+                circle-token: << parameters.circle-token >>
+                continue-config: << parameters.continue-config >>
+                debug: << parameters.debug >>
+                modules: << parameters.modules-filtered >>
+                project-type: << parameters.project-type >>
+                root-config: << parameters.root-config >>
+            - continuation/continue:
+                configuration_path: << parameters.continue-config >>
+examples:
+    dynamic_continuation_pipeline:
+        description: |
+            Utilize the "continue" job to dynamically execute workflows.
+        usage:
+            version: "2.1"
+            orbs:
+                dynamic: bjd2385/dynamic-continuation@3.1.1
+            workflows:
+                on-commit:
+                    jobs:
+                        - dynamic/continue:
+                            context: orb-publishing
+                            modules: |
+                                src    # Matches both a top-level directory name in the repository and the name (minus .yml extension) of a config file under .circleci/

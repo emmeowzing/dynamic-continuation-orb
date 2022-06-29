@@ -96,7 +96,7 @@ steps:
                 echo "$module" >> << parameters.modules-filtered >>
             done
         else
-            if ! << paramaters.debug >>; then pip install wildmatch==<< parameters.wildmatch-version >>; fi
+            if ! << parameters.debug >>; then pip install wildmatch==<< parameters.wildmatch-version >>; fi
             echo "<< parameters.modules >>" | awk NF | while read row; do
                 module="$(echo "$row" | awk '{ print $1 }')"
 
