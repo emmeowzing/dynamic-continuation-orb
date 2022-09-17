@@ -1,23 +1,19 @@
 version: 2.1
 
-parameters:
-  workspace:
-    type: string
-    default: bjd2385
+setup: true
 
-  orb-name:
-    type: string
-    default: dynamic-continuation
 
 orbs:
   orb-tools: circleci/orb-tools@11.1.2
-  shellcheck: circleci/shellcheck@3.1.1
   circleci-cli: circleci/circleci-cli@0.1.9
+  dynamic: bjd2385/dynamic-continuation@3.2.0
+
 
 executors:
   default:
     docker:
       - image: cimg/base:stable
+
 
 commands:
   check_version:
@@ -28,7 +24,7 @@ commands:
       - run:
           name: Assert tag version is unpublished
           command: |
-            [[ "$(circleci orb list << pipeline.parameters.workspace >> | grep "<< pipeline.parameters.workspace >>/<< pipeline.parameters.orb-name >>" | grep -oE "[0-9].[0-9].[0-9]")" != "${CIRCLE_TAG}" ]]
+            [[ "$(circleci orb list bjd2385 | grep "bjd2385/dynamic-continuation" | grep -oE "[0-9].[0-9].[0-9]")" != "${CIRCLE_TAG}" ]]
 
   increment-minor-tag:
     steps:
@@ -74,6 +70,7 @@ commands:
 
             git tag "$NEW_TAG"
             git push origin "$NEW_TAG"
+
 
 jobs:
   check_version:
@@ -141,9 +138,41 @@ jobs:
             - orb.yml
           root: << parameters.output-dir >>
 
+
 workflows:
-  on-tag:
+  dynamic-continuation:
     jobs:
+      ## Development branches
+
+      - dynamic/continue:
+          context: orb-publishing
+          modules: |
+            src
+            scripts
+          filters:
+            branches:
+              ignore:
+                - master
+
+      ## Master branch
+
+      # Auto-increment minor tag to kick off on-tag workflow.
+      - autoincrement-minor-tag:
+          filters:
+            branches:
+              only: master
+
+      # Generate a release from the latest tag.
+      - generate-release:
+          context: github
+          filters:
+            branches:
+              only: master
+          requires:
+            - autoincrement-minor-tag
+
+      ## On tag
+
       - check_version:
           filters:
             branches:
@@ -162,7 +191,7 @@ workflows:
           name: publish production orb
           enable-pr-comment: false
           vcs-type: << pipeline.project.type >>
-          orb-name: << pipeline.parameters.workspace >>/<< pipeline.parameters.orb-name >>
+          orb-name: bjd2385/dynamic-continuation
           pub-type: production
           requires:
             - pack-orb
@@ -175,57 +204,3 @@ workflows:
               ignore: /.*/
             tags:
               only: /^v[0-9]+\.[0-9]+\.[0-9]+$/
-
-  on-merge:
-    jobs:
-      # Auto-increment minor tag to kick off on-tag workflow.
-      - autoincrement-minor-tag:
-          filters:
-            branches:
-              only: master
-
-      # Generate a release from the latest tag.
-      - generate-release:
-          context: github
-          filters:
-            branches:
-              only: master
-          requires:
-            - autoincrement-minor-tag
-
-  on-commit:
-    jobs:
-      # Run a bunch of tests against this repo
-      - orb-tools/lint:
-          filters:
-            branches:
-              ignore: master
-
-      - pack-orb:
-          filters:
-            branches:
-              ignore: master
-
-      - shellcheck/check:
-          dir: ./src/scripts
-          exclude: SC2148
-          filters:
-            branches:
-              ignore: master
-
-      - orb-tools/publish:
-          name: publish development orb
-          enable-pr-comment: true
-          vcs-type: << pipeline.project.type >>
-          orb-name: << pipeline.parameters.workspace >>/<< pipeline.parameters.orb-name >>
-          pub-type: dev
-          requires:
-            - pack-orb
-            - orb-tools/lint
-            - shellcheck/check
-          context:
-            - orb-publishing
-            - github
-          filters:
-            branches:
-              ignore: master

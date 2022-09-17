@@ -34,7 +34,7 @@ workflows:
             ... list of config file names under .circleci/ with corresponding, top-level directories of the same name.
 ```
 
-You'll also need to enable setup workflows in your project under Advanced Settings.
+You'll also need to enable setup workflows in your project under Advanced Settings. The `orb-publishing` context must have two environment variables set that the orb will reference, including `CIRCLE_ORGANIZATION` (in my case, this is just set to `bjd2385`), and `CIRCLE_TOKEN`, which contains your CircleCI API token.
 
 Now, move any jobs, workflows, or orbs, to their new configs, again with matching top-level directory names.
 
@@ -144,7 +144,9 @@ Standard CircleCI config validation pre-commit hooks will only validate the defa
 
 I use and test this orb in my own projects.
 
-- [`minikube`](https://github.com/bjd2385/minikube/tree/master/.circleci)
+- [`minikube`](https://github.com/bjd2385/minikube/tree/master/.circleci) - this is a simple example with basic configs.
+- [this repo](.circleci/) - that's right, this repo uses it as well!
+- [`autoscaler`](https://github.com/bjd2385/autoscaler/tree/master/.circleci) - a more complex example.
 
 ### Development
 
