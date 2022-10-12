@@ -26,68 +26,13 @@ commands:
           command: |
             [[ "$(circleci orb list bjd2385 | grep "bjd2385/dynamic-continuation" | grep -oE "[0-9].[0-9].[0-9]")" != "${CIRCLE_TAG}" ]]
 
-  increment-minor-tag:
-    steps:
-      - run:
-          name: Autoincrement repository's latest tag minor version
-          command: |+
-            git fetch --all --tags
-            RES="$(git show-ref --tags)"
-
-            if [ -z "$RES" ]; then
-                NEW_TAG="v1.0.0"
-            else
-                mapfile -d " " -t LATEST_TAG < <(git tag | sort -V | tail -1 | sed 's/\./ /g')
-
-                if [ "${#LATEST_TAG[@]}" -ne 3 ]; then
-                    printf "Must follow semver convention /v?[0-9]{3}.[0-9]{3}.[0-9]{3}/ to parse.\\n" 1>&2
-                    exit 1
-                fi
-
-                one="${LATEST_TAG[0]//v/}"
-                two="${LATEST_TAG[1]}"
-                three="${LATEST_TAG[2]}"
-
-                # Increment versions mod 1k.
-                if [ "$three" == "999" ]; then
-                    if [ "$two" == "999" ]; then
-                        three=0
-                        two=0
-                        ((one++))
-                    else
-                        ((two++))
-                        three=0
-                    fi
-                elif [ "$two" == "999" ] && [ "$three" == "999" ]; then
-                    ((one++))
-                    two=0
-                else
-                    ((three++))
-                fi
-
-                NEW_TAG="v${one}.${two}.${three}"
-            fi
-
-            git tag "$NEW_TAG"
-            git push origin "$NEW_TAG"
-
 
 jobs:
-  check_version:
+  check-version:
     executor: default
     resource_class: small
     steps:
       - check_version
-
-  autoincrement-minor-tag:
-    executor: default
-    resource_class: small
-    steps:
-      - checkout
-      - add_ssh_keys:
-          fingerprints:
-            - "07:eb:1c:fb:ba:a5:5d:fa:71:4e:0e:5a:80:0b:9f:a8"
-      - increment-minor-tag
 
   generate-release:
     executor: default
@@ -142,7 +87,7 @@ jobs:
 workflows:
   dynamic-continuation:
     jobs:
-      ## Development branches
+      # Development branches
 
       - dynamic/continue:
           context: orb-publishing
@@ -154,26 +99,9 @@ workflows:
               ignore:
                 - master
 
-      ## Master branch
+      # On tag
 
-      # Auto-increment minor tag to kick off on-tag workflow.
-      - autoincrement-minor-tag:
-          filters:
-            branches:
-              only: master
-
-      # Generate a release from the latest tag.
-      - generate-release:
-          context: github
-          filters:
-            branches:
-              only: master
-          requires:
-            - autoincrement-minor-tag
-
-      ## On tag
-
-      - check_version:
+      - check-version:
           filters:
             branches:
               ignore: /.*/
@@ -195,10 +123,18 @@ workflows:
           pub-type: production
           requires:
             - pack-orb
-            - check_version
+            - check-version
           context:
             - development
             - orb-publishing
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^v[0-9]+\.[0-9]+\.[0-9]+$/
+
+      - generate-release:
+          context: github
           filters:
             branches:
               ignore: /.*/
