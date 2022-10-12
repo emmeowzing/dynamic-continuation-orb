@@ -65,9 +65,22 @@ parameters:
     description: Dump the reduced config to stdout for debugging purposes.
     type: boolean
     default: false
+
+  # CircleCI continuation orb.
+  parameters:
+    description: The parameters used for the pipeline. This can either be a JSON object containing parameters or a path to a file containing a JSON object with parameters.
+    type: string
+    default: '{}'
+  circleci-domain:
+    description: The domain of the CircleCI installation - defaults to circleci.com. (Only necessary for CircleCI Server users).
+    type: string
+    default: circleci.com
 steps:
   - checkout
   - jq/install
+  - run:
+      name: Install yq
+      command: pip install yq
   - circleci/install
   - filter:
       modules: << parameters.modules >>
@@ -95,3 +108,5 @@ steps:
       cache: false
   - continuation/continue:
       configuration_path: << parameters.continue-config >>
+      parameters: << parameters.parameters >>
+      circleci_domain: << parameters.circleci-domain >>

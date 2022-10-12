@@ -42,9 +42,6 @@ steps:
         - restore_cache:
             key: modules-filtered-{{ .Environment.CIRCLE_WORKFLOW_ID }}
   - run:
-      name: Install yq
-      command: pip install yq
-  - run:
       name: Merge configs
       command: |
         # If `modules` is unavailable, stop this job without continuation

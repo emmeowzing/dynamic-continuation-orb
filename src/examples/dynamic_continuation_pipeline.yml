@@ -4,7 +4,7 @@ usage:
   version: 2.1
   setup: true
   orbs:
-    dynamic: bjd2385/dynamic-continuation@3.1.1
+    dynamic: bjd2385/dynamic-continuation@3.2.0
   workflows:
     on-commit:
       jobs:
