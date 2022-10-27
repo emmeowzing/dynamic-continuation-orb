@@ -1,5 +1,5 @@
 description: |+
-  Utilize the "continue" job to dynamically execute workflows.
+  Utilize the "continue" job to dynamically execute workflows in directories/modules.
 usage:
   version: 2.1
   setup: true
