@@ -46,7 +46,7 @@ jobs:
             sudo dpkg -i gh.deb
       - run:
           name: Generate release
-          command: |+
+          command: |
             # Get latest tag.
             git fetch --all --tags
             export LATEST_TAG="$(git tag | sort -V | tail -1)"
