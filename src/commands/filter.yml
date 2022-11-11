@@ -61,30 +61,37 @@ parameters:
 steps:
   - run:
       name: Generate changed modules
-      command: |
+      command: |+
         if << parameters.debug >>; then
             pip install wildmatch==<< parameters.wildmatch-version >>
+
             echo "<< parameters.modules >>" | awk NF | while read module; do
-                if [ "${module}" = "." ]; then
-                    if [ ! -f "<< parameters.root-config >>.ignore" ]; then
-                        touch ".circleci/<< parameters.root-config >>.ignore"
+                if [ "${module}" = "." ] || [ "${module}" = "/" ]; then
+                    if [ ! -f .circleci/"<< parameters.root-config >>.ignore" ]; then
+                        touch .circleci/"<< parameters.root-config >>.ignore"
                     fi
+
                     printf "%s\\n\\n" "<< parameters.root-config >>:"
-                    git diff-tree --no-commit-id --name-only -r HEAD << parameters.default-branch >> "$module" | awk NF | wildmatch -c ".circleci/<< parameters.root-config >>.ignore"
+                    git diff-tree --no-commit-id --name-only -r HEAD << parameters.default-branch >> . | awk NF | wildmatch -c ".circleci/<< parameters.root-config >>.ignore"
                     printf "\\n\\n"
                 else
-                    if [ ! -f "${module}.ignore" ]; then
+                    if [ "${module::1}" = "/" ]; then
+                        module="${module:1}"
+                    fi
+
+                    if [ ! -f .circleci/"${module}.ignore" ]; then
                         touch ".circleci/${module}.ignore"
                     fi
-                    printf "%s\\n\\n" "${module}:"
-                    git diff-tree --no-commit-id --name-only -r HEAD << parameters.default-branch >> "$module" | awk NF | wildmatch -c ".circleci/${module}.ignore"
+
+                    printf "%s\\n\\n" "$(sed 's@.@/@g' \<<< "$module"):"
+                    git diff-tree --no-commit-id --name-only -r HEAD << parameters.default-branch >> "$(sed "s@.@/@g" \<<< "$module")" | awk NF | wildmatch -c ".circleci/${module}.ignore"
                     printf "\\n\\n"
                 fi
             done
         fi
 
         if [ ! "<< parameters.circle-token >>" ]; then
-            printf "Must set CircleCI token for successful authentication.\\n"
+            printf "Must set CircleCI token for successful authentication.\\n" >&2
             exit 1
         fi
 
