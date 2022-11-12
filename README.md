@@ -14,7 +14,7 @@ The orb will run a workflow (we'll call it `<module>`) if any of the following c
 
 1. If `.circleci/<module>.yml` changes (this is configurable).
 2. If there have been no workflows on the repository's default branch in the past 90 days (by default, but [this is configurable](https://circleci.com/docs/api/v2/#operation/getProjectWorkflowMetrics)).
-3. If changes have been detected within the `<module>/`'s directory on your branch against the repository's default branch (defaults to `master`). See below on how to filter by or out specific changed files [below](#filtering-or-ignoring-changed-files).
+3. If changes have been detected within the `<module>/`'s directory on your branch against the repository's default branch (defaults to `master`). See [below](#filtering-or-ignoring-changed-files) on how to filter out CI runs from specific changed files.
 4. If, following merge to the module's default branch, there are changes to `.circleci/<module>.yml` or under `<module>/`, when diffing against the former commit (you must perform a merge commit for this to work properly).
 
 These conditions can be overriden, and all workflows forced to run, if the `force-all` parameter is set to `true` on the `continue` job.
@@ -90,7 +90,7 @@ workflows:
             /src
 ```
 
-Once again, the workflows will only execute if any code changes are introduced to the containing "module". If no changes are made in a PR within the `terraform/` directory, none of the jobs or workflows defined therein are executed by the default config.
+Once again, the workflows will only execute if any code changes are introduced to the containing "module". For example, if no changes are made on your branch within the `terraform/` directory, the `.circleci/terraform.yml` CI config will not be executed.
 
 ### Example: nested directories
 
@@ -156,6 +156,12 @@ modules: |
   src.pkg1
   src.pkg2
 ```
+
+> **Important:** Note that we now have an overlapping directory structure for `src/`- and `terraform/`-configs. If you want to exclude changes in subdirectories from kicking off the parent workflow for `terraform/`, you might, for example, define a file `.circleci/terraform.ignore` with the following contents.
+> ```text
+> terraform/development
+> terraform/production
+> ```
 
 ## Filtering or ignoring changed files
 
