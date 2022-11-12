@@ -73,6 +73,7 @@ steps:
                 if [ "${#module_dots}" -gt 1 ] && [ "${module_dots: -1}" = "." ]; then
                     module_dots="${module_dots::-1}"
                 fi
+                echo "$module_dots"
 
                 module_slashes="$(sed 's@.@/@g' \<<< "$module")"
                 if [ "${#module_slashes}" -gt 1 ] && [ "${module_slashes::1}" = "/" ]; then
@@ -81,6 +82,7 @@ steps:
                 if [ "${#module_slashes}" -gt 1 ] && [ "${module_slashes: -1}" = "/" ]; then
                     module_slashes="${module_slashes::-1}"
                 fi
+                echo "$module_slashes"
 
                 if [ "$module_dots" = "." ]; then
                     if [ ! -f .circleci/"<< parameters.root-config >>.ignore" ]; then
