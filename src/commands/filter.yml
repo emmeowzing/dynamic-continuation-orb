@@ -147,12 +147,12 @@ steps:
                     fi
 
                     if [ "$CIRCLE_BRANCH" = "<< parameters.default-branch >>" ]; then
-                        if << parameters.force-all >> || [ "$(git diff-tree --no-commit-id --name-only -r HEAD~<< parameters.squash-merge-lookbehind >> << parameters.default-branch >> "$module_dots" | awk NF | wildmatch -c ".circleci/<< parameters.root-config >>.ignore")" != "" ] || ([ "$(git diff-tree --no-commit-id --name-only -r HEAD~<< parameters.squash-merge-lookbehind >> << parameters.default-branch >> .circleci/"$module_dots".* | awk NF)" != "" ] && << parameters.include-config-changes >>); then
+                        if << parameters.force-all >> || [ "$(git diff-tree --no-commit-id --name-only -r HEAD~<< parameters.squash-merge-lookbehind >> << parameters.default-branch >> "$module_dots" | awk NF | wildmatch -c ".circleci/<< parameters.root-config >>.ignore")" != "" ] || ([ "$(git diff-tree --no-commit-id --name-only -r HEAD~<< parameters.squash-merge-lookbehind >> << parameters.default-branch >> ".circleci/<< parameters.root-config >>.yml" | awk NF)" != "" ] && << parameters.include-config-changes >>); then
                             echo "$module_dots" >> << parameters.modules-filtered >>
                             printf "%s\\n" "$module_slashes"
                         fi
                     else
-                        if << parameters.force-all >> || [ "$(git diff-tree --no-commit-id --name-only -r HEAD << parameters.default-branch >> "$module_dots" | awk NF | wildmatch -c ".circleci/<< parameters.root-config >>.ignore")" != "" ] || ([ "$(git diff-tree --no-commit-id --name-only -r HEAD << parameters.default-branch >> .circleci/"$module_dots".* | awk NF)" != "" ] && << parameters.include-config-changes >>); then
+                        if << parameters.force-all >> || [ "$(git diff-tree --no-commit-id --name-only -r HEAD << parameters.default-branch >> "$module_dots" | awk NF | wildmatch -c ".circleci/<< parameters.root-config >>.ignore")" != "" ] || ([ "$(git diff-tree --no-commit-id --name-only -r HEAD << parameters.default-branch >> ".circleci/<< parameters.root-config >>.yml" | awk NF)" != "" ] && << parameters.include-config-changes >>); then
                             echo "$module_dots" >> << parameters.modules-filtered >>
                             printf "%s\\n" "$module_slashes"
                         fi
@@ -167,12 +167,12 @@ steps:
                 fi
 
                 if [ "$CIRCLE_BRANCH" = "<< parameters.default-branch >>" ]; then
-                    if << parameters.force-all >> || [ "$(git diff-tree --no-commit-id --name-only -r HEAD~<< parameters.squash-merge-lookbehind >> << parameters.default-branch >> "$module_slashes" | awk NF | wildmatch -c ".circleci/${module_dots}.ignore")" != "" ] || ([ "$(git diff-tree --no-commit-id --name-only -r HEAD~<< parameters.squash-merge-lookbehind >> << parameters.default-branch >> .circleci/"$module_dots".* | awk NF)" != "" ] && << parameters.include-config-changes >>); then
+                    if << parameters.force-all >> || [ "$(git diff-tree --no-commit-id --name-only -r HEAD~<< parameters.squash-merge-lookbehind >> << parameters.default-branch >> "$module_slashes" | awk NF | wildmatch -c ".circleci/${module_dots}.ignore")" != "" ] || ([ "$(git diff-tree --no-commit-id --name-only -r HEAD~<< parameters.squash-merge-lookbehind >> << parameters.default-branch >> .circleci/"$module_dots".yml | awk NF)" != "" ] && << parameters.include-config-changes >>); then
                         echo "$module_dots" >> << parameters.modules-filtered >>
                         printf "%s\\n" "$module_slashes"
                     fi
                 else
-                    if << parameters.force-all >> || [ "$(git diff-tree --no-commit-id --name-only -r HEAD << parameters.default-branch >> "$module_slashes" | awk NF | wildmatch -c ".circleci/${module_dots}.ignore")" != "" ] || ([ "$(git diff-tree --no-commit-id --name-only -r HEAD << parameters.default-branch >> .circleci/"$module_dots".* | awk NF)" != "" ] && << parameters.include-config-changes >>); then
+                    if << parameters.force-all >> || [ "$(git diff-tree --no-commit-id --name-only -r HEAD << parameters.default-branch >> "$module_slashes" | awk NF | wildmatch -c ".circleci/${module_dots}.ignore")" != "" ] || ([ "$(git diff-tree --no-commit-id --name-only -r HEAD << parameters.default-branch >> .circleci/"$module_dots".yml | awk NF)" != "" ] && << parameters.include-config-changes >>); then
                         echo "$module_dots" >> << parameters.modules-filtered >>
                         printf "%s\\n" "$module_slashes"
                     fi
