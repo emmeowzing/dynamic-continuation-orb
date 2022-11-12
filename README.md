@@ -1,6 +1,6 @@
 ## `dynamic-continuation` Orb for CircleCI
 
-The orb's intended use is to aid in simplifying default `.circleci/config.yml` files by allowing users to add additional configs under `.circleci/` matching directory paths that run only when the code therein changes. This approach offers engineers reduced pipeline execution time, and by extension, reduced CI costs.
+The orb's intended use is to simplify `.circleci/config.yml` files by allowing engineers to add additional configs under `.circleci/` matching directory paths that run only when the code therein changes. This approach offers engineers reduced pipeline execution time, and by extension, reduced CI costs.
 
 This orb is based on a [published example](https://github.com/circle-makotom/circle-advanced-setup-workflow) of advanced configuration with continuations from CircleCI.
 

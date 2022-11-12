@@ -70,10 +70,16 @@ steps:
                 if [ "${module_dots::1}" = "." ] && [ "${#module_dots}" -gt 1 ]; then
                     module_dots="${module_dots:1}"
                 fi
+                if [ "${module_dots: -1}" = "." ] && [ "${#module_dots}" -gt 1 ]; then
+                    module_dots="${module_dots::-1}"
+                fi
 
                 module_slashes="$(sed 's@.@/@g' \<<< "$module")"
-                if [ "${module_slashes::1}" = "/" ]; then
+                if [ "${module_slashes::1}" = "/" ] && [ "${#module_slashes}" -gt 1 ]; then
                     module_slashes="${module_slashes:1}"
+                fi
+                if [ "${module_slashes: -1}" = "/" ] && [ "${#module_slashes}" -gt 1 ]; then
+                    module_slashes="${module_slashes::-1}"
                 fi
 
                 if [ "$module_dots" = "." ]; then
@@ -109,6 +115,9 @@ steps:
                 if [ "${module_dots::1}" = "." ] && [ "${#module_dots}" -gt 1 ]; then
                     module_dots="${module_dots:1}"
                 fi
+                if [ "${module_dots: -1}" = "." ] && [ "${#module_dots}" -gt 1 ]; then
+                    module_dots="${module_dots::-1}"
+                fi
 
                 echo "$module_dots" >> << parameters.modules-filtered >>
             done
@@ -119,10 +128,16 @@ steps:
                 if [ "${module_dots::1}" = "." ] && [ "${#module_dots}" -gt 1 ]; then
                     module_dots="${module_dots:1}"
                 fi
+                if [ "${module_dots: -1}" = "." ] && [ "${#module_dots}" -gt 1 ]; then
+                    module_dots="${module_dots::-1}"
+                fi
 
                 module_slashes="$(sed 's@.@/@g' \<<< "$module")"
-                if [ "${module_slashes::1}" = "/" ]; then
+                if [ "${module_slashes::1}" = "/" ] && [ "${#module_slashes}" -gt 1 ]; then
                     module_slashes="${module_slashes:1}"
+                fi
+                if [ "${module_slashes: -1}" = "/" ] && [ "${#module_slashes}" -gt 1 ]; then
+                    module_slashes="${module_slashes::-1}"
                 fi
 
                 # Handle root module "."
