@@ -225,7 +225,7 @@ terraform/
 
 ## Config validation with `pre-commit`
 
-Standard CircleCI config validation pre-commit hooks will only validate the default config at `.circleci/config.yml`. I recommend using [my pre-commit hook](https://github.com/bjd2385/circleci-config-pre-commit-hook) if you're using this orb in your project as it will further validate reduced configs, if they exist. Append the following to your `.pre-commit-config.yaml`:
+Standard CircleCI config validation pre-commit hooks will only validate the default config at `.circleci/config.yml`. I recommend using [my pre-commit hook](https://github.com/bjd2385/circleci-config-pre-commit-hook) if you're using this orb in your project as it will validate any additional configs you've created. Append the following to your `.pre-commit-config.yaml`:
 
 ```yaml
 - repo: https://github.com/bjd2385/circleci-config-pre-commit-hook
@@ -240,7 +240,6 @@ I use and test this orb in my own projects.
 
 - [`minikube`](https://github.com/bjd2385/minikube/tree/master/.circleci) - this is a simple example with basic configs.
 - [this repo](.circleci/) - that's right, this repo uses it as well!
-- [`autoscaler`](https://github.com/bjd2385/autoscaler/tree/master/.circleci) - a more complex example.
 
 ## Development
 
