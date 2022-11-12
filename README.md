@@ -21,7 +21,7 @@ These conditions can be overriden, and all workflows forced to run, if the `forc
 
 ## How it works
 
-Get up-and-running with dynamic continued pipelines in these 4 steps:
+Get up-and-running with dynamically continued pipelines in these 4 steps:
 
 1. Add this orb, a `continue` job to a CI config, and the `setup` keyword, such as
 
