@@ -64,11 +64,6 @@ steps:
         mv /tmp/$CIRCLE_WORKFLOW_ID.txt << parameters.modules >>
 
         xargs -a "<< parameters.modules >>" yq -y -s 'reduce .[] as $item ({}; . * $item)' | tee "<< parameters.continue-config >>"
-
-        # Ensure a minimal, valid config schema on the final, reduced config.
-        yq -i -y '.version = 2.1' << parameters.continue-config >>
-        yq 'del(.setup)' << parameters.continue-config >>
-        yq -i -y '.workflows.version = 2' << parameters.continue-config >>
   - run:
       name: CircleCI config validate reduced config
       command: |
