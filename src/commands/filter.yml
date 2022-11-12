@@ -76,6 +76,7 @@ steps:
                 echo "$module_dots"
 
                 module_slashes="$(sed 's@.@/@g' \<<< "$module")"
+                echo "$module_slashes"
                 if [ "${#module_slashes}" -gt 1 ] && [ "${module_slashes::1}" = "/" ]; then
                     module_slashes="${module_slashes:1}"
                 fi
