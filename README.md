@@ -38,9 +38,11 @@ Get up-and-running with dynamic continued pipelines in these 4 steps:
 
 2. Enable **setup workflows** in your project under **Advanced Settings**.
 
-3. The `orb-publishing` context must have two environment variables set that the orb will reference, including `CIRCLE_ORGANIZATION` (in my case, this is just set to `bjd2385`), and `CIRCLE_TOKEN`, which contains your CircleCI API token.
+3. The `orb-publishing` context in your organization must have two environment variables set that the orb will reference, including
+    - `CIRCLE_ORGANIZATION` (in my case, this is just set to `bjd2385`), and
+    - `CIRCLE_TOKEN`, which contains your CircleCI API token.
 
-4. Now, move any jobs, workflows, or orbs, to their new configs, again with matching paths in the repository.
+4. Move any commands, jobs, workflows, or orbs, to their new configs in `.circleci`, and list corresponding modules in the `dynamic/continue` job.
 
 ### Example: basic directory layout
 
