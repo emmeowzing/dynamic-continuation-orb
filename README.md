@@ -85,9 +85,9 @@ workflows:
       - dynamic/continue:
           context: orb-publishing
           modules: |
-            terraform
-            scripts
-            src
+            /terraform
+            /scripts
+            /src
 ```
 
 Once again, the workflows will only execute if any code changes are introduced to the containing "module". If no changes are made in a PR within the `terraform/` directory, none of the jobs or workflows defined therein are executed by the default config.
@@ -135,13 +135,13 @@ workflows:
       - dynamic/continue:
           context: orb-publishing
           modules: |
-            terraform
-            terraform/development
-            terraform/production
-            scripts
-            src
-            src/pkg1
-            src/pkg2
+            /terraform
+            /terraform/development
+            /terraform/production
+            /scripts
+            /src
+            /src/pkg1
+            /src/pkg2
 ```
 
 Note that the filenames denote additional directory structure with dots `.`, whereas our modules may contain dots `.` or slashes `/`. Thus, the following list of modules is also valid, albeit harder to follow.
@@ -189,16 +189,16 @@ workflows:
       - dynamic/continue:
           context: orb-publishing
           modules: |
-            src
-            terraform
-            scripts
+            /src
+            /terraform
+            /scripts
 ```
 
 or, exactly the same as above.
 
 ## Specifying a different workflow for your repository's root directory
 
-Many times, we'd like to run a specific workflow against the root of a repository's directory structure, offering overlapping workflows and more flexibility on file changes when paired with the above strategies. We can accomplish this by specifying `.` as a module. For example,
+Many times, we'd like to run a specific workflow against the root of a repository's directory structure, offering overlapping workflows and more flexibility on file changes when paired with the above strategies. We can accomplish this by specifying `.` or `/` as a module. For example,
 
 ```yaml
 workflows:
@@ -206,10 +206,10 @@ workflows:
     jobs:
       - dynamic/continue:
           context: orb-publishing
-          root-config: app  # Defaults to 'app.yml' and 'app.ignore' under .circleci/, should the orb detect a '.'- or root-module
+          root-config: app  # Defaults to 'app.yml' and 'app.ignore' under .circleci/, should the orb detect a '.'- or '/'-root module
           modules: |
-            terraform
-            .
+            /terraform
+            /
 ```
 
 Note that this requires you define an `app.yml`, at a bare minimum, under `.circleci/`, for the orb to process. This is about as complex a CI config can get as well, with the above `continue` job call requiring a directory layout of
