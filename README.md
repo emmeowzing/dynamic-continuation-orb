@@ -1,10 +1,10 @@
-## `dynamic-continuation` Orb for CircleCI
+# `dynamic continuation` Orb for CircleCI
 
 The orb's intended use is to simplify `.circleci/config.yml` files by allowing engineers to add additional configs under `.circleci/` matching directory paths that run only when the code therein changes. This approach offers engineers reduced pipeline execution time, and by extension, reduced CI costs.
 
 This orb is based on a [published example](https://github.com/circle-makotom/circle-advanced-setup-workflow) of advanced configuration with continuations from CircleCI.
 
-### When will the orb run my workflows?
+## When will the orb run my workflows?
 
 The orb will run a workflow (we'll call it `<module>`) if any of the following conditions are met.
 
@@ -15,30 +15,34 @@ The orb will run a workflow (we'll call it `<module>`) if any of the following c
 
 These conditions can be overriden, and all workflows forced to run, if the `force-all` parameter is set to `true` on the `continue` job.
 
-### How it works
+## How it works
 
-You'll need to add this orb, as well as a `continue` job, to your workflow (likely appended to the end), and the `setup` keyword, such as
+Get up-and-running with dynamic continued pipelines in these 4 steps:
 
-```shell
-setup: true
+1. Add this orb, a `continue` job to a CI config, and the `setup` keyword, such as
 
-orbs:
-  dynamic: bjd2385/dynamic-continuation@<version>
+  ```shell
+  setup: true
 
-workflows:
-  on-commit:
-    jobs:
-      - dynamic/continue:
-          context: orb-publishing
-          modules: |
-            ... list of directories with corresponding config file names under '.circleci/'
-```
+  orbs:
+    dynamic: bjd2385/dynamic-continuation@<version>
 
-You'll also need to enable setup workflows in your project under Advanced Settings. The `orb-publishing` context must have two environment variables set that the orb will reference, including `CIRCLE_ORGANIZATION` (in my case, this is just set to `bjd2385`), and `CIRCLE_TOKEN`, which contains your CircleCI API token.
+  workflows:
+    on-commit:
+      jobs:
+        - dynamic/continue:
+            context: orb-publishing
+            modules: |
+              ... list of directories with corresponding config file names under '.circleci/'
+  ```
 
-Now, move any jobs, workflows, or orbs, to their new configs, again with matching paths in the repository.
+2. Enable **setup workflows** in your project under **Advanced Settings**.
 
-#### Example: basic directory layout
+3. The `orb-publishing` context must have two environment variables set that the orb will reference, including `CIRCLE_ORGANIZATION` (in my case, this is just set to `bjd2385`), and `CIRCLE_TOKEN`, which contains your CircleCI API token.
+
+4. Now, move any jobs, workflows, or orbs, to their new configs, again with matching paths in the repository.
+
+### Example: basic directory layout
 
 If you have a directory layout
 
@@ -82,7 +86,7 @@ workflows:
 
 Once again, the workflows will only execute if any code changes are introduced to the containing "module". If no changes are made in a PR within the `terraform/` directory, none of the jobs or workflows defined therein are executed by the default config.
 
-#### Example: nested directories
+### Example: nested directories
 
 Let's build off of the directory layout above, but add some environments.
 
@@ -147,13 +151,13 @@ modules: |
   src.pkg2
 ```
 
-### Filtering or ignoring changed files
+## Filtering or ignoring changed files
 
 At times, there may be files that change in modules that should _not_ cause workflows to run. These could include, as an example, updated markdown or README-like files.
 
 To solve this problem, the orb has the ability to read an optional `.gitignore`-like filter on each module, named `.circleci/<module>.ignore`, to prevent detected changed files on your PR from enabling workflows.
 
-#### Example
+### Example
 
 Starting with the same directory layout as above, we could add `.gitignore`-like files
 
@@ -186,7 +190,7 @@ workflows:
 
 or, exactly the same as above.
 
-### Specifying a different workflow for your repository's root directory
+## Specifying a different workflow for your repository's root directory
 
 Many times, we'd like to run a specific workflow against the root of a repository's directory structure, offering overlapping workflows and more flexibility on file changes when paired with the above strategies. We can accomplish this by specifying `.` as a module. For example,
 
@@ -213,7 +217,7 @@ Note that this requires you define an `app.yml`, at a bare minimum, under `.circ
 terraform/
 ```
 
-### Config validation with `pre-commit`
+## Config validation with `pre-commit`
 
 Standard CircleCI config validation pre-commit hooks will only validate the default config at `.circleci/config.yml`. I recommend using [my pre-commit hook](https://github.com/bjd2385/circleci-config-pre-commit-hook) if you're using this orb in your project as it will further validate reduced configs, if they exist. Append the following to your `.pre-commit-config.yaml`:
 
@@ -224,7 +228,7 @@ Standard CircleCI config validation pre-commit hooks will only validate the defa
       - id: circleci-config-validate
 ```
 
-### Live Examples of dynamic-continuation
+## Live Examples of dynamic-continuation
 
 I use and test this orb in my own projects.
 
@@ -232,7 +236,7 @@ I use and test this orb in my own projects.
 - [this repo](.circleci/) - that's right, this repo uses it as well!
 - [`autoscaler`](https://github.com/bjd2385/autoscaler/tree/master/.circleci) - a more complex example.
 
-### Development
+## Development
 
 This orb has been developed in _unpacked_ form. You may view its packed source with
 
@@ -252,11 +256,11 @@ When you're done with development, you may clean up the packed source with
 yarn orb:clean
 ```
 
-#### Publishing a production-ready version
+### Publishing a production-ready version
 
 To publish your changes to the CircleCI registry, simply merge your PR. The pipeline will automatically increment the minor tag, which will kick off a publication workflow; or, tag the repo manually.
 
-#### `pre-commit`
+### `pre-commit`
 
 This repository uses `pre-commit` to uphold certain code styling and standards. You may install the hooks listed in [`.pre-commit-config.yaml`](.pre-commit-config.yaml) with
 
