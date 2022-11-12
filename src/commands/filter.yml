@@ -68,7 +68,7 @@ steps:
             echo "<< parameters.modules >>" | awk NF | while read module; do
                 printf "Module: \"%s\"\\n" "$module"
 
-                module_dots="$(sed 's@/@.@g' \<<< "$module")"
+                module_dots="$(sed 's@\/@\.@g' \<<< "$module")"
                 if [ "${#module_dots}" -gt 1 ] && [ "${module_dots::1}" = "." ]; then
                     module_dots="${module_dots:1}"
                 fi
@@ -77,7 +77,7 @@ steps:
                 fi
                 echo "$module_dots"
 
-                module_slashes="$(sed 's@.@/@g' \<<< "$module")"
+                module_slashes="$(sed 's@\.@\/@g' \<<< "$module")"
                 echo "$module_slashes"
                 if [ "${#module_slashes}" -gt 1 ] && [ "${module_slashes::1}" = "/" ]; then
                     module_slashes="${module_slashes:1}"
@@ -116,7 +116,7 @@ steps:
         if [ ! << parameters.force-all >> ] && [ $(curl -s --request GET --url "https://circleci.com/api/v2/insights/<< parameters.project-type >>/<< parameters.circle-organization >>/${CIRCLE_PROJECT_REPONAME}/workflows?reporting-window=<< parameters.reporting-window >>" --header "Circle-Token: << parameters.circle-token >>" | '[ .items[].name ] | length') -eq 0 ]; then
             printf "Running all workflows.\\n"
             echo "<< parameters.modules >>" | awk NF | while read module; do
-                module_dots="$(sed 's@/@.@g' \<<< "$module")"
+                module_dots="$(sed 's@\/@\.@g' \<<< "$module")"
                 if [ "${#module_dots}" -gt 1 ] && [ "${module_dots::1}" = "." ]; then
                     module_dots="${module_dots:1}"
                 fi
@@ -129,7 +129,7 @@ steps:
         else
             if ! << parameters.debug >>; then pip install wildmatch==<< parameters.wildmatch-version >>; fi
             echo "<< parameters.modules >>" | awk NF | while read module; do
-                module_dots="$(sed 's@/@.@g' \<<< "$module")"
+                module_dots="$(sed 's@\/@\.@g' \<<< "$module")"
                 if [ "${#module_dots}" -gt 1 ] && [ "${module_dots::1}" = "." ]; then
                     module_dots="${module_dots:1}"
                 fi
@@ -137,7 +137,7 @@ steps:
                     module_dots="${module_dots::-1}"
                 fi
 
-                module_slashes="$(sed 's@.@/@g' \<<< "$module")"
+                module_slashes="$(sed 's@\.@\/@g' \<<< "$module")"
                 if [ "${#module_slashes}" -gt 1 ] && [ "${module_slashes::1}" = "/" ]; then
                     module_slashes="${module_slashes:1}"
                 fi
