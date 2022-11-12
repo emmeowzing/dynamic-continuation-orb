@@ -162,7 +162,7 @@ steps:
                 fi
 
                 # Handle non-root modules
-                if [ ! -f ".cirlceci/${module_dots}.ignore" ]; then
+                if [ ! -f ".circleci/${module_dots}.ignore" ]; then
                     touch ".circleci/${module_dots}.ignore"
                 fi
 
