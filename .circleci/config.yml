@@ -4,10 +4,9 @@ setup: true
 
 
 orbs:
-  orb-tools: circleci/orb-tools@11.1.2
+  orb-tools: circleci/orb-tools@11.5.0
   circleci-cli: circleci/circleci-cli@0.1.9
-  dynamic: bjd2385/dynamic-continuation@3.2.0
-
+  dynamic: bjd2385/dynamic-continuation@3.3.0
 
 executors:
   default:
@@ -15,8 +14,13 @@ executors:
       - image: cimg/base:stable
 
 
-commands:
-  check_version:
+commands: {}
+
+
+jobs:
+  check-version:
+    executor: default
+    resource_class: small
     steps:
       - run:
           name: Install / upgrade the CircleCI CLI
@@ -25,14 +29,6 @@ commands:
           name: Assert tag version is unpublished
           command: |
             [[ "$(circleci orb list bjd2385 | grep "bjd2385/dynamic-continuation" | grep -oE "[0-9].[0-9].[0-9]")" != "${CIRCLE_TAG}" ]]
-
-
-jobs:
-  check-version:
-    executor: default
-    resource_class: small
-    steps:
-      - check_version
 
   generate-release:
     executor: default

@@ -7,7 +7,7 @@ assignees: ''
 
 ---
 
-## Orb version:
+## Orb version
 
 <!---
   e.g., 1.0.0
@@ -17,17 +17,17 @@ assignees: ''
   any job page, for the orb's specific semantic version number
 -->
 
-## What happened:
+## What happened
 
 <!---
   please include any relevant links to CircleCI workflows or jobs
   where you saw this behavior
 -->
 
-## Expected behavior:
+## Expected behavior
 
 <!--- what should happen, ideally? -->
 
-## Additional Information:
+## Additional Information
 
 <!--- Provide any additional context possible. -->
