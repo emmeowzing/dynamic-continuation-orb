@@ -66,6 +66,8 @@ steps:
             pip install wildmatch==<< parameters.wildmatch-version >>
 
             echo "<< parameters.modules >>" | awk NF | while read module; do
+                printf "Module: \"%s\"\\n" "$module"
+
                 module_dots="$(sed 's@/@.@g' \<<< "$module")"
                 if [ "${#module_dots}" -gt 1 ] && [ "${module_dots::1}" = "." ]; then
                     module_dots="${module_dots:1}"
