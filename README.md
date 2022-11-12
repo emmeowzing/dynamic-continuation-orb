@@ -218,7 +218,7 @@ workflows:
             /
 ```
 
-Note that this requires you define an `app.yml`, at a bare minimum, under `.circleci/`, for the orb to process. This is about as complex a CI config can get as well, with the above `continue` job call requiring a directory layout of
+Note that this requires you define an `app.yml` (though this root config's name is configurable), at  minimum, under `.circleci/`, for the orb to process. This is about as complex a CI config can get as well, with the above `continue` job call having a potential directory layout of
 
 ```shell
 .circleci/config.yml
