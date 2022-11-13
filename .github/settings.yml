@@ -3,7 +3,7 @@ _extends: .github
 
 repository:
   name: dynamic-continuation-orb
-  description: CircleCI orb for dynamically executing workflows upon code changes in specified modules
+  description: CircleCI orb for dynamically executing workflows targeting code changes in repository subdirectories
   homepage: https://circleci.com/developer/orbs/orb/bjd2385/dynamic-continuation
   private: false
 
