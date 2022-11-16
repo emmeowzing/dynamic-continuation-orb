@@ -1,0 +1,9 @@
+{
+    "extends": ["config:base"],
+    "packageRules": [
+      {
+        "matchDatasources": ["orb"],
+        "fileMatch": ["^.config/.*\\.yml$"]
+      }
+    ]
+  }
