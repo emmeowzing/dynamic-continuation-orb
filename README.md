@@ -152,6 +152,7 @@ Note that the filenames denote additional directory structure with dots `.`, whe
 modules: |
   terraform.development
   terraform.production
+  terraform.staging
   scripts
   src.pkg1
   src.pkg2
