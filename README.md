@@ -23,7 +23,7 @@ These conditions can be overriden, and all workflows forced to run, if the `forc
 
 Get up-and-running with dynamically continued pipelines in these 4 steps:
 
-1. Add this orb, a `continue` job to a CI config, and the `setup` keyword, such as
+1. Add this orb, a `continue` job to your CI config (`.circleci/config.yml`), and the `setup` keyword, such as
 
   ```shell
   setup: true
@@ -42,7 +42,7 @@ Get up-and-running with dynamically continued pipelines in these 4 steps:
 
 2. Enable **setup workflows** in your project under **Advanced Settings**.
 
-3. The `orb-publishing` context in your organization must have two environment variables set that the orb will reference, including
+3. The `orb-publishing` context in your organization must have two environment variables set for the orb to reference, including
     - `CIRCLE_ORGANIZATION` (in my case, this is just set to `bjd2385`), and
     - `CIRCLE_TOKEN`, which contains your CircleCI API token.
 
@@ -90,7 +90,9 @@ workflows:
             /src
 ```
 
-Once again, the workflows will only execute if any code changes are introduced to the containing "module". For example, if no changes are made on your branch within the `terraform/` directory, the `.circleci/terraform.yml` CI config will not be executed.
+Once again, the workflows will only execute if any code changes are introduced to the containing "module".
+
+For example: if no changes are made on your branch within the `terraform/` directory, the `.circleci/terraform.yml` CI config will not be executed.
 
 ### Example: nested directories
 
@@ -112,11 +114,9 @@ We may write further targeted configs
 
 ```shell
 .circleci/config.yml
-.circleci/terraform.yml               # targets general changes under 'terraform/'
 .circleci/terraform.development.yml   # target specific changes under 'terraform/development/'
 .circleci/terraform.production.yml    # target specific changes under 'terraform/production/'
 .circleci/scripts.yml
-.circleci/src.yml                     # targets general changes under 'src/'
 .circleci/src.pkg1.yml                # target specific changes under 'src/pkg1/'
 .circleci/src.pkg2.yml                # target specific changes under 'src/pkg2/'
 ```
@@ -135,33 +135,23 @@ workflows:
       - dynamic/continue:
           context: orb-publishing
           modules: |
-            /terraform
             /terraform/development
             /terraform/production
             /scripts
-            /src
             /src/pkg1
             /src/pkg2
 ```
 
-Note that the filenames denote additional directory structure with dots `.`, whereas our modules may contain dots `.` or slashes `/`. Thus, the following list of modules is also valid, albeit harder to follow.
+Note that the filenames denote additional directory structure with dots `.`, whereas our modules may contain dots `.` or slashes `/`. Thus, the following list of modules is also valid, albeit potentially harder to follow.
 
 ```yaml
 modules: |
-  terraform
   terraform.development
   terraform.production
   scripts
-  src
   src.pkg1
   src.pkg2
 ```
-
-> **Important:** Note that we now have an overlapping directory structure for `src/`- and `terraform/`-configs. If you want to exclude changes in subdirectories from kicking off the parent workflow for `terraform/`, you might, for example, define a file `.circleci/terraform.ignore` with the following contents.
-> ```text
-> terraform/development
-> terraform/production
-> ```
 
 ## Filtering or ignoring changed files
 
