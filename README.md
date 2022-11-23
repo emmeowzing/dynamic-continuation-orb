@@ -8,6 +8,8 @@ This orb simplifies `.circleci/config.yml` files by allowing engineers to add an
 
 This orb is based on a [published example](https://github.com/circle-makotom/circle-advanced-setup-workflow) of advanced configuration with continuations from CircleCI.
 
+See my [article on Medium](https://medium.com/@ejd2385/dynamic-continuations-in-circleci-d7516ae5c6f2) about dynamic continuations for a simple introduction to using this orb.
+
 ## When will the orb run my workflows?
 
 The orb will run a workflow (we'll call it `<module>`) if any of the following conditions are met.
