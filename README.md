@@ -118,6 +118,7 @@ We may write further targeted configs
 .circleci/config.yml
 .circleci/terraform.development.yml   # target specific changes under 'terraform/development/'
 .circleci/terraform.production.yml    # target specific changes under 'terraform/production/'
+.circleci/terraform.staging.yml       # target specific changes under 'terraform/staging/'
 .circleci/scripts.yml
 .circleci/src.pkg1.yml                # target specific changes under 'src/pkg1/'
 .circleci/src.pkg2.yml                # target specific changes under 'src/pkg2/'
@@ -139,6 +140,7 @@ workflows:
           modules: |
             /terraform/development
             /terraform/production
+            /terraform/staging
             /scripts
             /src/pkg1
             /src/pkg2
