@@ -1,6 +1,6 @@
 # CircleCI `dynamic-continuation` Orb
 
-This orb simplifies `.circleci/config.yml` files by allowing engineers to add any number of additional configs under `.circleci/` matching repository directory paths that only run when the code therein changes. Directory-targeted workflows offer engineers reduced pipeline execution time, and by extension, reduced CI costs.
+This orb allows the use of any number of configs under `.circleci/` that only run when there are changes in coinciding directory paths. Directory-targeted workflows offer engineers reduced pipeline execution time, and by extension, reduced CI costs.
 
 <p align="center" width="100%">
   <img width="80%" src="img/dynamic-continuation-example.png" alt="example">
