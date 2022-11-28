@@ -4,51 +4,14 @@ version: 2.1
 orbs:
   orb-tools: circleci/orb-tools@11.5.0
   circleci-cli: circleci/circleci-cli@0.1.9
-
-
-executors:
-  default:
-    docker:
-      - image: cimg/base:stable
-
-
-commands: {}
-
-
-jobs:
-  pack-orb:
-    # A rewrite of CircleCI's pack step with prepacking - https://github.com/CircleCI-Public/orb-tools-orb/blob/532a5e8fba31e293978ea90a0a97b28f96f2e689/src/jobs/pack.yml#L23
-    executor: default
-    resource_class: small
-    parameters:
-      source-dir:
-        description: Directory unpacked orb source resides in.
-        type: string
-        default: ./src
-      output-dir:
-        description: The orb output directory. The orb will be named "orb.yml" in this directory and persisted to the workspace.
-        type: string
-        default: ./dist
-    steps:
-      - checkout
-      - circleci-cli/install
-      - run:
-          name: Pack orb
-          command: |
-            find << parameters.source-dir >> -maxdepth 1 -mindepth 1 -type d | xargs -I % basename % | xargs -I % ./scripts/pre-pack.sh << parameters.source-dir >> %
-            mkdir -p << parameters.output-dir >>
-            circleci orb pack --skip-update-check << parameters.source-dir >> > << parameters.output-dir >>/orb.yml
-      - persist_to_workspace:
-          paths:
-            - orb.yml
-          root: << parameters.output-dir >>
+  general: bjd2385/general@0.4.2
 
 
 workflows:
   src:
     jobs:
       - orb-tools/lint
-      - pack-orb
+      - general/orb-pack
       - orb-tools/publish:
           name: publish development orb
           enable-pr-comment: true
@@ -56,7 +19,7 @@ workflows:
           orb-name: bjd2385/dynamic-continuation
           pub-type: dev
           requires:
-            - pack-orb
+            - general/orb-pack
             - orb-tools/lint
           context:
             - orb-publishing
