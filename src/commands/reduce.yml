@@ -47,7 +47,7 @@ steps:
         # If `modules` is unavailable, stop this job without continuation
         if [ ! -f "<< parameters.modules >>" ] || [ ! -s "<< parameters.modules >>" ]
         then
-            echo 'Nothing to merge. Halting the job.'
+            printf "Nothing to merge. Halting the job.\\n"
             circleci-agent step halt
             exit 0
         fi
