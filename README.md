@@ -19,7 +19,7 @@ The orb will run a workflow (we'll call it `<module>`) if any of the following c
 3. If changes have been detected within the `<module>/`'s directory on your branch against the repository's default branch (defaults to `master`). See [below](#filtering-or-ignoring-changed-files) on how to filter out CI runs from specific changed files.
 4. If, following merge to the module's default branch, there are changes to `.circleci/<module>.yml` or under `<module>/`, when diffing against the former commit (you must perform a merge commit for this to work properly).
 
-These conditions can be overriden, and all workflows forced to run, if the `force-all` parameter is set to `true` on the `continue` job.
+These conditions can be overridden, and all workflows forced to run, if the `force-all` parameter is set to `true` on the `continue` job.
 
 ## How it works
 
