@@ -1,6 +1,6 @@
 # CircleCI `dynamic-continuation` Orb
 
-This orb simplifies `.circleci/config.yml` files by allowing engineers to add any number of additional configs under `.circleci/` matching repository directory paths that only run when the code therein changes. Directory-targeted workflows offer engineers reduced pipeline execution time, and by extension, reduced CI costs.
+This orb allows the use of any number of configs under `.circleci/` that only run when there are code changes in coinciding directory paths. Directory-targeted dynamic pipelines offer engineers reduced execution time, and by extension, reduced CI costs.
 
 <p align="center" width="100%">
   <img width="80%" src="img/dynamic-continuation-example.png" alt="example">
@@ -199,7 +199,7 @@ or, exactly the same as above.
 
 ## Specifying a different workflow for your repository's root directory
 
-Many times, we'd like to run a specific workflow against the root of a repository's directory structure, offering overlapping workflows and more flexibility on file changes when paired with the above strategies. We can accomplish this by specifying `.` or `/` as a module. For example,
+It is possible to run a workflow targeting the root of a repository's directory structure, offering overlapping workflows and more flexibility on file changes when paired with the above strategies. We can accomplish this by specifying `.` or `/` as a module. For example,
 
 ```yaml
 workflows:
@@ -213,16 +213,7 @@ workflows:
             /
 ```
 
-Note that this requires you define an `app.yml` (though this root config's name is configurable), at  minimum, under `.circleci/`, for the orb to process. This is about as complex a CI config can get as well, with the above `continue` job call having a potential directory layout of
-
-```shell
-.circleci/config.yml
-.circleci/terraform.yml
-.cirlceci/terraform.ignore  # optional
-.circleci/app.yml
-.cirlceci/app.ignore        # optional
-terraform/
-```
+Note that this requires you define an `app.yml` (though this root config's name is configurable), at  minimum, under `.circleci/`, for the orb to process.
 
 ## Config validation with `pre-commit`
 
