@@ -6,78 +6,17 @@ setup: true
 orbs:
   orb-tools: circleci/orb-tools@11.5.0
   circleci-cli: circleci/circleci-cli@0.1.9
-  dynamic: bjd2385/dynamic-continuation@3.3.0
+  dynamic: bjd2385/dynamic-continuation@3.4.0
+  general: bjd2385/general@0.4.2
 
-executors:
-  default:
-    docker:
-      - image: cimg/base:stable
+
+executors: {}
 
 
 commands: {}
 
 
-jobs:
-  check-version:
-    executor: default
-    resource_class: small
-    steps:
-      - run:
-          name: Install / upgrade the CircleCI CLI
-          command: curl -fLSs https://raw.githubusercontent.com/CircleCI-Public/circleci-cli/master/install.sh | sudo bash
-      - run:
-          name: Assert tag version is unpublished
-          command: |
-            [[ "$(circleci orb list bjd2385 | grep "bjd2385/dynamic-continuation" | grep -oE "[0-9].[0-9].[0-9]")" != "${CIRCLE_TAG}" ]]
-
-  generate-release:
-    executor: default
-    resource_class: small
-    steps:
-      - checkout
-      - run:
-          name: Install gh CLI
-          command: |+
-            wget https://github.com/cli/cli/releases/download/v2.9.0/gh_2.9.0_linux_amd64.deb -O gh.deb
-            sudo dpkg -i gh.deb
-      - run:
-          name: Generate release
-          command: |
-            # Get latest tag.
-            git fetch --all --tags
-            export LATEST_TAG="$(git tag | sort -V | tail -1)"
-            echo "$LATEST_TAG"
-
-            # Generate release from tag.
-            echo "$GITHUB_TOKEN" | gh auth login --with-token 2>/dev/null || true
-            gh release create "$LATEST_TAG" --generate-notes
-
-  pack-orb:
-    # A rewrite of CircleCI's pack step with prepacking - https://github.com/CircleCI-Public/orb-tools-orb/blob/532a5e8fba31e293978ea90a0a97b28f96f2e689/src/jobs/pack.yml#L23
-    executor: default
-    resource_class: small
-    parameters:
-      source-dir:
-        description: Directory unpacked orb source resides in.
-        type: string
-        default: ./src
-      output-dir:
-        description: The orb output directory. The orb will be named "orb.yml" in this directory and persisted to the workspace.
-        type: string
-        default: ./dist
-    steps:
-      - checkout
-      - circleci-cli/install
-      - run:
-          name: Pack orb
-          command: |
-            find << parameters.source-dir >> -maxdepth 1 -mindepth 1 -type d | xargs -I % basename % | xargs -I % ./scripts/pre-pack.sh << parameters.source-dir >> %
-            mkdir -p << parameters.output-dir >>
-            circleci orb pack --skip-update-check << parameters.source-dir >> > << parameters.output-dir >>/orb.yml
-      - persist_to_workspace:
-          paths:
-            - orb.yml
-          root: << parameters.output-dir >>
+jobs: {}
 
 
 workflows:
@@ -97,14 +36,7 @@ workflows:
 
       # On tag
 
-      - check-version:
-          filters:
-            branches:
-              ignore: /.*/
-            tags:
-              only: /^v?[0-9]+\.[0-9]+\.[0-9]+$/
-
-      - pack-orb:
+      - general/orb-pack:
           filters:
             branches:
               ignore: /.*/
@@ -118,8 +50,7 @@ workflows:
           orb-name: bjd2385/dynamic-continuation
           pub-type: production
           requires:
-            - pack-orb
-            - check-version
+            - general/orb-pack
           context:
             - development
             - orb-publishing
@@ -129,7 +60,7 @@ workflows:
             tags:
               only: /^v?[0-9]+\.[0-9]+\.[0-9]+$/
 
-      - generate-release:
+      - general/github-release:
           context: github
           filters:
             branches:
