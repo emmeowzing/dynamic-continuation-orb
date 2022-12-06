@@ -2,7 +2,7 @@
 
 This orb allows the use of any number of configs under `.circleci/` that only run when there are code changes in coinciding directory paths. Directory-targeted dynamic pipelines offer engineers reduced execution time, and by extension, reduced CI costs.
 
-<p align="center" width="100%">
+<p align="center" width="70%">
   <img width="80%" src="img/example.png" alt="example">
 </p>
 
