@@ -3,7 +3,7 @@ _extends: .github
 
 repository:
   name: dynamic-continuation-orb
-  description: CircleCI orb for dynamically executed, directory-targeted workflows targeting code changes
+  description: CircleCI orb for directory-targeted dynamically continued pipelines
   homepage: https://circleci.com/developer/orbs/orb/bjd2385/dynamic-continuation
   private: false
 
