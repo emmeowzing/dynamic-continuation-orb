@@ -207,7 +207,7 @@ We can create additional pipeline file change dependencies throughout the repo w
 
 to `.circleci/terraform.ignore`, as described in the [Git documentation](https://git-scm.com/docs/gitignore#_pattern_format).
 
-## Specifying a different workflow for your repository's root directory
+## Specify an alternate workflow for your repository's root directory
 
 It is possible to run a workflow targeting the root of a repository's directory structure, offering overlapping workflows and more flexibility on file changes when paired with the above strategies. We can accomplish this by specifying `.` or `/` as a module. For example,
 
