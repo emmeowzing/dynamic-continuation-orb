@@ -158,13 +158,13 @@ modules: |
   src.pkg2
 ```
 
-## Filtering or ignoring changed files
+## Filtering, ignoring and including file changes
 
 At times, there may be files that change in modules that should _not_ cause workflows to run. These could include, as an example, updated markdown or README-like files.
 
 To solve this problem, the orb has the ability to read an optional `.gitignore`-like filter on each module, named `.circleci/<module>.ignore`, to prevent detected changed files on your PR from enabling workflows.
 
-### Example
+### Example: ignore file changes
 
 Starting with the same directory layout as above, we could add `.gitignore`-like files
 
@@ -196,6 +196,16 @@ workflows:
 ```
 
 or, exactly the same as above.
+
+### Example: include additional file changes
+
+We can create additional pipeline file change dependencies throughout the repo within the same `*.ignore`-files. For example, suppose we have a subdirectory `scripts/terraform/`, and we want changes to files under this subdirectory to enable the pipeline defined in `.circleci/terraform.yml`; we can add
+
+```text
+!scripts/terraform/*
+```
+
+to `.circleci/terraform.ignore`, as described in the [Git documentation](https://git-scm.com/docs/gitignore#_pattern_format).
 
 ## Specifying a different workflow for your repository's root directory
 
