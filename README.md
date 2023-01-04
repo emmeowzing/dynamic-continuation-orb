@@ -263,10 +263,6 @@ When you're done with development, you may clean up the packed source with
 yarn orb:clean
 ```
 
-### Publishing a production-ready version
-
-To publish your changes to the CircleCI registry, simply merge your PR. The pipeline will automatically increment the minor tag, which will kick off a publication workflow; or, tag the repo manually.
-
 ### `pre-commit`
 
 This repository uses `pre-commit` to uphold certain code styling and standards. You may install the hooks listed in [`.pre-commit-config.yaml`](.pre-commit-config.yaml) with
