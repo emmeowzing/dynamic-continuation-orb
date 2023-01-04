@@ -242,7 +242,6 @@ I use and test this orb in my own projects.
 
 - [`minikube`](https://github.com/bjd2385/minikube/tree/master/.circleci) - this is a simple example with basic configs.
 - [this repo](.circleci/) - that's right, this repo uses it as well!
-- [`autoscaler`](https://github.com/bjd2385/autoscaler/tree/master/.circleci) - a complex example.
 
 ## Development
 
