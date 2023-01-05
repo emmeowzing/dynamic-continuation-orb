@@ -27,10 +27,6 @@ parameters:
     description: Token to authenticate with CircleCI
     type: string
     default: $CIRCLE_TOKEN
-  debug:
-    description: Dump the generated config from reducing the set of modules across changes to stdout for debugging purposes.
-    type: boolean
-    default: false
   cache:
     description: Whether or not to cache (i.e. you're calling these commands in your own job, not 'extend').
     type: boolean
@@ -68,11 +64,3 @@ steps:
       name: CircleCI config validate reduced config
       command: |
         circleci config validate << parameters.continue-config >> --org-slug << parameters.project-type >>/<< parameters.circle-organization >> --token << parameters.circle-token >> --skip-update-check
-  - when:
-      condition: << parameters.debug >>
-      steps:
-        - run:
-            name: "Debug: dump generated config"
-            command: |
-              printf "Generated config:\\n\\n"
-              cat << parameters.continue-config >>

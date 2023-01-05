@@ -61,10 +61,6 @@ parameters:
     type: enum
     enum: [github, bitbucket]
     default: github
-  debug:
-    description: Dump the reduced config to stdout for debugging purposes.
-    type: boolean
-    default: false
 
   # CircleCI continuation orb.
   parameters:
@@ -89,7 +85,6 @@ steps:
       default-branch: << parameters.default-branch >>
       root-config: << parameters.root-config >>
       reporting-window: << parameters.reporting-window >>
-      debug: << parameters.debug >>
       circle-organization: << parameters.circle-organization >>
       circle-token: << parameters.circle-token >>
       wildmatch-version: << parameters.wildmatch-version >>
@@ -104,7 +99,6 @@ steps:
       circle-organization: << parameters.circle-organization >>
       circle-token: << parameters.circle-token >>
       project-type: << parameters.project-type >>
-      debug: << parameters.debug >>
       cache: false
   - continuation/continue:
       configuration_path: << parameters.continue-config >>
