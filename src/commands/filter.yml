@@ -50,10 +50,6 @@ parameters:
     type: enum
     enum: [github, bitbucket]
     default: github
-  debug:
-    description: Print git diff-tree output, filtered or unfiltered, to stdout for debugging purposes.
-    type: boolean
-    default: false
   cache:
     description: Whether or not to cache (i.e. you're calling these commands in your own job, not 'continue').
     type: boolean
@@ -62,51 +58,6 @@ steps:
   - run:
       name: Generate changed modules
       command: |+
-        if << parameters.debug >>; then
-            pip install wildmatch==<< parameters.wildmatch-version >>
-
-            echo "<< parameters.modules >>" | awk NF | while read module; do
-                printf "Module: \"%s\"\\n" "$module"
-
-                module_dots="$(sed 's@\/@\.@g' \<<< "$module")"
-                if [ "${#module_dots}" -gt 1 ] && [ "${module_dots::1}" = "." ]; then
-                    module_dots="${module_dots:1}"
-                fi
-                if [ "${#module_dots}" -gt 1 ] && [ "${module_dots: -1}" = "." ]; then
-                    module_dots="${module_dots::-1}"
-                fi
-                echo "$module_dots"
-
-                module_slashes="$(sed 's@\.@\/@g' \<<< "$module")"
-                echo "$module_slashes"
-                if [ "${#module_slashes}" -gt 1 ] && [ "${module_slashes::1}" = "/" ]; then
-                    module_slashes="${module_slashes:1}"
-                fi
-                if [ "${#module_slashes}" -gt 1 ] && [ "${module_slashes: -1}" = "/" ]; then
-                    module_slashes="${module_slashes::-1}"
-                fi
-                echo "$module_slashes"
-
-                if [ "$module_dots" = "." ]; then
-                    if [ ! -f .circleci/"<< parameters.root-config >>.ignore" ]; then
-                        touch .circleci/"<< parameters.root-config >>.ignore"
-                    fi
-
-                    printf "%s\\n\\n" "<< parameters.root-config >>:"
-                    git diff-tree --no-commit-id --name-only -r HEAD << parameters.default-branch >> "$module_dots" | awk NF | wildmatch -c ".circleci/<< parameters.root-config >>.ignore"
-                    printf "\\n\\n"
-                else
-                    if [ ! -f .circleci/"${module_dots}.ignore" ]; then
-                        touch ".circleci/${module_dots}.ignore"
-                    fi
-
-                    printf "%s:\\n\\n" "$module_slashes"
-                    git diff-tree --no-commit-id --name-only -r HEAD << parameters.default-branch >> "$module_slashes" | awk NF | wildmatch -c ".circleci/${module_dots}.ignore"
-                    printf "\\n\\n"
-                fi
-            done
-        fi
-
         if [ ! "<< parameters.circle-token >>" ]; then
             printf "Must set CircleCI token for successful authentication.\\n" >&2
             exit 1
@@ -127,7 +78,7 @@ steps:
                 echo "$module_dots" >> << parameters.modules-filtered >>
             done
         else
-            if ! << parameters.debug >>; then pip install wildmatch==<< parameters.wildmatch-version >>; fi
+            pip install wildmatch==<< parameters.wildmatch-version >>
             echo "<< parameters.modules >>" | awk NF | while read module; do
                 module_dots="$(sed 's@\/@\.@g' \<<< "$module")"
                 if [ "${#module_dots}" -gt 1 ] && [ "${module_dots::1}" = "." ]; then
