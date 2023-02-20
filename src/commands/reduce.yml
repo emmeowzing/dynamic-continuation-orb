@@ -2,7 +2,7 @@ description: |
   Merge modules' configs, if there are changed files in the directory, into an additional config under .circleci/ in the
   checked-out source,
 parameters:
-  modules:
+  modules-filtered:
     description: Path to the file for the list of the modules to build
     type: string
     default: /tmp/modules-filtered.txt
@@ -41,7 +41,7 @@ steps:
       name: Merge configs
       command: |
         # If `modules` is unavailable, stop this job without continuation
-        if [ ! -f "<< parameters.modules >>" ] || [ ! -s "<< parameters.modules >>" ]
+        if [ ! -s "<< parameters.modules-filtered >>" ]
         then
             printf "Nothing to merge. Halting the job.\\n"
             circleci-agent step halt
@@ -56,10 +56,10 @@ steps:
             } else {
                 printf(".circleci/%s.yml\n", $0)
             }
-        }' << parameters.modules >> > /tmp/$CIRCLE_WORKFLOW_ID.txt
-        mv /tmp/$CIRCLE_WORKFLOW_ID.txt << parameters.modules >>
+        }' << parameters.modules-filtered >> > /tmp/$CIRCLE_WORKFLOW_ID.txt
+        mv /tmp/$CIRCLE_WORKFLOW_ID.txt << parameters.modules-filtered >>
 
-        xargs -a "<< parameters.modules >>" yq -y -s 'reduce .[] as $item ({}; . * $item)' | tee "<< parameters.continue-config >>"
+        xargs -a "<< parameters.modules-filtered >>" yq -y -s 'reduce .[] as $item ({}; . * $item)' | tee "<< parameters.continue-config >>"
   - run:
       name: CircleCI config validate reduced config
       command: |

@@ -93,7 +93,7 @@ steps:
       include-config-changes: << parameters.include-config-changes >>
       cache: false
   - reduce:
-      modules: << parameters.modules-filtered >>
+      modules-filtered: << parameters.modules-filtered >>
       continue-config: << parameters.continue-config >>
       root-config: << parameters.root-config >>
       circle-organization: << parameters.circle-organization >>
