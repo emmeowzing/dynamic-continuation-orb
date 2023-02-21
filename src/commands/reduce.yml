@@ -48,9 +48,8 @@ steps:
             exit 0
         fi
 
-        # Convert a list of dirs to a list of config files under .circleci/.
+        # Convert a list of dirs to a list of config files under .circleci/ for reduction.
         awk '{
-            # Replace a period (the root of a repository is being targeted by a workflow) with the specified '<< parameters.root-config >>.yml'.
             if ($0 ~ /^\.$/) {
                 printf ".circleci/<< parameters.root-config >>.yml\n"
             } else {
@@ -59,6 +58,7 @@ steps:
         }' << parameters.modules-filtered >> > /tmp/$CIRCLE_WORKFLOW_ID.txt
         mv /tmp/$CIRCLE_WORKFLOW_ID.txt << parameters.modules-filtered >>
 
+        # Upgrading to v4 of yq ~ https://github.com/mikefarah/yq/issues/674#issuecomment-780948792
         xargs -a "<< parameters.modules-filtered >>" yq -y -s 'reduce .[] as $item ({}; . * $item)' | tee "<< parameters.continue-config >>"
   - run:
       name: CircleCI config validate reduced config

@@ -1,8 +1,14 @@
 description: |
   Extend the default CircleCI config at .circleci/config.yml to include other 'modules', then submit it as a continuation.
-executor: default
-resource_class: small
+executor: python
+resource_class: << parameters.resource-class >>
 parameters:
+  resource-class:
+    type: enum
+    enum: [small, medium, large, xlarge, 2xlarge]
+    default: small
+    description: Resource class to run this job with.
+
   # filter
   modules:
     description: Directories which should be tested for changes; one directory per line.
@@ -61,6 +67,13 @@ parameters:
     type: enum
     enum: [github, bitbucket]
     default: github
+  yq-version:
+    description: |+
+      Version of yq to install and use for reduction. See the releases page of that project for valid options. (Note: preceeding 'v')
+
+      https://github.com/mikefarah/yq/releases
+    type: string
+    default: v4.31.1
 
   # CircleCI continuation orb.
   parameters:
@@ -76,7 +89,9 @@ steps:
   - jq/install
   - run:
       name: Install yq
-      command: pip install yq
+      command: |+
+        curl -sSL https://github.com/mikefarah/yq/releases/download/<< parameters.yq-version >>/yq_linux_amd64 -o yq
+        install yq /usr/local/bin/yq
   - circleci/install
   - filter:
       modules: << parameters.modules >>
