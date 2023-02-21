@@ -63,9 +63,9 @@ parameters:
     type: string
     default: $CIRCLE_ORGANIZATION
   project-type:
-    description: Can be either GitHub (gh) or BitBucket (bb).
+    description: Can be either GitHub (github), GitLab (gitlab), or BitBucket (bitbucket).
     type: enum
-    enum: [github, bitbucket]
+    enum: [github, gitlab, bitbucket]
     default: github
   yq-version:
     description: |+
