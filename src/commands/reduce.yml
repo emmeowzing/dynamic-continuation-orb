@@ -28,7 +28,7 @@ parameters:
     type: string
     default: $CIRCLE_TOKEN
   cache:
-    description: Whether or not to cache (i.e. you're calling these commands in your own job, not 'extend').
+    description: Whether or not to cache (i.e. you're calling these commands in your own job, not 'continue').
     type: boolean
     default: true
 steps:
