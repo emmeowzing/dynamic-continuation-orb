@@ -59,7 +59,7 @@ steps:
         mv /tmp/$CIRCLE_WORKFLOW_ID.txt << parameters.modules-filtered >>
 
         # Upgrading to v4 of yq ~ https://github.com/mikefarah/yq/issues/674#issuecomment-780948792
-        yq eval-all '. as $item ireduce ({}; . * $item )' "$(cat /tmp/modules-filtered.txt | awk NF | tr "\\n" " " | awk NF)" | tee "<< parameters.continue-config >>"
+        yq eval-all '. as $item ireduce ({}; . * $item )' $(cat /tmp/modules-filtered.txt | awk NF | tr "\\n" " " | awk NF) | tee "<< parameters.continue-config >>"
   - run:
       name: CircleCI config validate reduced config
       command: |
