@@ -35,7 +35,12 @@ parameters:
   reporting-window:
     description: The time window used to calculate summary metrics for the default branch of the repository.
     type: enum
-    enum: [last-7-days, last-90-days, last-24-hours, last-30-days, last-60-days]
+    enum:
+      - last-7-days
+      - last-90-days
+      - last-24-hours
+      - last-30-days
+      - last-60-days
     default: last-90-days
   squash-merge-lookbehind:
     description: Number of commits back to compare against following squash merges.
