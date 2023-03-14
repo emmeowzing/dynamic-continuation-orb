@@ -6,8 +6,8 @@ setup: true
 orbs:
   orb-tools: circleci/orb-tools@11.5.0
   circleci-cli: circleci/circleci-cli@0.1.9
-  dynamic: bjd2385/dynamic-continuation@3.4.0
-  general: bjd2385/general@0.4.2
+  dynamic: bjd2385/dynamic-continuation@3.4.1
+  general: bjd2385/general@0.6.1
 
 
 executors: {}

@@ -2,7 +2,6 @@
   "name": "dynamic-continuation-orb",
   "description": "CircleCI orb for dynamically executing workflows upon code changes in specified directories",
   "repository": "https://github.com/bjd2385/dynamic-continuation-orb",
-  "license": "UNLICENSED",
   "scripts": {
     "install:pre-commit:mac": "brew install pre-commit",
     "install:pre-commit:pip": "pip install pre-commit",
