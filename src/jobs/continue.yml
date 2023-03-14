@@ -72,7 +72,7 @@ parameters:
     type: string
     default: circleci.com
   pre-script:
-    description: A script to run after checkout. (Can be used to generate dynamic config).
+    description: A script to run after checkout, and before any continuation logic. (Can be used to configure dynamic configs.)
     type: string
     default: undefined
 steps:
