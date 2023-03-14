@@ -2,25 +2,36 @@ version: 2.1
 
 
 orbs:
-  orb-tools: circleci/orb-tools@11.5.0
+  orb-tools: circleci/orb-tools@11.6.1
   circleci-cli: circleci/circleci-cli@0.1.9
-  general: bjd2385/general@0.4.2
+  general: bjd2385/general@0.6.1
 
 
 workflows:
   src:
     jobs:
-      - orb-tools/lint
-      - general/orb-pack
+      - orb-tools/lint:
+          resource_class: small
+
+      - orb-tools/review:
+          exclude: ''
+          max_command_length: 64
+          resource_class: small
+
+      - general/orb-pack:
+          requires:
+            - orb-tools/lint
+            - orb-tools/review
+
       - orb-tools/publish:
           name: publish development orb
           enable-pr-comment: true
           vcs-type: << pipeline.project.type >>
           orb-name: bjd2385/dynamic-continuation
           pub-type: dev
+          resource_class: small
           requires:
             - general/orb-pack
-            - orb-tools/lint
           context:
             - orb-publishing
             - github

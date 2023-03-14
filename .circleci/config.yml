@@ -4,7 +4,7 @@ setup: true
 
 
 orbs:
-  orb-tools: circleci/orb-tools@11.5.0
+  orb-tools: circleci/orb-tools@11.6.1
   circleci-cli: circleci/circleci-cli@0.1.9
   dynamic: bjd2385/dynamic-continuation@3.4.1
   general: bjd2385/general@0.6.1
@@ -54,6 +54,8 @@ workflows:
           context:
             - development
             - orb-publishing
+          resource_class: small
+          tag-pattern: /^v?[0-9]+\.[0-9]+\.[0-9]+$/
           filters:
             branches:
               ignore: /.*/
