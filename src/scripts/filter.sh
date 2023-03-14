@@ -1,7 +1,4 @@
-#! /usr/bin/env bash
-# Filter modules.
-
-# shellcheck disable=SC2288,SC2001
+# shellcheck disable=SC2288,SC2001,SC2148
 
 
 if ! "$SH_CIRCLE_TOKEN"; then

@@ -1,12 +1,8 @@
-#! /usr/bin/env bash
-# Filter modules.
-
-# shellcheck disable=SC2288,SC2001
+# shellcheck disable=SC2288,SC2001,SC2148
 
 
 # If `modules` is unavailable, stop this job without continuation
-if [ ! -f "$SH_MODULES" ] || [ ! -s "$SH_MODULES" ]
-then
+if [ ! -f "$SH_MODULES" ] || [ ! -s "$SH_MODULES" ]; then
     printf "Nothing to merge. Halting the job.\\n"
     circleci-agent step halt
     exit 0
