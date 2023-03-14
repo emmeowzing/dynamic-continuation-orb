@@ -39,6 +39,10 @@ steps:
             key: modules-filtered-{{ .Environment.CIRCLE_WORKFLOW_ID }}
   - run:
       name: Merge configs
+      environment:
+        SH_MODULES: << parameters.modules >>
+        SH_ROOT_CONFIG: << parameters.root-config >>
+        SH_CONTINUE_CONFIG: << parameters.continue-config >>
       command: << include(scripts/reduce.sh) >>
   - run:
       name: CircleCI config validate reduced config

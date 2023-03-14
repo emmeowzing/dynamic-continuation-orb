@@ -5,7 +5,7 @@
 
 
 # If `modules` is unavailable, stop this job without continuation
-if [ ! -f "<< parameters.modules >>" ] || [ ! -s "<< parameters.modules >>" ]
+if [ ! -f "$SH_MODULES" ] || [ ! -s "$SH_MODULES" ]
 then
     printf "Nothing to merge. Halting the job.\\n"
     circleci-agent step halt
@@ -15,11 +15,11 @@ fi
 # Convert a list of dirs to a list of config files under .circleci/.
 awk '{
     if ($0 ~ /^\.$/) {
-        printf ".circleci/<< parameters.root-config >>.yml\n"
+        printf ".circleci/${SH_ROOT_CONFIG}.yml\n"
     } else {
         printf(".circleci/%s.yml\n", $0)
     }
-}' "<< parameters.modules >>" > /tmp/"$CIRCLE_WORKFLOW_ID.txt"
-mv /tmp/"$CIRCLE_WORKFLOW_ID.txt" "<< parameters.modules >>"
+}' "$SH_MODULES" > /tmp/"$CIRCLE_WORKFLOW_ID.txt"
+mv /tmp/"$CIRCLE_WORKFLOW_ID.txt" "$SH_MODULES"
 
-xargs -a "<< parameters.modules >>" yq -y -s "reduce .[] as \$item ({}; . * \$item)" | tee "<< parameters.continue-config >>"
+xargs -a "$SH_MODULES" yq -y -s "reduce .[] as \$item ({}; . * \$item)" | tee "$SH_CONTINUE_CONFIG"
