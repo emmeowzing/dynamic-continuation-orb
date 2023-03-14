@@ -77,7 +77,7 @@ parameters:
     default: ''
 steps:
   - checkout
-  - unless:
+  - when:
       condition: << parameters.pre-script >>
       steps:
         - run:
