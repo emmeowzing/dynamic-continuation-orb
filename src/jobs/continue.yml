@@ -79,7 +79,10 @@ steps:
   - checkout
   - run:
       name: Run pre-script
-      command: if [ "<< parameters.pre-script >>" != "undefined" ]; then << parameters.pre-script >>; fi
+      command: |
+        if [ "<< parameters.pre-script >>" != "undefined" ]; then
+            << parameters.pre-script >>
+        fi
   - jq/install
   - run:
       name: Install yq
