@@ -74,12 +74,11 @@ parameters:
   pre-script:
     description: A script to run after checkout, and before any continuation logic. (Can be used to configure dynamic configs.)
     type: string
-    default: undefined
+    default: ''
 steps:
   - checkout
   - unless:
-      condition:
-        equal: [undefined, << parameters.pre-script >>]
+      condition: << parameters.pre-script >>
       steps:
         - run:
             name: Run pre-script
