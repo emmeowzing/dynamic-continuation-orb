@@ -77,12 +77,13 @@ parameters:
     default: undefined
 steps:
   - checkout
-  - run:
-      name: Run pre-script
-      command: |
-        if [ "<< parameters.pre-script >>" != "undefined" ]; then
-            << parameters.pre-script >>
-        fi
+  - unless:
+      condition:
+        equal: [undefined, << parameters.pre-script >>]
+      steps:
+        - run:
+            name: Run pre-script
+            command: << parameters.pre-script >>
   - jq/install
   - run:
       name: Install yq
