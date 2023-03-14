@@ -57,6 +57,19 @@ parameters:
 steps:
   - run:
       name: Generate changed modules
+      environment:
+        SH_CIRCLE_TOKEN: << parameters.circle-token >>
+        SH_FORCE_ALL: << parameters.force-all >>
+        SH_DEFAULT_BRANCH: << parameters.default-branch >>
+        SH_PROJECT_TYPE: << parameters.project-type >>
+        SH_CIRCLE_ORGANIZATION: << parameters.circle-organization >>
+        SH_REPORTING_WINDOW: << parameters.reporting-window >>
+        SH_MODULES: << parameters.modules >>
+        SH_MODULES_FILTERED: << parameters.modules-filtered >>
+        SH_WILDMATCH_VERSION: << parameters.wildmatch-version >>
+        SH_ROOT_CONFIG: << parameters.root-config >>
+        SH_SQUASH_MERGE_LOOKBEHIND: << parameters.squash-merge-lookbehind >>
+        SH_INCLUDE_CONFIG_CHANGES: << parameters.include-config-changes >>
       command: << include(scripts/filter.sh) >>
   - when:
       condition: << parameters.cache >>
