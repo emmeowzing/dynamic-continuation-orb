@@ -29,7 +29,6 @@ workflows:
           modules: |
             src
             scripts
-
           filters:
             branches:
               ignore:

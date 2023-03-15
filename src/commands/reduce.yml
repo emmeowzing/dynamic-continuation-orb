@@ -2,6 +2,9 @@ description: |
   Merge modules' configs, if there are changed files in the directory, into an additional config under .circleci/ in the
   checked-out source,
 parameters:
+  modules:
+    description: Directory configs to be reduced upon changes.
+    type: string
   modules-filtered:
     description: Path to the file for the list of the modules to build
     type: string
