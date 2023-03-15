@@ -1,7 +1,7 @@
 # shellcheck disable=SC2288,SC2001,SC2148
 
 
-if ! "$SH_CIRCLE_TOKEN"; then
+if [ -z "$SH_CIRCLE_TOKEN" ]; then
     printf "Must set CircleCI token for successful authentication.\\n" >&2
     exit 1
 fi
