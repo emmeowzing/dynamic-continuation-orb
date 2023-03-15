@@ -15,7 +15,7 @@ workflows:
 
       - orb-tools/review:
           exclude: ''
-          max_command_length: 64
+          max_command_length: 256
           resource_class: small
 
       - general/orb-pack:

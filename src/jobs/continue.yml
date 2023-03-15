@@ -72,14 +72,17 @@ parameters:
     type: string
     default: circleci.com
   pre-script:
-    description: A script to run after checkout, and before any continuation logic. (Can be used to configure dynamic configs.)
+    description: A script to run after checkout and before any continuation logic. Script should have a shebang and executable.
     type: string
-    default: undefined
+    default: ''
 steps:
   - checkout
-  - run:
-      name: Run pre-script
-      command: if [ "<< parameters.pre-script >>" != "undefined" ]; then << parameters.pre-script >>; fi
+  - when:
+      condition: << parameters.pre-script >>
+      steps:
+        - run:
+            name: Run pre-script
+            command: << parameters.pre-script >>
   - jq/install
   - run:
       name: Install yq

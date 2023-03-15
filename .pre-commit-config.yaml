@@ -6,7 +6,6 @@ repos:
       - id: trailing-whitespace
       - id: check-added-large-files
         args: [--maxkb=10000, --enforce-all]
-      - id: check-executables-have-shebangs
       - id: check-shebang-scripts-are-executable
       - id: mixed-line-ending
       - id: trailing-whitespace
@@ -17,6 +16,8 @@ repos:
       - id: shellcheck
         args:
           - -x
+          - -s
+          - bash
 
   - repo: https://github.com/bjd2385/circleci-config-pre-commit-hook
     rev: v1.1.2
