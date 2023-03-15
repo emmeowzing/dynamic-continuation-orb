@@ -39,27 +39,11 @@ steps:
             key: modules-filtered-{{ .Environment.CIRCLE_WORKFLOW_ID }}
   - run:
       name: Merge configs
-      command: |
-        # If `modules` is unavailable, stop this job without continuation
-        if [ ! -s "<< parameters.modules-filtered >>" ]
-        then
-            printf "Nothing to merge. Halting the job.\\n"
-            circleci-agent step halt
-            exit 0
-        fi
-
-        # Convert a list of dirs to a list of config files under .circleci/ for reduction.
-        awk '{
-            if ($0 ~ /^\.$/) {
-                printf ".circleci/<< parameters.root-config >>.yml\n"
-            } else {
-                printf(".circleci/%s.yml\n", $0)
-            }
-        }' << parameters.modules-filtered >> > /tmp/$CIRCLE_WORKFLOW_ID.txt
-        mv /tmp/$CIRCLE_WORKFLOW_ID.txt << parameters.modules-filtered >>
-
-        # Upgrading to v4 of yq ~ https://github.com/mikefarah/yq/issues/674#issuecomment-780948792
-        yq eval-all '. as $item ireduce ({}; . * $item )' $(cat /tmp/modules-filtered.txt | awk NF | tr "\\n" " " | awk NF) | tee "<< parameters.continue-config >>"
+      environment:
+        SH_MODULES: << parameters.modules >>
+        SH_ROOT_CONFIG: << parameters.root-config >>
+        SH_CONTINUE_CONFIG: << parameters.continue-config >>
+      command: << include(scripts/reduce.sh) >>
   - run:
       name: CircleCI config validate reduced config
       command: |

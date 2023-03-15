@@ -84,8 +84,18 @@ parameters:
     description: The domain of the CircleCI installation - defaults to circleci.com. (Only necessary for CircleCI Server users).
     type: string
     default: circleci.com
+  pre-script:
+    description: A script to run after checkout and before any continuation logic. Script should have a shebang and executable.
+    type: string
+    default: ''
 steps:
   - checkout
+  - when:
+      condition: << parameters.pre-script >>
+      steps:
+        - run:
+            name: Run pre-script
+            command: << parameters.pre-script >>
   - jq/install
   - run:
       name: Install yq
