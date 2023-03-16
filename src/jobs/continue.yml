@@ -67,6 +67,11 @@ parameters:
     type: enum
     enum: [github, gitlab, bitbucket]
     default: github
+  jq-version:
+    description:
+      Version of jq to install.
+    type: string
+    default: 1.6-2.1ubuntu3
   yq-version:
     description: |+
       Version of yq to install and use for reduction. See the releases page of that project for valid options. (Note: preceeding 'v')
@@ -94,11 +99,14 @@ steps:
       condition: << parameters.pre-script >>
       steps:
         - run:
-            name: Run pre-script
+            name: 'Pre: Run pre-script'
             command: << parameters.pre-script >>
-  - jq/install
   - run:
-      name: Install yq
+      name: 'Pre: Install jq'
+      command: |+
+        sudo apt update && sudo apt install -y jq=<< parameters.jq-version >>
+  - run:
+      name: 'Pre: Install yq'
       command: |+
         curl -sSL https://github.com/mikefarah/yq/releases/download/<< parameters.yq-version >>/yq_linux_amd64 -o yq
         sudo install yq /usr/local/bin/yq
