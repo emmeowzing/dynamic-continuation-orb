@@ -7,7 +7,7 @@ if [ -z "$SH_CIRCLE_TOKEN" ]; then
 fi
 
 # Add each module to `modules-filtered` if 1) `force-all` is set to `true`, or 2) there is a diff against master at HEAD, or 3) no workflow runs have occurred on the default branch for this project in the past $SH_REPORTING_WINDOW days.
-if [ "$SH_FORCE_ALL" ]  && { [ "$SH_REPORTING_WINDOW" != "" ] && [ "$(curl -s -X GET --url "https://circleci.com/api/v2/insights/$SH_PROJECT_TYPE/${SH_CIRCLE_ORGANIZATION}/${CIRCLE_PROJECT_REPONAME}/workflows?reporting-window=${SH_REPORTING_WINDOW}" --header "Circle-Token: $SH_CIRCLE_TOKEN" | jq -r "[ .items[].name ] | length")" = "0" ]; }; then
+if [ "$SH_FORCE_ALL" ] || { [ "$SH_REPORTING_WINDOW" != "" ] && [ "$(curl -s -X GET --url "https://circleci.com/api/v2/insights/$SH_PROJECT_TYPE/${SH_CIRCLE_ORGANIZATION}/${CIRCLE_PROJECT_REPONAME}/workflows?reporting-window=${SH_REPORTING_WINDOW}" --header "Circle-Token: $SH_CIRCLE_TOKEN" | jq -r "[ .items[].name ] | length")" = "0" ]; }; then
     printf "Running all workflows.\\n"
     echo "$SH_MODULES" | awk NF | while read -r module; do
         module_dots="$(sed 's@\/@\.@g' <<< "$module")"
