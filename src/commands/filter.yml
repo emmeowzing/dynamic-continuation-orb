@@ -61,7 +61,7 @@ parameters:
     default: true
 steps:
   - run:
-      name: Generate changed modules
+      name: Filter
       environment:
         SH_CIRCLE_TOKEN: << parameters.circle-token >>
         SH_FORCE_ALL: << parameters.force-all >>
