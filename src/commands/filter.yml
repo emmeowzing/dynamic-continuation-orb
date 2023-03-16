@@ -33,15 +33,16 @@ parameters:
     type: string
     default: app
   reporting-window:
-    description: The time window used to calculate summary metrics for the default branch of the repository.
+    description: The time window used to calculate summary metrics for the default branch of the repository. Defaults to disabled. Allows users to force all workflows to run if no workflows have been ran in the time window.
     type: enum
     enum:
-      - last-7-days
-      - last-90-days
+      - ''
       - last-24-hours
+      - last-7-days
       - last-30-days
       - last-60-days
-    default: last-90-days
+      - last-90-days
+    default: ''
   squash-merge-lookbehind:
     description: Number of commits back to compare against following squash merges.
     type: string
