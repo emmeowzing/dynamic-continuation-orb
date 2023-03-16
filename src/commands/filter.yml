@@ -54,7 +54,7 @@ parameters:
   project-type:
     description: Can be either GitHub (gh) or BitBucket (bb).
     type: enum
-    enum: [github, bitbucket]
+    enum: [github, gitlab, bitbucket]
     default: github
   cache:
     description: Whether or not to cache (i.e. you're calling these commands in your own job, not 'continue').
