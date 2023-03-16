@@ -85,7 +85,7 @@ workflows:
   on-commit:
     jobs:
       - dynamic/continue:
-          context: orb-publishing
+          context: circleci
           modules: |
             /terraform
             /scripts
@@ -136,7 +136,7 @@ workflows:
   on-commit:
     jobs:
       - dynamic/continue:
-          context: orb-publishing
+          context: circleci
           modules: |
             /terraform/development
             /terraform/production
@@ -188,7 +188,7 @@ workflows:
   on-commit:
     jobs:
       - dynamic/continue:
-          context: orb-publishing
+          context: circleci
           modules: |
             /src
             /terraform
@@ -216,7 +216,7 @@ workflows:
   on-commit:
     jobs:
       - dynamic/continue:
-          context: orb-publishing
+          context: circleci
           root-config: app  # Defaults to 'app.yml' and 'app.ignore' under .circleci/, should the orb detect a '.'- or '/'-root module
           modules: |
             /terraform
