@@ -6,6 +6,10 @@ parameters:
     description: Path to the file for the list of the modules to build
     type: string
     default: /tmp/modules-filtered.txt
+  auto-detect:
+    description: Auto-detect modules.
+    type: boolean
+    default: false
   root-config:
     description: Provides the ability to map root repository changes (./) to a config file name. Defaults to app.yml.
     type: string

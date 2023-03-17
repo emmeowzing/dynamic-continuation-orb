@@ -4,6 +4,10 @@ parameters:
   modules:
     description: Directories which should be built upon changes.
     type: string
+  auto-detect:
+    description: Auto-detect modules.
+    type: boolean
+    default: false
   modules-filtered:
     description: Path to the file where the filtered list of modules is generated
     type: string

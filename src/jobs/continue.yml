@@ -7,6 +7,10 @@ parameters:
   modules:
     description: Directories which should be tested for changes; one directory per line.
     type: string
+  auto-detect:
+    description: Auto-detect modules.
+    type: boolean
+    default: true
   force-all:
     description: Emergency valve - forcibly build all the modules
     type: boolean
@@ -88,6 +92,8 @@ steps:
       name: Install yq
       command: pip install yq
   - circleci/install
+  - parse:
+      auto-detect: << parameters.auto-detect >>
   - filter:
       modules: << parameters.modules >>
       modules-filtered: << parameters.modules-filtered >>

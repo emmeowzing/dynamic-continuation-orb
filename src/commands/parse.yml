@@ -1,0 +1,11 @@
+description: |
+  Determine which modules need to be ran from .circleci/-directory.
+parameters:
+  auto-detect:
+    description: Auto-detect modules.
+    type: boolean
+    default: false
+steps:
+  - run:
+      name: Parse
+      command: ''
