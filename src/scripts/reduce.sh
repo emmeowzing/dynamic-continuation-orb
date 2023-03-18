@@ -31,4 +31,4 @@ for f in .circleci/*.yaml; do
     mv "$f" "${f%.*}.yml"
 done
 
-yq eval-all '. as $item ireduce ( {}; . * $item )' "$(cat "$SH_MODULES_FILTERED" | xargs -I {} printf "{}.yml " | awk NF)" | tee "$SH_CONTINUE_CONFIG"
+yq eval-all '. as $item ireduce ( {}; . * $item )' "$(cat "$SH_MODULES_FILTERED" | xargs)" | tee "$SH_CONTINUE_CONFIG"
