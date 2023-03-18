@@ -1,4 +1,4 @@
-# shellcheck disable=SC2288,SC2001,SC2148,SC2002,SC2016
+# shellcheck disable=SC2288,SC2001,SC2148,SC2002,SC2016,SC2046
 
 
 shopt -s nullglob
@@ -31,4 +31,4 @@ for f in .circleci/*.yaml; do
     mv "$f" "${f%.*}.yml"
 done
 
-yq eval-all '. as $item ireduce ( {}; . * $item )' "$(cat "$SH_MODULES_FILTERED" | xargs)" | tee "$SH_CONTINUE_CONFIG"
+yq eval-all '. as $item ireduce ( {}; . * $item )' $(cat "$SH_MODULES_FILTERED" | xargs) | tee "$SH_CONTINUE_CONFIG"
