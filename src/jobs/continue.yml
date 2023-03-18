@@ -48,6 +48,10 @@ parameters:
     description: Include CircleCI config changes (e.g., scripts.yml) while checking for changed modules.
     type: boolean
     default: true
+  circle-organization:
+    description: CircleCI organization to query with your API key.
+    type: string
+    default: $CIRCLE_ORGANIZATION
 
   # reduce
   continue-config:
@@ -64,10 +68,6 @@ parameters:
     description: Path to the file where the filtered list of modules is generated
     type: string
     default: /tmp/modules-filtered.txt
-  circle-organization:
-    description: CircleCI organization to query with your API key.
-    type: string
-    default: $CIRCLE_ORGANIZATION
   project-type:
     description: Can be either GitHub (github), GitLab (gitlab), or BitBucket (bitbucket).
     type: enum
@@ -135,7 +135,6 @@ steps:
       modules-filtered: << parameters.modules-filtered >>
       continue-config: << parameters.continue-config >>
       root-config: << parameters.root-config >>
-      circle-organization: << parameters.circle-organization >>
       circle-token: << parameters.circle-token >>
       project-type: << parameters.project-type >>
       cache: false
