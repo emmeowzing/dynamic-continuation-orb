@@ -10,10 +10,10 @@ fi
 
 # Convert a list of dirs to a list of config files under .circleci/.
 awk "{
-    if ($0 ~ /^\\.$/) {
+    if (\$0 ~ /^\\.$/) {
         printf \".circleci/${SH_ROOT_CONFIG}.yml\\n\"
     } else {
-        printf(\".circleci/%s.yml\n\", $0)
+        printf(\".circleci/%s.yml\n\", \$0)
     }
 }" "$SH_MODULES_FILTERED" > /tmp/"$CIRCLE_WORKFLOW_ID.txt"
 mv /tmp/"$CIRCLE_WORKFLOW_ID.txt" "$SH_MODULES_FILTERED"
