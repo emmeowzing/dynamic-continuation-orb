@@ -2,7 +2,7 @@ description: |
   Merge modules' configs, if there are changed files in the directory, into an additional config under .circleci/ in the
   checked-out source,
 parameters:
-  modules:
+  modules-filtered:
     description: Path to the file for the list of the modules to build
     type: string
     default: /tmp/modules-filtered.txt
@@ -28,7 +28,7 @@ parameters:
     type: string
     default: $CIRCLE_TOKEN
   cache:
-    description: Whether or not to cache (i.e. you're calling these commands in your own job, not 'extend').
+    description: Whether or not to cache (i.e. you're calling these commands in your own job, not 'continue').
     type: boolean
     default: true
 steps:
@@ -38,13 +38,13 @@ steps:
         - restore_cache:
             key: modules-filtered-{{ .Environment.CIRCLE_WORKFLOW_ID }}
   - run:
-      name: Merge configs
+      name: Reduce
       environment:
-        SH_MODULES: << parameters.modules >>
+        SH_MODULES_FILTERED: << parameters.modules-filtered >>
         SH_ROOT_CONFIG: << parameters.root-config >>
         SH_CONTINUE_CONFIG: << parameters.continue-config >>
       command: << include(scripts/reduce.sh) >>
   - run:
-      name: CircleCI config validate reduced config
+      name: Validate reduced config
       command: |
         circleci config validate << parameters.continue-config >> --org-slug << parameters.project-type >>/<< parameters.circle-organization >> --token << parameters.circle-token >> --skip-update-check
