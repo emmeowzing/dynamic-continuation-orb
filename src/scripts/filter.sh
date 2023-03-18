@@ -18,7 +18,7 @@ if [ -z "$_CIRCLE_TOKEN" ]; then
     exit 1
 fi
 
-printf "SH_REPORTING_WINDOW=\"%s\"\\n" "$SH_REPORTING_WINDOW"
+printf "SH_MODULES=\"%s\"\\n" "$SH_MODULES"
 
 # Add each module to `modules-filtered` if 1) `force-all` is set to `true`, or 2) there is a diff against master at HEAD, or 3) no workflow runs have occurred on the default branch for this project in the past $SH_REPORTING_WINDOW days.
 if [ ! "$SH_FORCE_ALL" ] || { [ "$SH_REPORTING_WINDOW" != "" ] && [ "$(curl -s -X GET --url "https://circleci.com/api/v2/insights/${SH_PROJECT_TYPE}/${_CIRCLE_ORGANIZATION}/${CIRCLE_PROJECT_REPONAME}/workflows?reporting-window=${SH_REPORTING_WINDOW}" --header "Circle-Token: ${SH_CIRCLE_TOKEN}" | jq -r "[ .items[].name ] | length")" -eq "0" ]; }; then
