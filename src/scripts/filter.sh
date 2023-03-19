@@ -1,5 +1,9 @@
 # shellcheck disable=SC2288,SC2001,SC2148,SC2153
 
+
+shopt -s nullglob
+
+
 # Parse environment variables referencing env vars set by CircleCI.
 if [ "${SH_CIRCLE_TOKEN:0:1}" = '$' ]; then
     _CIRCLE_TOKEN="$(eval echo "$SH_CIRCLE_TOKEN")"
