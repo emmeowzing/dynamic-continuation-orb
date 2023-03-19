@@ -124,7 +124,6 @@ steps:
   - filter:
       modules: << parameters.modules >>
       modules-filtered: << parameters.modules-filtered >>
-
       force-all: << parameters.force-all >>
       default-branch: << parameters.default-branch >>
       root-config: << parameters.root-config >>
@@ -135,6 +134,7 @@ steps:
       squash-merge-lookbehind: << parameters.squash-merge-lookbehind >>
       project-type: << parameters.project-type >>
       include-config-changes: << parameters.include-config-changes >>
+      auto-detect: << parameters.auto-detect >>
       cache: false
   - reduce:
       modules-filtered: << parameters.modules-filtered >>
@@ -143,6 +143,10 @@ steps:
       circle-token: << parameters.circle-token >>
       project-type: << parameters.project-type >>
       cache: false
+  - run:
+      name: Validate
+      command: |
+        circleci config validate << parameters.continue-config >>
   - continuation/continue:
       configuration_path: << parameters.continue-config >>
       parameters: << parameters.parameters >>
