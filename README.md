@@ -37,6 +37,7 @@ Get up-and-running with dynamically continued pipelines in these 4 steps:
     on-commit:
       jobs:
         - dynamic/continue:
+            auto-detect: true
             context: circleci
   ```
 
@@ -46,7 +47,7 @@ Get up-and-running with dynamically continued pipelines in these 4 steps:
     - `CIRCLE_ORGANIZATION` (in my case, this is set to `bjd2385`), and
     - `CIRCLE_TOKEN`, which contains your CircleCI API token.
 
-4. Move any commands, jobs, workflows, or orbs, to their new configs in `.circleci/`.
+4. Move any commands, jobs, workflows, or orbs, to their new configs in `.circleci/<config-name>.yml`.
 
 ### Example: basic directory layout
 
@@ -84,6 +85,10 @@ workflows:
     jobs:
       - dynamic/continue:
           context: circleci
+          modules: |
+            /terraform
+            /scripts
+            /src
 ```
 
 Once again, the workflows will only execute if any code changes are introduced to the containing "module".
@@ -131,6 +136,13 @@ workflows:
     jobs:
       - dynamic/continue:
           context: circleci
+          modules: |
+            /terraform/development
+            /terraform/production
+            /terraform/staging
+            /scripts
+            /src/pkg1
+            /src/pkg2
 ```
 
 Note that the filenames denote additional directory structure with dots `.`, whereas our modules may contain dots `.` or slashes `/`. Thus, the following list of modules is also valid, albeit potentially harder to follow.
@@ -176,6 +188,7 @@ workflows:
     jobs:
       - dynamic/continue:
           context: circleci
+          auto-detect: true
 ```
 
 or, exactly the same as above.
