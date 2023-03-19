@@ -36,6 +36,7 @@ done
 if [ ! "$SH_AUTO_DETECT" ] || [ "$SH_MODULES" = "" ]; then
     # We need to determine what the modules are, ignoring SH_MODULES if it is set.
     SH_MODULES="$(find .circleci/ -type f -name "*.yml" | grep -oP "(?<=.circleci/).*(?=.yml)" | grep -v config)"
+    printf "Auto-detected the following modules:\\n\\n%s\\n\\n" "$SH_MODULES"
 fi
 
 # Add each module to `modules-filtered` if 1) `force-all` is set to `true`, or 2) there is a diff against master at HEAD, or 3) no workflow runs have occurred on the default branch for this project in the past $SH_REPORTING_WINDOW days.

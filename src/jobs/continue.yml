@@ -11,7 +11,7 @@ parameters:
 
   # filter
   modules:
-    description: Directories which should be tested for changes; one directory per line. Auto-detection overrides this listing.
+    description: Directories which should be tested for changes; one directory per line. Auto-detection overrides this listing if enabled.
     type: string
     default: ''
   auto-detect:
