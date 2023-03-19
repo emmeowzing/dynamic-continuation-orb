@@ -1,8 +1,14 @@
 description: |
   Extend the default CircleCI config at .circleci/config.yml to include other 'modules', then submit it as a continuation.
-executor: default
-resource_class: small
+executor: python
+resource_class: << parameters.resource-class >>
 parameters:
+  resource-class:
+    type: enum
+    enum: [small, medium, large, xlarge, 2xlarge]
+    default: small
+    description: Resource class to run this job with.
+
   # filter
   modules:
     description: Directories which should be tested for changes; one directory per line.
@@ -28,10 +34,16 @@ parameters:
     type: string
     default: $CIRCLE_TOKEN
   reporting-window:
-    description: The time window used to calculate summary metrics for the default branch of the repository.
+    description: The time window used to calculate summary metrics for the default branch of the repository. Defaults to disabled. Allows users to force all workflows to run if no workflows have been ran in the time window.
     type: enum
-    enum: [last-7-days, last-90-days, last-24-hours, last-30-days, last-60-days]
-    default: last-90-days
+    enum:
+      - ''
+      - last-24-hours
+      - last-7-days
+      - last-30-days
+      - last-60-days
+      - last-90-days
+    default: ''
   squash-merge-lookbehind:
     description: Number of commits back to compare against following squash merges.
     type: string
@@ -40,6 +52,10 @@ parameters:
     description: Include CircleCI config changes (e.g., scripts.yml) while checking for changed modules.
     type: boolean
     default: true
+  circle-organization:
+    description: CircleCI organization to query with your API key.
+    type: string
+    default: $CIRCLE_ORGANIZATION
 
   # reduce
   continue-config:
@@ -56,15 +72,23 @@ parameters:
     description: Path to the file where the filtered list of modules is generated
     type: string
     default: /tmp/modules-filtered.txt
-  circle-organization:
-    description: CircleCI organization to query with your API key.
-    type: string
-    default: $CIRCLE_ORGANIZATION
   project-type:
-    description: Can be either GitHub (gh) or BitBucket (bb).
+    description: Can be either GitHub (github), GitLab (gitlab), or BitBucket (bitbucket).
     type: enum
-    enum: [github, bitbucket]
+    enum: [github, gitlab, bitbucket]
     default: github
+  jq-version:
+    description:
+      Version of jq to install.
+    type: string
+    default: 1.6-2.1ubuntu3
+  yq-version:
+    description: |+
+      Version of yq to install and use for reduction. See the releases page of that project for valid options. (Note: preceeding 'v')
+
+      https://github.com/mikefarah/yq/releases
+    type: string
+    default: v4.31.1
 
   # CircleCI continuation orb.
   parameters:
@@ -85,12 +109,17 @@ steps:
       condition: << parameters.pre-script >>
       steps:
         - run:
-            name: Run pre-script
+            name: 'Pre: Run pre-script'
             command: << parameters.pre-script >>
-  - jq/install
   - run:
-      name: Install yq
-      command: pip install yq
+      name: 'Pre: Install jq'
+      command: |+
+        sudo apt update && sudo apt install -y jq=<< parameters.jq-version >>
+  - run:
+      name: 'Pre: Install yq'
+      command: |+
+        curl -sSL https://github.com/mikefarah/yq/releases/download/<< parameters.yq-version >>/yq_linux_amd64 -o yq
+        sudo install yq /usr/local/bin/yq
   - circleci/install
   - parse:
       auto-detect: << parameters.auto-detect >>
@@ -109,10 +138,9 @@ steps:
       include-config-changes: << parameters.include-config-changes >>
       cache: false
   - reduce:
-      modules: << parameters.modules-filtered >>
+      modules-filtered: << parameters.modules-filtered >>
       continue-config: << parameters.continue-config >>
       root-config: << parameters.root-config >>
-      circle-organization: << parameters.circle-organization >>
       circle-token: << parameters.circle-token >>
       project-type: << parameters.project-type >>
       cache: false

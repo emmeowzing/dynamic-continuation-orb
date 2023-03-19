@@ -21,9 +21,9 @@ parameters:
     type: string
     default: master
   wildmatch-version:
-    description: Wildmatch package version to install. For available versions, check PyPI - https://pypi.org/project/wildmatch/#description
+    description: Wildmatch package version to install. For available versions, check PyPI - https://pypi.org/project/wildmatch/
     type: string
-    default: 0.2.6
+    default: 0.3.1
   circle-token:
     description: Token to authenticate with CircleCI
     type: string
@@ -37,10 +37,16 @@ parameters:
     type: string
     default: app
   reporting-window:
-    description: The time window used to calculate summary metrics for the default branch of the repository.
+    description: The time window used to calculate summary metrics for the default branch of the repository. Defaults to disabled. Allows users to force all workflows to run if no workflows have been ran in the time window.
     type: enum
-    enum: [last-7-days, last-90-days, last-24-hours, last-30-days, last-60-days]
-    default: last-90-days
+    enum:
+      - ''
+      - last-24-hours
+      - last-7-days
+      - last-30-days
+      - last-60-days
+      - last-90-days
+    default: ''
   squash-merge-lookbehind:
     description: Number of commits back to compare against following squash merges.
     type: string
@@ -52,7 +58,7 @@ parameters:
   project-type:
     description: Can be either GitHub (gh) or BitBucket (bb).
     type: enum
-    enum: [github, bitbucket]
+    enum: [github, gitlab, bitbucket]
     default: github
   cache:
     description: Whether or not to cache (i.e. you're calling these commands in your own job, not 'continue').
@@ -60,7 +66,7 @@ parameters:
     default: true
 steps:
   - run:
-      name: Generate changed modules
+      name: Filter
       environment:
         SH_CIRCLE_TOKEN: << parameters.circle-token >>
         SH_FORCE_ALL: << parameters.force-all >>
