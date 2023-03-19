@@ -2,8 +2,9 @@ description: |
   Filter the list of modules (directories) provided in the shared config to those that contain changes.
 parameters:
   modules:
-    description: Directories which should be built upon changes.
+    description: Directories which should be built upon changes. Auto-detection overrides this listing if enabled.
     type: string
+    default: ''
   auto-detect:
     description: Auto-detect modules.
     type: boolean

@@ -30,6 +30,7 @@ workflows:
           modules: |
             src
             scripts
+          # auto-detect: true
           filters:
             branches:
               ignore:
