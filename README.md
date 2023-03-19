@@ -10,17 +10,6 @@ This orb is based on a [published example](https://github.com/circle-makotom/cir
 
 See my [article on Medium](https://medium.com/@ejd2385/dynamic-continuations-in-circleci-d7516ae5c6f2) about dynamic continuations for a simple introduction to using this orb.
 
-## When will the orb run my workflows?
-
-The orb will run a workflow (we'll call it `<module>`) if any of the following conditions are met.
-
-1. If `.circleci/<module>.yml` changes (this is configurable).
-2. If there have been no workflows on the repository's default branch in the past 90 days (by default, but [this is configurable](https://circleci.com/docs/api/v2/#operation/getProjectWorkflowMetrics)).
-3. If changes have been detected within the `<module>/`'s directory on your branch against the repository's default branch (defaults to `master`). See [below](#filtering-or-ignoring-changed-files) on how to filter out CI runs from specific changed files.
-4. If, following merge to the module's default branch, there are changes to `.circleci/<module>.yml` or under `<module>/`, when diffing against the former commit (you must perform a merge commit for this to work properly).
-
-These conditions can be overridden, and all workflows forced to run, if the `force-all` parameter is set to `true` on the `continue` job.
-
 ## How it works
 
 Get up-and-running with dynamically continued pipelines in these 4 steps:
@@ -48,6 +37,16 @@ Get up-and-running with dynamically continued pipelines in these 4 steps:
     - `CIRCLE_TOKEN`, which contains your CircleCI API token.
 
 4. Move any commands, jobs, workflows, or orbs, to their new configs in `.circleci/<config-name>.yml`.
+
+## When will the orb run my workflows?
+
+The orb will run a workflow (we'll call it `<module>`) if any of the following conditions are met.
+
+1. If `.circleci/<module>.yml` changes (this is configurable, enabled by default).
+2. If changes have been detected within the `<module>/`'s directory on your branch against the repository's default branch (defaults to `master`). See [below](#filtering-or-ignoring-changed-files) on how to filter out CI runs from specific changed files.
+3. If, following merge to the default branch, there are changes to `.circleci/<module>.yml` or under `<module>/`, when diffing against the former commit (you must perform a merge commit for this to work properly).
+
+These conditions can be overridden, and all workflows forced to run, if the `force-all` parameter is set to `true` on the `continue` job.
 
 ### Example: basic directory layout
 
