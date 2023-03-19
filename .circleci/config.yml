@@ -27,6 +27,7 @@ workflows:
 
       - dynamic/continue:
           context: orb-publishing
+          include-config-changes: false
           auto-detect: true
           filters:
             branches:
