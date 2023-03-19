@@ -80,6 +80,7 @@ steps:
         SH_ROOT_CONFIG: << parameters.root-config >>
         SH_SQUASH_MERGE_LOOKBEHIND: << parameters.squash-merge-lookbehind >>
         SH_INCLUDE_CONFIG_CHANGES: << parameters.include-config-changes >>
+        SH_AUTO_DETECT: << parameters.auto-detect >>
       command: << include(scripts/filter.sh) >>
   - when:
       condition: << parameters.cache >>

@@ -28,7 +28,7 @@ parameters:
   wildmatch-version:
     description: Wildmatch package version to install. For available versions, check PyPI - https://pypi.org/project/wildmatch/#description
     type: string
-    default: 0.2.6
+    default: 0.3.1
   circle-token:
     description: Token to authenticate with CircleCI
     type: string
@@ -121,11 +121,10 @@ steps:
         curl -sSL https://github.com/mikefarah/yq/releases/download/<< parameters.yq-version >>/yq_linux_amd64 -o yq
         sudo install yq /usr/local/bin/yq
   - circleci/install
-  - parse:
-      auto-detect: << parameters.auto-detect >>
   - filter:
       modules: << parameters.modules >>
       modules-filtered: << parameters.modules-filtered >>
+
       force-all: << parameters.force-all >>
       default-branch: << parameters.default-branch >>
       root-config: << parameters.root-config >>
