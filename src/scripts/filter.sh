@@ -18,6 +18,16 @@ if [ -z "$_CIRCLE_TOKEN" ]; then
     exit 1
 fi
 
+# Move yaml files -> yml so we can handle both extensions for YAML configs. Not that we want both, but we should handle both cases.
+for f in .circleci/*.yaml; do
+    printf "Migrating pipeline \"%s\" -> \"%s\"\\n" "$f" "${f%.*}.yml" >&2
+    if [ -f "${f%.*}.yml" ]; then
+        printf "ERROR: Could not migrate \"%s\", \"%s\" already exists.\\n" "$f" "${f%.*}.yml" >&2
+        exit 1
+    fi
+    mv "$f" "${f%.*}.yml"
+done
+
 # If auto-detecting is enabled (or modules aren't set), check for configs in .circleci/.
 if [ ! "$SH_AUTO_DETECT" ] || [ "$SH_MODULES" = "" ]; then
     # We need to determine what the modules are, ignoring SH_MODULES if it is set.
