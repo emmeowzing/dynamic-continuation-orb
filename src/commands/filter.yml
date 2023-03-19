@@ -2,8 +2,13 @@ description: |
   Filter the list of modules (directories) provided in the shared config to those that contain changes.
 parameters:
   modules:
-    description: Directories which should be built upon changes.
+    description: Directories which should be built upon changes. Auto-detection overrides this listing if enabled.
     type: string
+    default: ''
+  auto-detect:
+    description: Auto-detect modules.
+    type: boolean
+    default: false
   modules-filtered:
     description: Path to the file where the filtered list of modules is generated
     type: string
@@ -76,6 +81,7 @@ steps:
         SH_ROOT_CONFIG: << parameters.root-config >>
         SH_SQUASH_MERGE_LOOKBEHIND: << parameters.squash-merge-lookbehind >>
         SH_INCLUDE_CONFIG_CHANGES: << parameters.include-config-changes >>
+        SH_AUTO_DETECT: << parameters.auto-detect >>
       command: << include(scripts/filter.sh) >>
   - when:
       condition: << parameters.cache >>
