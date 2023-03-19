@@ -7,7 +7,7 @@ orbs:
   orb-tools: circleci/orb-tools@11.6.1
   circleci-cli: circleci/circleci-cli@0.1.9
   dynamic: bjd2385/dynamic-continuation@dev:alpha
-  # dynamic: bjd2385/dynamic-continuation@3.4.1
+  # dynamic: bjd2385/dynamic-continuation@3.5.0
   general: bjd2385/general@0.6.1
 
 
@@ -27,9 +27,6 @@ workflows:
 
       - dynamic/continue:
           context: orb-publishing
-          # modules: |
-          #   src
-          #   scripts
           auto-detect: true
           filters:
             branches:
