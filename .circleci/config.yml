@@ -54,7 +54,7 @@ workflows:
             - development
             - orb-publishing
           resource_class: small
-          tag-pattern: /^v?[0-9]+\.[0-9]+\.[0-9]+$/
+          tag-pattern: /v?[0-9]+.[0-9]+.[0-9]+/
           filters:
             branches:
               ignore: /.*/
