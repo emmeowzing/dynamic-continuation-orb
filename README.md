@@ -213,6 +213,7 @@ workflows:
     jobs:
       - dynamic/continue:
           context: circleci
+          auto-detect: true
           root-config: app  # Defaults to 'app.yml' and 'app.ignore' under .circleci/, should the orb detect a '.'- or '/'-root module
 ```
 
