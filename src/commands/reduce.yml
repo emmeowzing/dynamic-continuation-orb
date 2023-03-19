@@ -45,6 +45,6 @@ steps:
         SH_CONTINUE_CONFIG: << parameters.continue-config >>
       command: << include(scripts/reduce.sh) >>
   - run:
-      name: Validate reduced config
+      name: Validate
       command: |
         circleci config validate << parameters.continue-config >>
