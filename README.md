@@ -36,7 +36,7 @@ Get up-and-running with dynamically continued pipelines in these 4 steps:
     - `CIRCLE_ORGANIZATION` (in my case, this is set to `bjd2385`), and
     - `CIRCLE_TOKEN`, which contains your CircleCI API token.
 
-4. Move any commands, jobs, workflows, or orbs, to their new configs in `.circleci/<config-name>.yml`.
+4. Move workflows to their new configs in `.circleci/<config-name>.yml`. Configs should be complete and pass a `circleci config validate`-check.
 
 ## When will the orb run my workflows?
 
