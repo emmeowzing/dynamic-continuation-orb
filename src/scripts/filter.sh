@@ -35,7 +35,7 @@ done
 # If auto-detecting is enabled (or modules aren't set), check for configs in .circleci/.
 if [ "$SH_AUTO_DETECT" -eq 1 ] || [ "$SH_MODULES" = "" ]; then
     # We need to determine what the modules are, ignoring SH_MODULES if it is set.
-    SH_MODULES="$(find .circleci/ -type f -name "*.yml" | grep -oP "(?<=.circleci/).*(?=.yml)" | grep -v config | sed "s@$SH_ROOT_MODULE@\.@")"
+    SH_MODULES="$(find .circleci/ -type f -name "*.yml" | grep -oP "(?<=.circleci/).*(?=.yml)" | grep -v config | sed "s@$SH_ROOT_MODULE@.@")"
     printf "Auto-detected the following modules:\\n\\n%s\\n\\n" "$SH_MODULES"
 fi
 
