@@ -9,6 +9,7 @@ orbs:
   dynamic: bjd2385/dynamic-continuation@dev:alpha
   # dynamic: bjd2385/dynamic-continuation@3.5.0
   general: bjd2385/general@0.6.1
+  slack: circleci/slack@4.12.1
 
 
 executors: {}
@@ -42,6 +43,26 @@ workflows:
             tags:
               only: /^v?[0-9]+\.[0-9]+\.[0-9]+$/
 
+      - slack/on-hold:
+          context: slack
+          requires:
+            - general/orb-pack
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^v?[0-9]+\.[0-9]+\.[0-9]+$/
+
+      - request-approval:
+          requires:
+            - slack/on-hold
+          type: approval
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^v?[0-9]+\.[0-9]+\.[0-9]+$/
+
       - orb-tools/publish:
           name: publish production orb
           enable-pr-comment: false
@@ -49,12 +70,12 @@ workflows:
           orb-name: bjd2385/dynamic-continuation
           pub-type: production
           requires:
-            - general/orb-pack
+            - request-approval
           context:
             - development
             - orb-publishing
           resource_class: small
-          tag-pattern: v[0-9]+.[0-9]+.[0-9]+
+          tag-pattern: v?[0-9]+.[0-9]+.[0-9]+
           filters:
             branches:
               ignore: /.*/
