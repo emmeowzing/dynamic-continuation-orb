@@ -104,6 +104,11 @@ parameters:
     description: A script to run after checkout and before any continuation logic. Script should have a shebang and executable.
     type: string
     default: ''
+  # CircleCI CLI orb.
+  circleci-cli-version:
+    description: Version of the CircleCI CLI to install. (Cf. https://github.com/CircleCI-Public/circleci-cli/releases.)
+    type: string
+    default: v0.1.23845
 steps:
   - checkout
   - when:
@@ -121,7 +126,8 @@ steps:
       command: |+
         curl -sSL https://github.com/mikefarah/yq/releases/download/<< parameters.yq-version >>/yq_linux_amd64 -o yq
         sudo install yq /usr/local/bin/yq
-  - circleci/install
+  - circleci/install:
+      version: << parameters.circleci-cli-version >>
   - filter:
       modules: << parameters.modules >>
       modules-filtered: << parameters.modules-filtered >>
