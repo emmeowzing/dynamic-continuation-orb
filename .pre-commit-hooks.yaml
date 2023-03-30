@@ -1,0 +1,8 @@
+- id: circleci-config-validate
+  name: Validate CircleCI configs
+  entry: src/circleci-config-validate.sh
+  language: script
+  verbose: false
+  files: ^.circleci/.*yml$
+  always_run: false
+  args: []

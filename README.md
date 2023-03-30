@@ -220,14 +220,18 @@ Note that this requires you define an `app.yml` (though this root config's name 
 
 ## Config validation with `pre-commit`
 
-Standard CircleCI config validation pre-commit hooks will only validate the default config at `.circleci/config.yml`. I recommend using [my pre-commit hook](https://github.com/bjd2385/circleci-config-pre-commit-hook) if you're using this orb in your project as it will validate any additional configs you've created. Append the following to your `.pre-commit-config.yaml`:
+Standard CircleCI config validation pre-commit hooks will only validate the default config at `.circleci/config.yml`. Please use this project's pre-commit hook to validate any additional configs you've created.
+
+Append the following to your `.pre-commit-config.yaml` -
 
 ```yaml
-- repo: https://github.com/bjd2385/circleci-config-pre-commit-hook
+- repo: https://github.com/bjd2385/dynamic-continuation-orb
     rev: v<version>
     hooks:
       - id: circleci-config-validate
 ```
+
+You must have the [`circleci`](https://circleci.com/docs/2.0/local-cli/) CLI installed.
 
 ## Live Examples of dynamic-continuation
 
