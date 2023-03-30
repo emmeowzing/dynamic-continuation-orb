@@ -1,6 +1,6 @@
 - id: circleci-config-validate
   name: Validate CircleCI configs
-  entry: src/circleci-config-validate.sh
+  entry: scripts/circleci-config-validate.sh
   language: script
   verbose: false
   files: ^.circleci/.*yml$
