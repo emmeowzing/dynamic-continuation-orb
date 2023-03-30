@@ -16,6 +16,20 @@ else
     _CIRCLE_ORGANIZATION="$SH_CIRCLE_ORGANIZATION"
 fi
 
+
+##
+# Recursively eval-echo any environment variables that start with SH_*
+function sh_eval()
+{
+    if [ $# -ne 1 ]; then
+        printf "Function \"sh_eval\" expected at least 1 argument: environment variable name." >&2
+        exit 1
+    fi
+
+
+}
+
+
 # CircleCI API token should be set.
 if [ -z "$_CIRCLE_TOKEN" ]; then
     printf "Must set CircleCI token for successful authentication.\\n" >&2
