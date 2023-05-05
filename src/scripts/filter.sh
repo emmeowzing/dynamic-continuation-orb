@@ -16,18 +16,6 @@ else
     _CIRCLE_ORGANIZATION="$SH_CIRCLE_ORGANIZATION"
 fi
 
-
-# ##
-# # Recursively eval-echo any environment variables that start with SH_*
-# function sh_eval()
-# {
-#     if [ $# -ne 1 ]; then
-#         printf "Function \"sh_eval\" expected at least 1 argument: environment variable name." >&2
-#         exit 1
-#     fi
-# }
-
-
 # CircleCI API token should be set.
 if [ -z "$_CIRCLE_TOKEN" ]; then
     printf "Must set CircleCI token for successful authentication.\\n" >&2
@@ -107,16 +95,34 @@ else
 
         # Handle non-root modules
         if [ ! -f ".circleci/${module_dots}.ignore" ]; then
+            # Create a default
             touch ".circleci/${module_dots}.ignore"
+
+            cat << IGNORE > ".circleci/${module_dots}.ignore"
+# Ignore everything outside of the target directory.
+/*
+!${module_slashes}
+IGNORE
+        else
+            # User provided their own gitignore.
+            cat << IGNORE > ".circleci/${module_dots}.ignore.tmp"
+# Ignore everything outside of the target directory.
+/*
+!${module_slashes}
+IGNORE
+
+            # Concatenate generated ignore with user-provided config.
+            mv ".circleci/${module_dots}.ignore" ".circleci/${module_dots}.ignore.bak"
+            cat ".circleci/${module_dots}.ignore.tmp" ".circleci/${module_dots}.ignore.bak" > ".circleci/${module_dots}.ignore"
         fi
 
         if [ "$CIRCLE_BRANCH" = "$SH_DEFAULT_BRANCH" ]; then
-            if [ "$SH_FORCE_ALL" -eq 1 ] || [ "$(git diff-tree --no-commit-id --name-only -r HEAD~"$SH_SQUASH_MERGE_LOOKBEHIND" "$SH_DEFAULT_BRANCH" "$module_slashes" | awk NF | wildmatch -c ".circleci/${module_dots}.ignore")" != "" ] || { [ "$(git diff-tree --no-commit-id --name-only -r HEAD~"$SH_SQUASH_MERGE_LOOKBEHIND" "$SH_DEFAULT_BRANCH" .circleci/"$module_dots".yml | awk NF)" != "" ] && [ "$SH_INCLUDE_CONFIG_CHANGES" -eq 1 ]; }; then
+            if [ "$SH_FORCE_ALL" -eq 1 ] || [ "$(git diff-tree --no-commit-id --name-only -r HEAD~"$SH_SQUASH_MERGE_LOOKBEHIND" "$SH_DEFAULT_BRANCH" . | awk NF | wildmatch -c ".circleci/${module_dots}.ignore")" != "" ] || { [ "$(git diff-tree --no-commit-id --name-only -r HEAD~"$SH_SQUASH_MERGE_LOOKBEHIND" "$SH_DEFAULT_BRANCH" .circleci/"$module_dots".yml | awk NF)" != "" ] && [ "$SH_INCLUDE_CONFIG_CHANGES" -eq 1 ]; }; then
                 echo "$module_dots" >> "$SH_MODULES_FILTERED"
                 printf "%s\\n" "$module_slashes"
             fi
         else
-            if [ "$SH_FORCE_ALL" -eq 1 ] || [ "$(git diff-tree --no-commit-id --name-only -r HEAD "$SH_DEFAULT_BRANCH" "$module_slashes" | awk NF | wildmatch -c ".circleci/${module_dots}.ignore")" != "" ] || { [ "$(git diff-tree --no-commit-id --name-only -r HEAD "$SH_DEFAULT_BRANCH" .circleci/"$module_dots".yml | awk NF)" != "" ] && [ "$SH_INCLUDE_CONFIG_CHANGES" -eq 1 ]; }; then
+            if [ "$SH_FORCE_ALL" -eq 1 ] || [ "$(git diff-tree --no-commit-id --name-only -r HEAD "$SH_DEFAULT_BRANCH" . | awk NF | wildmatch -c ".circleci/${module_dots}.ignore")" != "" ] || { [ "$(git diff-tree --no-commit-id --name-only -r HEAD "$SH_DEFAULT_BRANCH" .circleci/"$module_dots".yml | awk NF)" != "" ] && [ "$SH_INCLUDE_CONFIG_CHANGES" -eq 1 ]; }; then
                 echo "$module_dots" >> "$SH_MODULES_FILTERED"
                 printf "%s\\n" "$module_slashes"
             fi
