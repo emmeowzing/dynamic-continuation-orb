@@ -13,4 +13,5 @@ usage:
   workflows:
     on-commit:
       jobs:
-        - dynamic/continue
+        - dynamic/continue:
+            context: circleci
