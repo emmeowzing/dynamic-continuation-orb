@@ -1,8 +1,12 @@
 description: |
   Extend the default CircleCI config at .circleci/config.yml to include other 'modules', then submit it as a continuation.
-executor: python
+executor: << parameters.executor >>
 resource_class: << parameters.resource-class >>
 parameters:
+  executor:
+    description: The name of the custom executor to use.
+    type: executor
+    default: python
   resource-class:
     type: enum
     enum: [small, medium, large, xlarge, 2xlarge]
