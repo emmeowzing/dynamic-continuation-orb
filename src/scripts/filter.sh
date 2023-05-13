@@ -103,7 +103,7 @@ if [ "$SH_FORCE_ALL" -eq 1 ] || { [ "$SH_REPORTING_WINDOW" != "" ] && [ "$(curl 
         printf "%s" "$module_dots" >> "$SH_MODULES_FILTERED"
     done
 else
-    pip install --quiet wildmatch=="$SH_WILDMATCH_VERSION"
+    pip install --quiet --disable-pip-version-check wildmatch=="$SH_WILDMATCH_VERSION"
     printf "%s" "$SH_MODULES" | awk NF | while read -r module; do
         module_dots="$(sed 's@\/@\.@g' <<< "$module")"
         if [ "${#module_dots}" -gt 1 ] && [ "${module_dots::1}" = "." ]; then
