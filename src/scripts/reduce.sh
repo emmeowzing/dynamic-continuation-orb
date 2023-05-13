@@ -18,4 +18,4 @@ awk "{
 }" "$SH_MODULES_FILTERED" > /tmp/"$CIRCLE_WORKFLOW_ID.txt"
 mv /tmp/"$CIRCLE_WORKFLOW_ID.txt" "$SH_MODULES_FILTERED"
 
-yq eval-all '. as $item ireduce ( {}; . * $item )' $(cat "$SH_MODULES_FILTERED") | tee "$SH_CONTINUE_CONFIG"
+yq eval-all '. as $item ireduce ( {}; . * $item )' $(cat "$SH_MODULES_FILTERED" | xargs) | tee "$SH_CONTINUE_CONFIG"
