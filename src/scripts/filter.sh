@@ -103,7 +103,7 @@ if [ "$SH_FORCE_ALL" -eq 1 ] || { [ "$SH_REPORTING_WINDOW" != "" ] && [ "$(curl 
         printf "%s" "$module_dots" >> "$SH_MODULES_FILTERED"
     done
 else
-    pip install --quiet --disable-pip-version-check wildmatch=="$SH_WILDMATCH_VERSION"
+    pip install --quiet --disable-pip-version-check --no-input wildmatch=="$SH_WILDMATCH_VERSION"
     printf "%s" "$SH_MODULES" | awk NF | while read -r module; do
         module_dots="$(sed 's@\/@\.@g' <<< "$module")"
         if [ "${#module_dots}" -gt 1 ] && [ "${module_dots::1}" = "." ]; then
@@ -131,11 +131,11 @@ else
 
             if [ "$CIRCLE_BRANCH" = "$SH_DEFAULT_BRANCH" ] && { [ "$SH_FORCE_ALL" -eq 1 ] || [ "$(git diff-tree --no-commit-id --name-only -r HEAD~"$SH_SQUASH_MERGE_LOOKBEHIND" "$SH_DEFAULT_BRANCH" . | awk NF | wildmatch -c ".circleci/$SH_ROOT_CONFIG.ignore")" != "" ] || { [ "$(git diff-tree --no-commit-id --name-only -r HEAD~"$SH_SQUASH_MERGE_LOOKBEHIND" "$SH_DEFAULT_BRANCH" ".circleci/$SH_ROOT_CONFIG.yml" | awk NF)" != "" ] && [ "$SH_INCLUDE_CONFIG_CHANGES" -eq 1 ]; }; }; then
                 printf "%s\\n" "$module_dots" >> "$SH_MODULES_FILTERED"
-                info "including \"$module_slashes\""
+                info "including \"/$module_slashes\" corresponding workflow \".circleci/${module_dots}.yml\""
             else
                 if [ "$SH_FORCE_ALL" -eq 1 ] || [ "$(git diff-tree --no-commit-id --name-only -r HEAD "$SH_DEFAULT_BRANCH" . | awk NF | wildmatch -c ".circleci/$SH_ROOT_CONFIG.ignore")" != "" ] || { [ "$(git diff-tree --no-commit-id --name-only -r HEAD "$SH_DEFAULT_BRANCH" ".circleci/$SH_ROOT_CONFIG.yml" | awk NF)" != "" ] && [ "$SH_INCLUDE_CONFIG_CHANGES" -eq 1 ]; }; then
                     printf "%s\\n" "$module_dots" >> "$SH_MODULES_FILTERED"
-                    info "including \"$module_slashes\""
+                    info "including \"/$module_slashes\" corresponding workflow \".circleci/${module_dots}.yml\""
                 fi
             fi
 
@@ -170,12 +170,12 @@ IGNORE
         if [ "$CIRCLE_BRANCH" = "$SH_DEFAULT_BRANCH" ]; then
             if [ "$SH_FORCE_ALL" -eq 1 ] || [ "$(git diff-tree --no-commit-id --name-only -r HEAD~"$SH_SQUASH_MERGE_LOOKBEHIND" "$SH_DEFAULT_BRANCH" . | awk NF | wildmatch -c ".circleci/${module_dots}.ignore")" != "" ] || { [ "$(git diff-tree --no-commit-id --name-only -r HEAD~"$SH_SQUASH_MERGE_LOOKBEHIND" "$SH_DEFAULT_BRANCH" .circleci/"$module_dots".yml | awk NF)" != "" ] && [ "$SH_INCLUDE_CONFIG_CHANGES" -eq 1 ]; }; then
                 printf "%s\\n" "$module_dots" >> "$SH_MODULES_FILTERED"
-                info "including \"$module_slashes\""
+                info "including \"/$module_slashes\" corresponding workflow \".circleci/${module_dots}.yml\""
             fi
         else
             if [ "$SH_FORCE_ALL" -eq 1 ] || [ "$(git diff-tree --no-commit-id --name-only -r HEAD "$SH_DEFAULT_BRANCH" . | awk NF | wildmatch -c ".circleci/${module_dots}.ignore")" != "" ] || { [ "$(git diff-tree --no-commit-id --name-only -r HEAD "$SH_DEFAULT_BRANCH" .circleci/"$module_dots".yml | awk NF)" != "" ] && [ "$SH_INCLUDE_CONFIG_CHANGES" -eq 1 ]; }; then
                 printf "%s\\n" "$module_dots" >> "$SH_MODULES_FILTERED"
-                info "including \"$module_slashes\""
+                info "including \"/$module_slashes\" corresponding workflow \".circleci/${module_dots}.yml\""
             fi
         fi
     done
