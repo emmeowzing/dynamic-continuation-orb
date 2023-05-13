@@ -1,0 +1,17 @@
+description: |+
+  Use the "continue" job to dynamically execute workflows in directories/modules.
+usage:
+  version: 2.1
+
+  setup: true
+
+
+  orbs:
+    dynamic: bjd2385/dynamic-continuation@3.7.0
+
+
+  workflows:
+    on-commit:
+      jobs:
+        - dynamic/continue:
+            context: circleci

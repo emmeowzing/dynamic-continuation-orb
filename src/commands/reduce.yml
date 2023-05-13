@@ -31,6 +31,10 @@ parameters:
     description: Whether or not to cache (i.e. you're calling these commands in your own job, not 'continue').
     type: boolean
     default: true
+  debug:
+    description: Enable debug logging.
+    type: boolean
+    default: false
 steps:
   - when:
       condition: << parameters.cache >>
@@ -43,4 +47,5 @@ steps:
         SH_MODULES_FILTERED: << parameters.modules-filtered >>
         SH_ROOT_CONFIG: << parameters.root-config >>
         SH_CONTINUE_CONFIG: << parameters.continue-config >>
+        SH_DYNAMIC_CONTINUATION_DEBUG: << parameters.debug >>
       command: << include(scripts/reduce.sh) >>

@@ -16,19 +16,18 @@ Get up-and-running with dynamically continued pipelines in these 4 steps:
 
 1. Add this orb, a `continue` job to your CI config (`.circleci/config.yml`), and the `setup` keyword, such as
 
-  ```shell
-  setup: true
+   ```shell
+   setup: true
 
-  orbs:
-    dynamic: bjd2385/dynamic-continuation@<version>
+   orbs:
+     dynamic: bjd2385/dynamic-continuation@<version>
 
-  workflows:
-    on-commit:
-      jobs:
-        - dynamic/continue:
-            auto-detect: true
-            context: circleci
-  ```
+   workflows:
+     on-commit:
+       jobs:
+         - dynamic/continue:
+             context: circleci
+   ```
 
 2. Enable **setup workflows** in your project under **Advanced Settings**.
 
@@ -187,7 +186,7 @@ workflows:
     jobs:
       - dynamic/continue:
           context: circleci
-          auto-detect: true
+          # auto-detect: true
 ```
 
 or, exactly the same as above.
