@@ -52,6 +52,7 @@ if [ "${SH_CIRCLE_TOKEN:0:1}" = '$' ]; then
 else
     _CIRCLE_TOKEN="$SH_CIRCLE_TOKEN"
 fi
+
 if [ "${SH_CIRCLE_ORGANIZATION:0:1}" = '$' ]; then
     _CIRCLE_ORGANIZATION="$(eval echo "$SH_CIRCLE_ORGANIZATION")"
 else
