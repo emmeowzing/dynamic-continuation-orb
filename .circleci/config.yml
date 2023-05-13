@@ -28,10 +28,6 @@ workflows:
 
       - dynamic/continue:
           context: orb-publishing
-          filters:
-            branches:
-              ignore:
-                - master
 
       # On tag
 
