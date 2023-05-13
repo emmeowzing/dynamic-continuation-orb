@@ -81,7 +81,9 @@ done
 if [ "$SH_AUTO_DETECT" -eq 1 ] || [ "$SH_MODULES" = "" ]; then
     # We need to determine what the modules are, ignoring SH_MODULES if it is set.
     SH_MODULES="$(find .circleci/ -type f -name "*.yml" | grep -oP "(?<=.circleci/).*(?=.yml)" | grep -v config | sed "s@${SH_ROOT_MODULE}@.@")"
-    info "Auto-detected the following modules:\n\n$SH_MODULES\n"
+    info "Auto-detected the following modules:
+
+$SH_MODULES"
 fi
 
 
