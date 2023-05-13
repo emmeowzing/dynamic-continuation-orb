@@ -195,6 +195,7 @@ IGNORE
             if [ "$SH_FORCE_ALL" -eq 1 ] || [ "$(git diff-tree --no-commit-id --name-only -r HEAD "$SH_DEFAULT_BRANCH" . | awk NF | wildmatch -c ".circleci/${module_dots}.ignore")" != "" ] || { [ "$SH_INCLUDE_CONFIG_CHANGES" -eq 1 ] && [ "$(git diff-tree --no-commit-id --name-only -r HEAD "$SH_DEFAULT_BRANCH" .circleci/"$module_dots".yml | awk NF)" != "" ]; }; then
                 printf "%s\\n" "$module_dots" >> "$SH_MODULES_FILTERED"
                 debug "Here 2"
+                debug "Debug output 0: \"$(git diff-tree --no-commit-id --name-only -r HEAD "$SH_DEFAULT_BRANCH" . | awk NF | wildmatch -c ".circleci/${module_dots}.ignore")\""
                 debug "Debug output 1: \"$(git diff-tree --no-commit-id --name-only -r HEAD "$SH_DEFAULT_BRANCH" .circleci/"$module_dots".yml | awk NF)\""
                 debug "Debug output 2: \"$SH_INCLUDE_CONFIG_CHANGES\""
                 info "including \"/$module_slashes\" corresponding workflow \".circleci/${module_dots}.yml\""
