@@ -46,6 +46,22 @@ info()
 }
 
 
+debug()
+{
+    if [ $# -ne 1 ]; then
+        printf "Function \"info\" expected at least 1 argument: info message.\\n" >&2
+        exit 1
+    fi
+
+    local msg
+    msg="$1"
+
+    if [ "$SH_DYNAMIC_CONTINUATION_DEBUG" -eq 1 ]; then
+        printf "DEBUG: %s\\n" "$msg"
+    fi
+}
+
+
 # Parse environment variables referencing env vars set by CircleCI.
 if [ "${SH_CIRCLE_TOKEN:0:1}" = '$' ]; then
     _CIRCLE_TOKEN="$(eval echo "$SH_CIRCLE_TOKEN")"

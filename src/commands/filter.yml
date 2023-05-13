@@ -65,6 +65,10 @@ parameters:
     description: Whether or not to cache (i.e. you're calling these commands in your own job, not 'continue').
     type: boolean
     default: true
+  debug:
+    description: Enable debug logging.
+    type: boolean
+    default: false
 steps:
   - run:
       name: Filter
@@ -83,6 +87,7 @@ steps:
         SH_INCLUDE_CONFIG_CHANGES: << parameters.include-config-changes >>
         SH_AUTO_DETECT: << parameters.auto-detect >>
         SH_ROOT_MODULE: << parameters.root-config >>
+        SH_DYNAMIC_CONTINUATION_DEBUG: << parameters.debug >>
       command: << include(scripts/filter.sh) >>
   - when:
       condition: << parameters.cache >>
