@@ -61,7 +61,7 @@ fi
 
 # CircleCI API token should be set.
 if [ -z "$_CIRCLE_TOKEN" ]; then
-    error "Must set CircleCI token for successful authentication."
+    error "must set CircleCI token for successful authentication."
     exit 1
 fi
 
@@ -81,7 +81,7 @@ done
 if [ "$SH_AUTO_DETECT" -eq 1 ] || [ "$SH_MODULES" = "" ]; then
     # We need to determine what the modules are, ignoring SH_MODULES if it is set.
     SH_MODULES="$(find .circleci/ -type f -name "*.yml" | grep -oP "(?<=.circleci/).*(?=.yml)" | grep -v config | sed "s@${SH_ROOT_MODULE}@.@")"
-    info "Auto-detected the following modules:
+    info "auto-detected the following modules:
 
 $SH_MODULES
 "
@@ -90,7 +90,7 @@ fi
 
 # Add each module to `modules-filtered` if 1) `force-all` is set to `true`, or 2) there is a diff against master at HEAD, or 3) no workflow runs have occurred on the default branch for this project in the past $SH_REPORTING_WINDOW days.
 if [ "$SH_FORCE_ALL" -eq 1 ] || { [ "$SH_REPORTING_WINDOW" != "" ] && [ "$(curl -s -X GET --url "https://circleci.com/api/v2/insights/${SH_PROJECT_TYPE}/${_CIRCLE_ORGANIZATION}/${CIRCLE_PROJECT_REPONAME}/workflows?reporting-window=${SH_REPORTING_WINDOW}" --header "Circle-Token: ${SH_CIRCLE_TOKEN}" | jq -r "[ .items[].name ] | length")" -eq "0" ]; }; then
-    info "Running all workflows."
+    info "running all workflows."
     printf "%s" "$SH_MODULES" | awk NF | while read -r module; do
         module_dots="$(sed 's@\/@\.@g' <<< "$module")"
         if [ "${#module_dots}" -gt 1 ] && [ "${module_dots::1}" = "." ]; then
@@ -125,17 +125,17 @@ else
         if [ "${module_dots}" = "." ]; then
             # Handle non-root modules
             if [ ! -f ".circleci/${SH_ROOT_CONFIG}.ignore" ]; then
-                warn "Creating default ignore file for \".circleci/${SH_ROOT_CONFIG}.yml\": \"${SH_ROOT_CONFIG}.ignore\""
+                warn "creating default ignore file for \".circleci/${SH_ROOT_CONFIG}.yml\": \"${SH_ROOT_CONFIG}.ignore\""
                 touch ".circleci/${SH_ROOT_CONFIG}.ignore"
             fi
 
             if [ "$CIRCLE_BRANCH" = "$SH_DEFAULT_BRANCH" ] && { [ "$SH_FORCE_ALL" -eq 1 ] || [ "$(git diff-tree --no-commit-id --name-only -r HEAD~"$SH_SQUASH_MERGE_LOOKBEHIND" "$SH_DEFAULT_BRANCH" . | awk NF | wildmatch -c ".circleci/$SH_ROOT_CONFIG.ignore")" != "" ] || { [ "$(git diff-tree --no-commit-id --name-only -r HEAD~"$SH_SQUASH_MERGE_LOOKBEHIND" "$SH_DEFAULT_BRANCH" ".circleci/$SH_ROOT_CONFIG.yml" | awk NF)" != "" ] && [ "$SH_INCLUDE_CONFIG_CHANGES" -eq 1 ]; }; }; then
                 printf "%s\\n" "$module_dots" >> "$SH_MODULES_FILTERED"
-                info "Including \"$module_slashes\""
+                info "including \"$module_slashes\""
             else
                 if [ "$SH_FORCE_ALL" -eq 1 ] || [ "$(git diff-tree --no-commit-id --name-only -r HEAD "$SH_DEFAULT_BRANCH" . | awk NF | wildmatch -c ".circleci/$SH_ROOT_CONFIG.ignore")" != "" ] || { [ "$(git diff-tree --no-commit-id --name-only -r HEAD "$SH_DEFAULT_BRANCH" ".circleci/$SH_ROOT_CONFIG.yml" | awk NF)" != "" ] && [ "$SH_INCLUDE_CONFIG_CHANGES" -eq 1 ]; }; then
                     printf "%s\\n" "$module_dots" >> "$SH_MODULES_FILTERED"
-                    info "Including \"$module_slashes\""
+                    info "including \"$module_slashes\""
                 fi
             fi
 
@@ -145,7 +145,7 @@ else
         # Handle non-root modules
         if [ ! -f ".circleci/${module_dots}.ignore" ]; then
             # Create a default
-            warn "Creating default ignore file for \".circleci/${module_dots}.yml\": .circleci/${module_dots}.ignore"
+            warn "creating default ignore file for \".circleci/${module_dots}.yml\": .circleci/${module_dots}.ignore"
             touch ".circleci/${module_dots}.ignore"
 
             cat << IGNORE > ".circleci/${module_dots}.ignore"
