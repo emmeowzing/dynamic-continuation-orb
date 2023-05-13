@@ -155,7 +155,7 @@ else
 IGNORE
         else
             # User provided their own gitignore.
-            info "user provided their own gitignore."
+            info "user provided their own gitignore \".circleci/${module_dots}.ignore\" for \".circleci/${module_dots}.yml\" workflow."
             cat << IGNORE > ".circleci/${module_dots}.ignore.tmp"
 # Ignore everything outside of the target directory users can add and remove files from here.
 /*
