@@ -49,7 +49,7 @@ info()
 debug()
 {
     if [ $# -ne 1 ]; then
-        printf "Function \"info\" expected at least 1 argument: info message.\\n" >&2
+        printf "Function \"debug\" expected at least 1 argument: debug message.\\n" >&2
         exit 1
     fi
 
@@ -185,6 +185,7 @@ IGNORE
             # Concatenate generated ignore with user-provided config.
             mv ".circleci/${module_dots}.ignore" ".circleci/${module_dots}.ignore.bak"
             cat ".circleci/${module_dots}.ignore.tmp" ".circleci/${module_dots}.ignore.bak" > ".circleci/${module_dots}.ignore"
+            rm ".circleci/${module_dots}.ignore.bak" ".circleci/${module_dots}.ignore.tmp"
         fi
 
         if [ "$CIRCLE_BRANCH" = "$SH_DEFAULT_BRANCH" ]; then
