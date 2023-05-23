@@ -128,7 +128,7 @@ steps:
   - run:
       name: 'Pre: Install jq'
       command: |+
-        if ! sudo apt show jq 2>/dev/null | grep "Version: << parameters.jq-version >>" >/dev/null; then
+        if ! sudo apt show jq 2>/dev/null | grep -q "Version: << parameters.jq-version >>"; then
             sudo apt update
             sudo apt install -y jq=<< parameters.jq-version >>
         fi
