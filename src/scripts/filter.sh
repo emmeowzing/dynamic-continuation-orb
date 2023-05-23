@@ -170,7 +170,7 @@ else
 # Ignore everything outside of the target directory users can add and remove files from here.
 *
 .*
-!${module_slashes}
+!${module_slashes}/
 IGNORE
         else
             # User provided their own gitignore.
@@ -179,7 +179,7 @@ IGNORE
 # Ignore everything outside of the target directory users can add and remove files from here.
 *
 .*
-!${module_slashes}
+!${module_slashes}/
 IGNORE
 
             # Concatenate generated ignore with user-provided config.
