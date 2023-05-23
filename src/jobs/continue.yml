@@ -137,6 +137,7 @@ steps:
       command: |+
         curl -sSL https://github.com/mikefarah/yq/releases/download/<< parameters.yq-version >>/yq_linux_amd64 -o yq
         sudo install yq /usr/local/bin/yq
+        rm yq
   - circleci/install:
       version: << parameters.circleci-cli-version >>
   - filter:
