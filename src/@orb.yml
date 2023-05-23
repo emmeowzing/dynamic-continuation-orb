@@ -1,7 +1,8 @@
 version: 2.1
 
 description: |
-  CircleCI orb for dynamically executing workflows upon code changes in specified directories
+  A CircleCI orb that allows the creation of any number of configs under `.circleci/` that only run when there
+  are code changes in coinciding directory paths
 
 # This information will be displayed in the orb registry and is not mandatory.
 display:
