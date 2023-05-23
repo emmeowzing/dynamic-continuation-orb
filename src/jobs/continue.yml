@@ -128,7 +128,7 @@ steps:
   - run:
       name: 'Pre: Install jq'
       command: |+
-        sudo apt update && sudo apt install -y jq=<< parameters.jq-version >>
+        sudo apt show jq | grep "Version: << parameters.jq-version >>" || sudo apt update && sudo apt install -y jq=<< parameters.jq-version >>
   - run:
       name: 'Pre: Install yq'
       command: |+
