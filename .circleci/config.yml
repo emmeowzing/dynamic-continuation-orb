@@ -12,15 +12,6 @@ orbs:
   slack: circleci/slack@4.12.5
 
 
-executors: {}
-
-
-commands: {}
-
-
-jobs: {}
-
-
 workflows:
   dynamic-continuation:
     jobs:
