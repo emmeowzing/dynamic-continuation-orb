@@ -118,12 +118,6 @@ parameters:
     type: string
     default: v0.1.23845
 steps:
-  - when:
-      condition: << parameters.pre-script >>
-      steps:
-        - run:
-            name: 'Pre: Run pre-script'
-            command: << parameters.pre-script >>
   - run:
       name: 'Pre: Install jq'
       command: |+
@@ -140,6 +134,12 @@ steps:
   - circleci/install:
       version: << parameters.circleci-cli-version >>
   - checkout
+  - when:
+      condition: << parameters.pre-script >>
+      steps:
+        - run:
+            name: 'Pre: Run pre-script'
+            command: << parameters.pre-script >>
   - filter:
       modules: << parameters.modules >>
       modules-filtered: << parameters.modules-filtered >>
