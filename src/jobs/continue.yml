@@ -118,7 +118,6 @@ parameters:
     type: string
     default: v0.1.23845
 steps:
-  - checkout
   - when:
       condition: << parameters.pre-script >>
       steps:
@@ -140,6 +139,7 @@ steps:
         rm yq
   - circleci/install:
       version: << parameters.circleci-cli-version >>
+  - checkout
   - filter:
       modules: << parameters.modules >>
       modules-filtered: << parameters.modules-filtered >>
