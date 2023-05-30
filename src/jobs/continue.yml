@@ -33,7 +33,7 @@ parameters:
   wildmatch-version:
     description: Wildmatch package version to install. For available versions, check PyPI - https://pypi.org/project/wildmatch/#description
     type: string
-    default: 0.3.1
+    default: 0.3.3
   circle-token:
     description: Token to authenticate with CircleCI
     type: string
@@ -116,9 +116,18 @@ parameters:
   circleci-cli-version:
     description: Version of the CircleCI CLI to install. (Cf. https://github.com/CircleCI-Public/circleci-cli/releases.)
     type: string
-    default: v0.1.23845
+    default: v0.1.26837
 steps:
   - checkout
+  - run:
+      name: 'Pre: remove .python-version'
+      # checked-out .python-version files conflict with the executor version used by dynamic-continuation's dependencies.
+      # This move does _not_ effect whether or not a change to .python-version will enable a root workflow, since
+      # `git diff-tree` is checking changes between two commits, not unstaged changes.
+      command: |
+        if [ -f .python-version ]; then
+            rm .python-version
+        fi
   - when:
       condition: << parameters.pre-script >>
       steps:

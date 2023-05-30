@@ -24,7 +24,7 @@ parameters:
   wildmatch-version:
     description: Wildmatch package version to install. For available versions, check PyPI - https://pypi.org/project/wildmatch/
     type: string
-    default: 0.3.1
+    default: 0.3.3
   circle-token:
     description: Token to authenticate with CircleCI
     type: string
