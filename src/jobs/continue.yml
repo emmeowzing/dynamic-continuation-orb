@@ -120,6 +120,17 @@ parameters:
 steps:
   - checkout
   - when:
+      condition: << parameters.
+  - run:
+      name: 'Pre: remove .python-version'
+      command: |
+        # checked-out .python-version files conflict with the executor version used by dynamic-continuation's dependencies.
+        # This move does _not_ effect whether or not a change to .python-version will enable a root workflow, since \
+        # git diff-tree is checking changes between two commits, not unstaged changes.
+        if [ -f .python-version ]; then
+            rm .python-version
+        fi
+  - when:
       condition: << parameters.pre-script >>
       steps:
         - run:
