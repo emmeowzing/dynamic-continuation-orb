@@ -32,7 +32,7 @@ Get up-and-running with dynamically continued pipelines in these 4 steps:
 2. Enable **setup workflows** in your project under **Advanced Settings**.
 
    <p align="center" width="100%">
-     <img width="90%" src="img/dynamic-config.png" alt="dynamic config">
+     <img width="100%" src="img/dynamic-config.png" alt="dynamic config">
    </p>
 
 3. The `circleci` context in your organization must have two environment variables set for the orb to reference, including
