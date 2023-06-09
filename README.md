@@ -31,6 +31,10 @@ Get up-and-running with dynamically continued pipelines in these 4 steps:
 
 2. Enable **setup workflows** in your project under **Advanced Settings**.
 
+   <p align="center" width="100%">
+     <img width="60%" src="img/dynamic-config.png" alt="dynamic config">
+   </p>
+
 3. The `circleci` context in your organization must have two environment variables set for the orb to reference, including
     - `CIRCLE_ORGANIZATION` (in my case, this is set to `bjd2385`), and
     - `CIRCLE_TOKEN`, which contains your CircleCI API token.
