@@ -3,7 +3,7 @@
 This orb is a merger of CircleCI's [path-filtering](https://circleci.com/developer/orbs/orb/circleci/path-filtering) and [continuation](https://circleci.com/developer/orbs/orb/circleci/continuation) orbs. It enables engineers to create configs under `.circleci/` that only run when there are code changes in coinciding directory paths. Directory-targeted dynamically-executed pipelines offer engineers reduced execution time, and by extension, reduced CI costs.
 
 <p align="center" width="100%">
-  <img width="60%" src="img/example.png" alt="example">
+  <img width="75%" src="img/example.png" alt="example">
 </p>
 
 This orb is based on a [published example](https://github.com/circle-makotom/circle-advanced-setup-workflow) of advanced configuration with continuations from CircleCI.
@@ -30,6 +30,10 @@ Get up-and-running with dynamically continued pipelines in these 4 steps:
    ```
 
 2. Enable **setup workflows** in your project under **Advanced Settings**.
+
+   <p align="center" width="100%">
+     <img width="100%" src="img/dynamic-config.png" alt="dynamic config">
+   </p>
 
 3. The `circleci` context in your organization must have two environment variables set for the orb to reference, including
     - `CIRCLE_ORGANIZATION` (in my case, this is set to `bjd2385`), and
