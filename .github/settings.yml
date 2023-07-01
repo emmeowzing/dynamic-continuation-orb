@@ -6,6 +6,7 @@ repository:
   description: CircleCI orb for directory-targeted dynamically continued pipelines
   homepage: https://circleci.com/developer/orbs/orb/bjd2385/dynamic-continuation
   private: false
+  topics: circleci, orb, continuation, CI/CD, continuous integration
 
 branches:
   - name: master
