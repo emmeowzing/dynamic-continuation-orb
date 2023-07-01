@@ -112,6 +112,7 @@ parameters:
     description: A script to run after checkout and before any continuation logic. Script should have a shebang and executable.
     type: string
     default: ''
+
   # CircleCI CLI orb.
   circleci-cli-version:
     description: Version of the CircleCI CLI to install. (Cf. https://github.com/CircleCI-Public/circleci-cli/releases.)
@@ -176,7 +177,7 @@ steps:
   - run:
       name: Validate
       command: |
-        circleci config validate << parameters.continue-config >>
+        circleci config validate << parameters.continue-config >> --org-slug <<parameters.project-type >>/<< parameters.circle-organization >> --token << parameters.circle-token >>
   - continuation/continue:
       configuration_path: << parameters.continue-config >>
       parameters: << parameters.parameters >>
