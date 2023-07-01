@@ -3,7 +3,7 @@
     "packageRules": [
       {
         "matchDatasources": ["orb"],
-        "fileMatch": ["^.config/.*\\.yml$"]
+        "fileMatch": ["^.circleci/.*\\.yml$"]
       }
     ]
   }
