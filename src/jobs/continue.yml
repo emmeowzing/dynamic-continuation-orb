@@ -177,7 +177,7 @@ steps:
   - run:
       name: Validate
       command: |
-        circleci config validate << parameters.continue-config >> --org-slug << parameters.circle-organization >> --token << parameters.circle-token >>
+        circleci config validate << parameters.continue-config >> --org-slug <<parameters.project-type >>/<< parameters.circle-organization >> --token << parameters.circle-token >>
   - continuation/continue:
       configuration_path: << parameters.continue-config >>
       parameters: << parameters.parameters >>
