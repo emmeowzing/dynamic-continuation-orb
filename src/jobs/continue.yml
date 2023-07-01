@@ -82,13 +82,6 @@ parameters:
     type: enum
     enum: [github, gitlab, bitbucket]
     default: github
-  private-validation:
-    description: |+
-      Validating a private orb requires an org slug and token to be passed to 'circleci config validate'. See also the following issue to determine if this problem is relevant to you:
-
-      https://github.com/bjd2385/dynamic-continuation-orb/issues/81
-    type: boolean
-    default: false
   jq-version:
     description:
       Version of jq to install.
@@ -181,20 +174,10 @@ steps:
       project-type: << parameters.project-type >>
       cache: false
       debug: << parameters.debug >>
-  - unless:
-      condition: << parameters.private-validation >>
-      steps:
-        - run:
-            name: 'Validate: public'
-            command: |
-              circleci config validate << parameters.continue-config >>
-  - when:
-      condition: << parameters.private-validation >>
-      steps:
-        - run:
-            name: 'Validate: private'
-            command: |
-              circleci config validate << parameters.continue-config >> --org-slug << parameters.circle-organization >> --token << parameters.circle-token >>
+  - run:
+      name: Validate
+      command: |
+        circleci config validate << parameters.continue-config >> --org-slug << parameters.circle-organization >> --token << parameters.circle-token >>
   - continuation/continue:
       configuration_path: << parameters.continue-config >>
       parameters: << parameters.parameters >>
