@@ -6,7 +6,7 @@ orbs:
 
 
 workflows:
-  scripts:
+  img-scripts:
     jobs:
       - shellcheck/check:
           dir: scripts
