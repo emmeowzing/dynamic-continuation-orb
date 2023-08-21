@@ -9,7 +9,7 @@ repository:
   topics: circleci, orb, continuation, CI/CD, continuous integration
 
 branches:
-  - name: master
+  - name: main
     protection:
       required_status_checks:
         strict: true

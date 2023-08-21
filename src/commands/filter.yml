@@ -20,7 +20,7 @@ parameters:
   default-branch:
     description: The default branch of the repository.
     type: string
-    default: master
+    default: main
   wildmatch-version:
     description: Wildmatch package version to install. For available versions, check PyPI - https://pypi.org/project/wildmatch/
     type: string

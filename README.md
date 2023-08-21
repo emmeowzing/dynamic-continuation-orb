@@ -46,7 +46,7 @@ Get up-and-running with dynamically continued pipelines in these 4 steps:
 The orb will run a workflow (we'll call it `<module>`) if any of the following conditions are met.
 
 1. If `.circleci/<module>.yml` changes (this is configurable, enabled by default).
-2. If changes have been detected within the `<module>/`'s directory on your branch against the repository's default branch (defaults to `master`). See [below](#filtering-or-ignoring-changed-files) on how to filter out CI runs from specific changed files.
+2. If changes have been detected within the `<module>/`'s directory on your branch against the repository's default branch (defaults to `main`). See [below](#filtering-or-ignoring-changed-files) on how to filter out CI runs from specific changed files.
 3. If, following merge to the default branch, there are changes to `.circleci/<module>.yml` or under `<module>/`, when diffing against the former commit (you must perform a merge commit for this to work properly).
 
 These conditions can be overridden, and all workflows forced to run, if the `force-all` parameter is set to `true` on the `continue` job.
@@ -235,13 +235,6 @@ Append the following to your `.pre-commit-config.yaml` -
 ```
 
 You must have the [`circleci`](https://circleci.com/docs/2.0/local-cli/) CLI installed.
-
-## Live Examples of dynamic-continuation
-
-I use and test this orb in my own projects.
-
-- [`minikube`](https://github.com/bjd2385/minikube/tree/master/.circleci) - this is a simple example with basic configs.
-- [this repo](.circleci/) - that's right, this repo uses it as well!
 
 ## Development
 
