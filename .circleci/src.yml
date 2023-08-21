@@ -37,4 +37,4 @@ workflows:
             - github
           filters:
             branches:
-              ignore: master
+              ignore: main

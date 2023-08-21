@@ -104,7 +104,7 @@ $SH_MODULES
 fi
 
 
-# Add each module to `modules-filtered` if 1) `force-all` is set to `true`, or 2) there is a diff against master at HEAD, or 3) no workflow runs have occurred on the default branch for this project in the past $SH_REPORTING_WINDOW days.
+# Add each module to `modules-filtered` if 1) `force-all` is set to `true`, or 2) there is a diff against main at HEAD, or 3) no workflow runs have occurred on the default branch for this project in the past $SH_REPORTING_WINDOW days.
 if [ "$SH_FORCE_ALL" -eq 1 ] || { [ "$SH_REPORTING_WINDOW" != "" ] && [ "$(curl -s -X GET --url "https://circleci.com/api/v2/insights/${SH_PROJECT_TYPE}/${_CIRCLE_ORGANIZATION}/${CIRCLE_PROJECT_REPONAME}/workflows?reporting-window=${SH_REPORTING_WINDOW}" --header "Circle-Token: ${_CIRCLE_TOKEN}" | jq -r "[ .items[].name ] | length")" -eq "0" ]; }; then
     info "running all workflows."
     printf "%s" "$SH_MODULES" | awk NF | while read -r module; do
