@@ -19,7 +19,7 @@ workflows:
 
       - dynamic/continue:
           context: orb-publishing
-          # force-all: true
+          force-all: true
 
       # On tag
 
