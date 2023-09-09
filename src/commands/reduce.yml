@@ -44,8 +44,8 @@ steps:
   - run:
       name: Reduce
       environment:
-        SH_MODULES_FILTERED: << parameters.modules-filtered >>
-        SH_ROOT_CONFIG: << parameters.root-config >>
         SH_CONTINUE_CONFIG: << parameters.continue-config >>
         SH_DYNAMIC_CONTINUATION_DEBUG: << parameters.debug >>
+        SH_MODULES_FILTERED: << parameters.modules-filtered >>
+        SH_ROOT_CONFIG: << parameters.root-config >>
       command: << include(scripts/reduce.sh) >>

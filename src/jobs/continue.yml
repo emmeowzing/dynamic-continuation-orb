@@ -23,7 +23,7 @@ parameters:
     type: boolean
     default: true
   force-all:
-    description: Emergency valve - forcibly build all the modules
+    description: Forcibly run all modules.
     type: boolean
     default: false
   default-branch:

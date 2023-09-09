@@ -1,5 +1,6 @@
 # shellcheck disable=SC2288,SC2001,SC2148,SC2002,SC2016,SC2046
 
+printf "Here\\n"
 
 # If `modules` is unavailable, stop this job without continuation
 if [ ! -f "$SH_MODULES_FILTERED" ] || [ ! -s "$SH_MODULES_FILTERED" ]; then
