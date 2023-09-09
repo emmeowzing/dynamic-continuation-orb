@@ -148,7 +148,13 @@ else
             if [ "$CIRCLE_BRANCH" = "$SH_DEFAULT_BRANCH" ]; then
                 if [ "$(git diff-tree --no-commit-id --name-only -r HEAD~"$SH_SQUASH_MERGE_LOOKBEHIND" "$SH_DEFAULT_BRANCH" . | awk NF | wildmatch -c ".circleci/$SH_ROOT_CONFIG.ignore")" != "" ] || { [ "$SH_INCLUDE_CONFIG_CHANGES" -eq 1 ] && [ "$(git diff-tree --no-commit-id --name-only -r HEAD~"$SH_SQUASH_MERGE_LOOKBEHIND" "$SH_DEFAULT_BRANCH" ".circleci/$SH_ROOT_CONFIG.yml" | awk NF)" != "" ]; }; then
                     printf "%s\\n" "$module_dots" >> "$SH_MODULES_FILTERED"
-                    info "including \"/$module_slashes\" corresponding workflow \".circleci/${module_dots}.yml\""
+
+                    # Log which module is being included (substituting the root config users specify).
+                    if [ "$module_slashes" = "\/" ]; then
+                        info "including \"/\" (repository root) corresponding workflow \".circleci/${SH_ROOT_CONFIG}.yml\""
+                    else
+                        info "including \"/$module_slashes\" corresponding workflow \".circleci/${module_dots}.yml\""
+                    fi
                 fi
             else
                 if [ "$(git diff-tree --no-commit-id --name-only -r HEAD "$SH_DEFAULT_BRANCH" . | awk NF | wildmatch -c ".circleci/$SH_ROOT_CONFIG.ignore")" != "" ] || { [ "$SH_INCLUDE_CONFIG_CHANGES" -eq 1 ] && [ "$(git diff-tree --no-commit-id --name-only -r HEAD "$SH_DEFAULT_BRANCH" ".circleci/$SH_ROOT_CONFIG.yml" | awk NF)" != "" ]; }; then
