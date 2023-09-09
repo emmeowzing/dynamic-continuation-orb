@@ -116,7 +116,7 @@ if [ "$SH_FORCE_ALL" -eq 1 ] || { [ "$SH_REPORTING_WINDOW" != "" ] && [ "$(curl 
             module_dots="${module_dots::-1}"
         fi
 
-        printf "%s" "$module_dots" >> "$SH_MODULES_FILTERED"
+        printf "%s\\n" "$module_dots" >> "$SH_MODULES_FILTERED"
     done
 else
     pip install --quiet --disable-pip-version-check --no-input wildmatch=="$SH_WILDMATCH_VERSION"
