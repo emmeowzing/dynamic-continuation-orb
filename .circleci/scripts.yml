@@ -8,5 +8,4 @@ orbs:
 workflows:
   scripts:
     jobs:
-      - shellcheck/check:
-          exclude: SC2148
+      - shellcheck/check
