@@ -1,5 +1,5 @@
 description: |
-  Extend the default CircleCI config at .circleci/config.yml to include other 'modules', then submit it as a continuation.
+  Merge CircleCI configs at .circleci/*.yml to include other 'modules', then reduce and submit them as a single continuation.
 executor: << parameters.executor >>
 resource_class: << parameters.resource-class >>
 parameters:
