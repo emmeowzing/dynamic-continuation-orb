@@ -1,5 +1,7 @@
 # CircleCI dynamic continuation orb
 
+[![CircleCI](https://dl.circleci.com/status-badge/img/gh/emmeowzing/dynamic-continuation-orb/tree/main.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/emmeowzing/dynamic-continuation-orb/tree/main)
+
 This orb is a merger of CircleCI's [path-filtering](https://circleci.com/developer/orbs/orb/circleci/path-filtering) and [continuation](https://circleci.com/developer/orbs/orb/circleci/continuation) orbs. It enables engineers to create configs under `.circleci/` that only run when there are code changes in coinciding directory paths. Directory-targeted dynamically-executed pipelines offer engineers reduced execution time, and by extension, reduced CI costs.
 
 <p align="center" width="100%">
