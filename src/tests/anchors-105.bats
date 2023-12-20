@@ -6,7 +6,7 @@ export ISSUE_NUMBER=105
 export SH_CONTINUE_CONFIG=/tmp/continue-config.yml
 export SH_MODULES_FILTERED=/tmp/modules-filtered.txt
 export SH_ROOT_CONFIG=app
-export EXPECTED_CONFIG=data/"$ISSUE_NUMBER"/expected-result.yml
+export EXPECTED_CONFIG=src/tests/data/"$ISSUE_NUMBER"/expected-result.yml
 
 
 ##
@@ -34,7 +34,7 @@ clean()
 
     ./src/scripts/reduce.sh
 
-    diff -d --recursive -y "$SH_CONTINUE_CONFIG" "$EXPECTED_CONFIG"
+    diff --recursive -y "$SH_CONTINUE_CONFIG" "$EXPECTED_CONFIG"
 
     if [ "$(yq -r -M '.' "$SH_CONTINUE_CONFIG")" != "$(yq -r -M '.' "$EXPECTED_CONFIG")" ]; then
         diff -d --recursive -y "$SH_CONTINUE_CONFIG" "$EXPECTED_CONFIG"
