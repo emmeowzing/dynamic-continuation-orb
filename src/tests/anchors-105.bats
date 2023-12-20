@@ -34,10 +34,10 @@ clean()
 
     ./src/scripts/reduce.sh
 
-    diff -d -r -y "$SH_CONTINUE_CONFIG" "$EXPECTED_CONFIG"
+    diff -d --recursive -y "$SH_CONTINUE_CONFIG" "$EXPECTED_CONFIG"
 
     if [ "$(yq -rM '.' "$SH_CONTINUE_CONFIG")" != "$(yq -rM '.' "$EXPECTED_CONFIG")" ]; then
-        diff -d -r -y "$SH_CONTINUE_CONFIG" "$EXPECTED_CONFIG"
+        diff -d --recursive -y "$SH_CONTINUE_CONFIG" "$EXPECTED_CONFIG"
         printf "\\n"
         clean
         return 1
