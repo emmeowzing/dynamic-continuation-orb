@@ -1,6 +1,7 @@
-.contexts: &contexts
-  - circleci3
-  - circleci4
+jobs:
+  contexts: &contexts
+    - circleci3
+    - circleci4
 
 
 workflows:
