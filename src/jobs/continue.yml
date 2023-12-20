@@ -9,7 +9,12 @@ parameters:
     default: python
   resource-class:
     type: enum
-    enum: [small, medium, large, xlarge, 2xlarge]
+    enum:
+      - small
+      - medium
+      - large
+      - xlarge
+      - 2xlarge
     default: small
     description: Resource class to run this job with.
 
@@ -26,7 +31,7 @@ parameters:
     description: Forcibly run all modules.
     type: boolean
     default: false
-  default-branch:
+  base-revision:
     description: Default branch of the repository.
     type: string
     default: main
@@ -80,7 +85,10 @@ parameters:
   project-type:
     description: Can be either GitHub (github), GitLab (gitlab), or BitBucket (bitbucket).
     type: enum
-    enum: [github, gitlab, bitbucket]
+    enum:
+      - github
+      - gitlab
+      - bitbucket
     default: github
   jq-version:
     description:
@@ -154,7 +162,7 @@ steps:
       modules: << parameters.modules >>
       modules-filtered: << parameters.modules-filtered >>
       force-all: << parameters.force-all >>
-      default-branch: << parameters.default-branch >>
+      base-revision: << parameters.base-revision >>
       root-config: << parameters.root-config >>
       reporting-window: << parameters.reporting-window >>
       circle-organization: << parameters.circle-organization >>

@@ -63,20 +63,16 @@ debug()
 
 
 # Parse environment variables referencing env vars set by CircleCI.
-if [ "${SH_CIRCLE_TOKEN:0:1}" = '$' ]; then
-    _CIRCLE_TOKEN="$(eval echo "$SH_CIRCLE_TOKEN")"
-else
-    _CIRCLE_TOKEN="$SH_CIRCLE_TOKEN"
-fi
+while [ "${SH_CIRCLE_TOKEN:0:1}" = '$' ]; do
+    SH_CIRCLE_TOKEN="$(eval echo "$SH_CIRCLE_TOKEN")"
+done
 
-if [ "${SH_CIRCLE_ORGANIZATION:0:1}" = '$' ]; then
-    _CIRCLE_ORGANIZATION="$(eval echo "$SH_CIRCLE_ORGANIZATION")"
-else
-    _CIRCLE_ORGANIZATION="$SH_CIRCLE_ORGANIZATION"
-fi
+while [ "${SH_CIRCLE_ORGANIZATION:0:1}" = '$' ]; do
+    SH_CIRCLE_ORGANIZATION="$(eval echo "$SH_CIRCLE_ORGANIZATION")"
+done
 
 # CircleCI API token should be set.
-if [ -z "$_CIRCLE_TOKEN" ]; then
+if [ -z "$SH_CIRCLE_TOKEN" ]; then
     error "must set CircleCI token for successful authentication."
     exit 1
 fi
@@ -105,7 +101,7 @@ fi
 
 
 # Add each module to `modules-filtered` if 1) `force-all` is set to `true`, or 2) there is a diff against main at HEAD, or 3) no workflow runs have occurred on the default branch for this project in the past $SH_REPORTING_WINDOW days.
-if [ "$SH_FORCE_ALL" -eq 1 ] || { [ "$SH_REPORTING_WINDOW" != "" ] && [ "$(curl -s -X GET --url "https://circleci.com/api/v2/insights/${SH_PROJECT_TYPE}/${_CIRCLE_ORGANIZATION}/${CIRCLE_PROJECT_REPONAME}/workflows?reporting-window=${SH_REPORTING_WINDOW}" --header "Circle-Token: ${_CIRCLE_TOKEN}" | jq -r "[ .items[].name ] | length")" -eq "0" ]; }; then
+if [ "$SH_FORCE_ALL" -eq 1 ] || { [ "$SH_REPORTING_WINDOW" != "" ] && [ "$(curl -s -X GET --url "https://circleci.com/api/v2/insights/${SH_PROJECT_TYPE}/${SH_CIRCLE_ORGANIZATION}/${CIRCLE_PROJECT_REPONAME}/workflows?reporting-window=${SH_REPORTING_WINDOW}" --header "Circle-Token: ${SH_CIRCLE_TOKEN}" | jq -r "[ .items[].name ] | length")" -eq "0" ]; }; then
     info "force-all set: running all workflows."
     printf "%s" "$SH_MODULES" | awk NF | while read -r module; do
         module_dots="$(sed 's@\/@\.@g' <<< "$module")"
