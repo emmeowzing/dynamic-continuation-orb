@@ -36,13 +36,12 @@ clean()
 
     diff -d --recursive -y "$SH_CONTINUE_CONFIG" "$EXPECTED_CONFIG"
 
-    if [ "$(yq -rM '.' "$SH_CONTINUE_CONFIG")" != "$(yq -rM '.' "$EXPECTED_CONFIG")" ]; then
+    if [ "$(yq -r -M '.' "$SH_CONTINUE_CONFIG")" != "$(yq -r -M '.' "$EXPECTED_CONFIG")" ]; then
         diff -d --recursive -y "$SH_CONTINUE_CONFIG" "$EXPECTED_CONFIG"
         printf "\\n"
         clean
         return 1
-    else
-        clean
-        return 0
     fi
+
+    clean
 }
