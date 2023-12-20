@@ -33,7 +33,7 @@ clean()
 # Show diff output.
 _diff()
 {
-    diff -d -r -y "$(< "$SH_CONTINUE_CONFIG")" "$(< "$EXPECTED_CONFIG")"
+    diff -d -r -y <(yq -rM "$SH_CONTINUE_CONFIG") <(yq -rM "$EXPECTED_CONFIG")
 }
 
 
@@ -42,7 +42,7 @@ _diff()
 
     ./src/scripts/reduce.sh
 
-    if [ "$(yq -r -M '.' "$SH_CONTINUE_CONFIG")" != "$(yq -r -M '.' "$EXPECTED_CONFIG")" ]; then
+    if [ "$(yq -rM '.' "$SH_CONTINUE_CONFIG")" != "$(yq -rM '.' "$EXPECTED_CONFIG")" ]; then
         _diff
         printf "\\n"
         clean
