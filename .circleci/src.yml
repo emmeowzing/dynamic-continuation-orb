@@ -4,7 +4,8 @@ version: 2.1
 orbs:
   orb-tools: circleci/orb-tools@11.6.1
   circleci-cli: circleci/circleci-cli@0.1.9
-  general: bjd2385/general@0.7.5
+  general: premiscale/general@1.0.9
+  bats: circleci/bats@1.1.0
 
 
 workflows:
@@ -18,10 +19,16 @@ workflows:
           max_command_length: 256
           resource_class: small
 
+      - bats/run:
+          path: ./src/tests
+          save_test_results: true
+          setup-steps: ''
+
       - general/orb-pack:
           requires:
             - orb-tools/lint
             - orb-tools/review
+            - bats/run
 
       - orb-tools/publish:
           name: publish development orb
