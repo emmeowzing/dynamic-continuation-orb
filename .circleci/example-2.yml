@@ -1,10 +1,11 @@
 jobs:
   contexts: &contexts
     - circleci3
-    - circleci5
+    - circleci4
+
 
 workflows:
-  example-1:
+  example-2:
     jobs:
       - job1:
           context: *contexts
