@@ -22,7 +22,7 @@ workflows:
       - bats/run:
           path: ./src/tests
           save_test_results: true
-          # setup-steps: |+
+          # setup-steps:
 
       - general/orb-pack:
           requires:
