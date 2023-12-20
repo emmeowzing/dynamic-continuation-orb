@@ -17,7 +17,7 @@ parameters:
     description: Forcibly build all the modules
     type: boolean
     default: false
-  default-branch:
+  base-revision:
     description: The default branch of the repository.
     type: string
     default: main
@@ -59,7 +59,10 @@ parameters:
   project-type:
     description: Can be either GitHub (gh), GitLab, or BitBucket (bb).
     type: enum
-    enum: [github, gitlab, bitbucket]
+    enum:
+      - github
+      - gitlab
+      - bitbucket
     default: github
   cache:
     description: Whether or not to cache (i.e. you're calling these commands in your own job, not 'continue').
@@ -76,7 +79,7 @@ steps:
         SH_AUTO_DETECT: << parameters.auto-detect >>
         SH_CIRCLE_ORGANIZATION: << parameters.circle-organization >>
         SH_CIRCLE_TOKEN: << parameters.circle-token >>
-        SH_DEFAULT_BRANCH: << parameters.default-branch >>
+        SH_DEFAULT_BRANCH: << parameters.base-revision >>
         SH_DYNAMIC_CONTINUATION_DEBUG: << parameters.debug >>
         SH_FORCE_ALL: << parameters.force-all >>
         SH_INCLUDE_CONFIG_CHANGES: << parameters.include-config-changes >>
