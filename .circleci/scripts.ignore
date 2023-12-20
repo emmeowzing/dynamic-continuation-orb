@@ -1,2 +1,3 @@
 # Include scripts' changes under src/
 !src/scripts/
+!src/tests/
