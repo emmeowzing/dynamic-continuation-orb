@@ -10,5 +10,5 @@ display:
   source_url: https://github.com/bjd2385/dynamic-continuation-orb
 
 orbs:
-  continuation: circleci/continuation@0.3.1
+  continuation: circleci/continuation@1.0.0
   circleci: circleci/circleci-cli@0.1.9
