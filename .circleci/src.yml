@@ -46,18 +46,18 @@ jobs:
     steps:
       - checkout
       - run:
-          description: Install bats
+          name: Install bats
           command: |+
             sudo apt update
             sudo apt install -y bats
       - run:
-          description: Install yq
+          name: Install yq
           command: |+
             wget https://github.com/mikefarah/yq/releases/download/v<< parameters.yq-version >>/yq_linux_amd64 -o yq
             sudo install yq /usr/bin/yq
             rm yq
       - run:
-          description: Bats tests
+          name: Bats tests
           command: |+
             bats --formatter << parameters.formatter >> --timing --recursive << parameters.tests-directory >>
 
