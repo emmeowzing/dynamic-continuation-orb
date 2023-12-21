@@ -34,6 +34,7 @@ jobs:
         default: tap
     executor: default
     steps:
+      - checkout
       - run:
           description: Install bats
           command: |+
