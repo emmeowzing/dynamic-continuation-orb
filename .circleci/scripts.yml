@@ -9,12 +9,13 @@ workflows:
   scripts:
     jobs:
       - shellcheck/check:
-          name: shellcheck bash
+          name: shellcheck bash [<< matrix.dir >>]
           matrix:
             parameters:
               dir:
-                - scripts/
-                - src/scripts/
+                - scripts
+                - src/scripts
+            alias: shellcheck bash
           shell: bash
           pattern: '^.*.sh$'
           exclude: SC2148
