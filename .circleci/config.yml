@@ -68,7 +68,9 @@ workflows:
               only: /^v?[0-9]+\.[0-9]+\.[0-9]+$/
 
       - general/github-release:
-          context: github
+          context:
+            - github
+            - orb-publishing
           filters:
             branches:
               ignore: /.*/
