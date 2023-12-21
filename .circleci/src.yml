@@ -32,7 +32,17 @@ jobs:
         description: Bats formatter.
         type: string
         default: tap
+      resource-class:
+        description: Resource class to execute as.
+        type: enum
+        default: small
+        enum:
+          - small
+          - medium
+          - large
+          - 2xlarge
     executor: default
+    resource_class: << parameters.resource-class >>
     steps:
       - checkout
       - run:
