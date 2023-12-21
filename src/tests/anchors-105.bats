@@ -29,12 +29,12 @@ clean()
 }
 
 
-##
-# Show diff output.
-_diff()
-{
-    diff -d -r -y <(yq -rM "$SH_CONTINUE_CONFIG") <(yq -rM "$EXPECTED_CONFIG")
-}
+# ##
+# # Show diff output.
+# _diff()
+# {
+#     diff -d -r -y <(yq -rM "$SH_CONTINUE_CONFIG") <(yq -rM "$EXPECTED_CONFIG")
+# }
 
 
 @test reduce_exploded_yaml_anchors {
