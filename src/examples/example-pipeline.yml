@@ -7,7 +7,7 @@ usage:
 
 
   orbs:
-    dynamic: bjd2385/dynamic-continuation@3.7.0
+    dynamic: bjd2385/dynamic-continuation@3.8.0
 
 
   workflows:

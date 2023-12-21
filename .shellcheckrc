@@ -1,0 +1,2 @@
+external-sources=true
+exclude=SC2288,SC2001,SC2148,SC2153

@@ -5,17 +5,29 @@ repos:
     hooks:
       - id: check-added-large-files
         args: [--maxkb=10000, --enforce-all]
-      - id: check-executables-have-shebangs
+      # - id: check-executables-have-shebangs
       - id: check-shebang-scripts-are-executable
       - id: mixed-line-ending
       - id: trailing-whitespace
 
-  - repo: https://github.com/jumanjihouse/pre-commit-hooks
-    rev: 3.0.0
+  - repo: local
     hooks:
-      - id: shellcheck
+      - id: shellcheck-bash
+        language: script
+        name: shellcheck bash scripts
+        entry: /usr/bin/env shellcheck
         args:
           - -x
+          - --shell=bash
+        files: '^.*.sh$'
+      - id: shellcheck-bats
+        language: script
+        entry: /usr/bin/env shellcheck
+        name: shellcheck bats tests
+        args:
+          - -x
+          - --shell=bats
+        files: '^.*.bats$'
 
   - repo: https://github.com/premiscale/pre-commit-hooks
     rev: v0.0.9

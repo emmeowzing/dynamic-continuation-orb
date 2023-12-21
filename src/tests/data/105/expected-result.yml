@@ -1,0 +1,17 @@
+jobs:
+  contexts:
+    - circleci3
+    - circleci4
+workflows:
+  example-1:
+    jobs:
+      - job1:
+          context:
+            - circleci3
+            - circleci4
+  example-2:
+    jobs:
+      - job1:
+          context:
+            - circleci3
+            - circleci4
