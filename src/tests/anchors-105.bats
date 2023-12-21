@@ -37,7 +37,7 @@ _diff()
 }
 
 
-@test reduce_yaml_anchors {
+@test reduce_exploded_yaml_anchors {
     setup
 
     ./src/scripts/reduce.sh
@@ -51,3 +51,6 @@ _diff()
 
     clean
 }
+
+
+# TODO: write another test that checks that it purposely fails w/o the explode?
