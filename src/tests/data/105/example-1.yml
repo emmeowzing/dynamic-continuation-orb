@@ -1,7 +1,7 @@
 jobs:
   contexts: &contexts
     - circleci3
-    - circleci5
+    - circleci4
 
 workflows:
   example-1:
