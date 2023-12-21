@@ -74,7 +74,8 @@ workflows:
           requires:
             - orb-tools/lint
             - orb-tools/review
-            - bats/run
+            # - bats/run
+            - bats-tests
 
       - orb-tools/publish:
           name: publish development orb
