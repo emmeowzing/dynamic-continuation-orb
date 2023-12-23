@@ -28,6 +28,7 @@ Get up-and-running with dynamically continued pipelines in these 4 steps:
      on-commit:
        jobs:
          - dynamic/continue:
+             base-revision: main
              context: circleci
    ```
 
