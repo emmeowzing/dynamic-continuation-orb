@@ -12,7 +12,7 @@ This orb is based on a [published example](https://github.com/circle-makotom/cir
 
 See my [article on Medium](https://medium.com/@ejd2385/dynamic-continuations-in-circleci-d7516ae5c6f2) about dynamic continuations for a simple introduction to using this orb.
 
-For users familiar with GitHub actions, this orb is analogous to the (paths-filter)[https://github.com/dorny/paths-filter] action.
+For users familiar with GitHub actions, this orb is analogous to the [paths-filter](https://github.com/dorny/paths-filter) action.
 
 ## Usage
 
