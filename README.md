@@ -34,6 +34,8 @@ Get up-and-running with dynamically continued pipelines in these 4 steps:
              context: circleci
    ```
 
+   > ***Note:** pipeline config files under `.circleci/` are automatically detected by default (cf. [`auto-detect`](https://circleci.com/developer/orbs/orb/bjd2385/dynamic-continuation#jobs-continue) in the documentation).*
+
 2. Enable **setup workflows** in your project under **Advanced Settings**.
 
    <p align="center" width="100%">
@@ -48,7 +50,7 @@ Get up-and-running with dynamically continued pipelines in these 4 steps:
 
 ## How it works
 
-The orb will run a workflow (we'll call it `<module>`) if any of the following conditions are met.
+The orb will automatically detect and run a workflow (we'll call it `<module>`) if any of the following conditions are met.
 
 1. If `.circleci/<module>.yml` changes (this is configurable, enabled by default).
 2. If changes have been detected within the `<module>/`'s directory on your branch against the repository's default branch (defaults to `main`). See [below](#filtering-or-ignoring-changed-files) on how to filter out CI runs from specific changed files.
@@ -59,6 +61,9 @@ These conditions can be overridden, and all workflows forced to run, if the `for
 ### Examples
 
 #### Basic directory layout
+
+<details>
+  <summary>Show</summary>
 
 If you have a directory layout
 
@@ -104,7 +109,12 @@ Once again, the workflows will only execute if any code changes are introduced t
 
 For example: if no changes are made on your branch within the `terraform/` directory, the `.circleci/terraform.yml` CI config will not be executed.
 
+</details>
+
 #### Nested directories
+
+<details>
+  <summary>Show</summary>
 
 Let's build off of the directory layout above, but add some environments.
 
@@ -166,13 +176,23 @@ modules: |
   src.pkg2
 ```
 
+</details>
+
 #### Filtering, ignoring and including file changes
+
+<details>
+  <summary>Show</summary>
 
 At times, there may be files that change in modules that should _not_ cause workflows to run. These could include, as an example, updated markdown or README-like files.
 
 To solve this problem, the orb has the ability to read an optional `.gitignore`-like filter on each module, named `.circleci/<module>.ignore`, to prevent detected changed files on your PR from enabling workflows.
 
+</details>
+
 ##### Ignore file changes
+
+<details>
+  <summary>Show</summary>
 
 Starting with the same directory layout as above, we could add `.gitignore`-like files
 
@@ -202,7 +222,12 @@ workflows:
 
 or, exactly the same as above.
 
+</details>
+
 ##### Include additional file changes
+
+<details>
+  <summary>Show</summary>
 
 We can create additional pipeline file change dependencies throughout the repo within the same `*.ignore`-files. For example, suppose we have a subdirectory `scripts/terraform/`, and we want changes to files under this subdirectory to enable the pipeline defined in `.circleci/terraform.yml`; we can add
 
@@ -212,7 +237,12 @@ We can create additional pipeline file change dependencies throughout the repo w
 
 to `.circleci/terraform.ignore`, as described in the [Git documentation](https://git-scm.com/docs/gitignore#_pattern_format).
 
+</details>
+
 #### Specify an alternate workflow for your repository's root directory
+
+<details>
+  <summary>Show</summary>
 
 It is possible to run a workflow targeting the root of a repository's directory structure, offering overlapping workflows and more flexibility on file changes when paired with the above strategies. We can accomplish this by specifying `.` or `/` as a module. For example,
 
@@ -227,6 +257,8 @@ workflows:
 ```
 
 Note that this requires you define an `app.yml` (though this root config's name is configurable), at  minimum, under `.circleci/`, for the orb to process.
+
+</details>
 
 ## Config validation with `pre-commit`
 
