@@ -8,7 +8,7 @@ orbs:
   circleci-cli: circleci/circleci-cli@0.1.9
   # dynamic: bjd2385/dynamic-continuation@dev:alpha
   dynamic: bjd2385/dynamic-continuation@3.8.1
-  general: premiscale/general@1.1.1
+  general: premiscale/general@1.1.2
   slack: circleci/slack@4.12.6
 
 
