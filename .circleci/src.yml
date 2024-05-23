@@ -4,7 +4,7 @@ version: 2.1
 orbs:
   orb-tools: circleci/orb-tools@11.6.1
   circleci-cli: circleci/circleci-cli@0.1.9
-  general: premiscale/general@1.2.0
+  general: premiscale/general@1.2.5
   # bats: circleci/bats@1.1.0
 
 
