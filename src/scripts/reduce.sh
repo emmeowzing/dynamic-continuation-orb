@@ -19,4 +19,9 @@ awk "{
 }" "$SH_MODULES_FILTERED" > /tmp/"$CIRCLE_WORKFLOW_ID.txt"
 mv /tmp/"$CIRCLE_WORKFLOW_ID.txt" "$SH_MODULES_FILTERED"
 
+# Append the library config, if it is specified and exists, to the reduction.
+if [ "$SH_LIBRARY_CONFIG" != "" ] && [ -f .circleci/"$SH_LIBRARY_CONFIG".yml ]; then
+    printf "%s" "$SH_LIBRARY_CONFIG" >> "$SH_MODULES_FILTERED"
+fi
+
 yq -Mr eval-all 'explode(.) as $item ireduce ( {}; . * $item )' $(cat "$SH_MODULES_FILTERED" | xargs) | tee "$SH_CONTINUE_CONFIG"

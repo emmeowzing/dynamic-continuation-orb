@@ -14,6 +14,13 @@ parameters:
     description: Provides the ability to map root repository changes (./) to a config file name. Defaults to app.yml.
     type: string
     default: app
+  library-config:
+    description: |+
+      Specify a common configuration file that serves as a library of commands and jobs.
+
+      This config is not validated, but rather merged with all other configs (excluding .circleci/config.yml, of course) prior to their validation and execution.
+    type: string
+    default: ''
   continue-config:
     description: Path to the internally-used config for continuation
     type: string
@@ -49,6 +56,7 @@ steps:
       environment:
         SH_CONTINUE_CONFIG: << parameters.continue-config >>
         SH_DYNAMIC_CONTINUATION_DEBUG: << parameters.debug >>
+        SH_LIBRARY_CONFIG: << parameters.library-config >>
         SH_MODULES_FILTERED: << parameters.modules-filtered >>
         SH_ROOT_CONFIG: << parameters.root-config >>
       command: << include(scripts/reduce.sh) >>
