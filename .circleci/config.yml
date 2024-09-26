@@ -18,6 +18,7 @@ workflows:
       # Development branches
 
       - dynamic/continue:
+          library-config: library-config
           context: orb-publishing
 
       # On tag

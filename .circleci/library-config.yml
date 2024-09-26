@@ -1,0 +1,46 @@
+jobs:
+  bats-tests:
+    parameters:
+      yq-version:
+        description: |+
+          Version of yq to install.
+
+          https://github.com/mikefarah/yq/releases
+        type: string
+        default: 4.40.5
+      tests-directory:
+        description: Directory in which bats tests reside.
+        type: string
+        default: tests/
+      formatter:
+        description: Bats formatter.
+        type: string
+        default: tap
+      resource-class:
+        description: Resource class to execute as.
+        type: enum
+        default: small
+        enum:
+          - small
+          - medium
+          - large
+          - 2xlarge
+    executor: default
+    resource_class: << parameters.resource-class >>
+    steps:
+      - checkout
+      - run:
+          name: Install bats
+          command: |+
+            sudo apt update
+            sudo apt install -y bats
+      - run:
+          name: Install yq
+          command: |+
+            wget https://github.com/mikefarah/yq/releases/download/v<< parameters.yq-version >>/yq_linux_amd64 -o yq
+            sudo install yq /usr/bin/yq
+            rm yq
+      - run:
+          name: Bats tests
+          command: |+
+            bats --formatter << parameters.formatter >> --timing --recursive << parameters.tests-directory >>
