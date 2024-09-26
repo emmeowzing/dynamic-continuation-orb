@@ -71,6 +71,7 @@ while [ "${SH_CIRCLE_ORGANIZATION:0:1}" = '$' ]; do
     SH_CIRCLE_ORGANIZATION="$(eval echo "$SH_CIRCLE_ORGANIZATION")"
 done
 
+
 # CircleCI API token should be set.
 if [ -z "$SH_CIRCLE_TOKEN" ]; then
     error "must set CircleCI token for successful authentication."
@@ -81,10 +82,12 @@ fi
 # Move yaml files -> yml so we can handle both extensions for YAML configs. Not that we want both, but we should handle both cases.
 for f in .circleci/*.yaml; do
     warn "migrating pipeline \"$f\" -> \"${f%.*}.yml\""
+
     if [ -f "${f%.*}.yml" ]; then
         error "could not migrate \"$f\", \"${f%.*}.yml\" already exists."
         exit 1
     fi
+
     mv "$f" "${f%.*}.yml"
 done
 

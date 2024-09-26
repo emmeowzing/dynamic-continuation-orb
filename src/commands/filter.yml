@@ -37,6 +37,13 @@ parameters:
     description: Provides the ability to map root repository changes (./) to a config file name.
     type: string
     default: app
+  library-config:
+    description: |+
+      Specify a common configuration file that serves as a library of commands and jobs.
+
+      This config is not validated, but rather merged with all other configs (excluding .circleci/config.yml, of course) prior to their validation and execution.
+    type: string
+    default: cilib
   reporting-window:
     description: The time window used to calculate summary metrics for the default branch of the repository. Defaults to disabled. Allows users to force all workflows to run if no workflows have been ran in the time window.
     type: enum
@@ -83,6 +90,7 @@ steps:
         SH_DYNAMIC_CONTINUATION_DEBUG: << parameters.debug >>
         SH_FORCE_ALL: << parameters.force-all >>
         SH_INCLUDE_CONFIG_CHANGES: << parameters.include-config-changes >>
+        SH_LIBRARY_CONFIG: << parameters.library-config >>
         SH_MODULES: << parameters.modules >>
         SH_MODULES_FILTERED: << parameters.modules-filtered >>
         SH_PROJECT_TYPE: << parameters.project-type >>

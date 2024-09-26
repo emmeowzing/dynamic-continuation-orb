@@ -74,6 +74,13 @@ parameters:
     default: .circleci/continue-config.yml
 
   # both
+  library-config:
+    description: |+
+      Specify a common configuration file that serves as a library of commands and jobs.
+
+      This config is not validated, but rather merged with all other configs (excluding .circleci/config.yml, of course) prior to their validation and execution.
+    type: string
+    default: ''
   root-config:
     description: Provides the ability to map root repository changes (./) to a config file name. Name should be left without extension.
     type: string
@@ -164,6 +171,7 @@ steps:
       force-all: << parameters.force-all >>
       base-revision: << parameters.base-revision >>
       root-config: << parameters.root-config >>
+      library-config: << parameters.library-config >>
       reporting-window: << parameters.reporting-window >>
       circle-organization: << parameters.circle-organization >>
       circle-token: << parameters.circle-token >>
@@ -178,6 +186,7 @@ steps:
       modules-filtered: << parameters.modules-filtered >>
       continue-config: << parameters.continue-config >>
       root-config: << parameters.root-config >>
+      library-config: << parameters.library-config >>
       circle-token: << parameters.circle-token >>
       project-type: << parameters.project-type >>
       cache: false
