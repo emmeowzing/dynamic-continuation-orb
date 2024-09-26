@@ -6,8 +6,8 @@ setup: true
 orbs:
   orb-tools: circleci/orb-tools@11.6.1
   circleci-cli: circleci/circleci-cli@0.1.9
-  dynamic: bjd2385/dynamic-continuation@dev:alpha
-  # dynamic: bjd2385/dynamic-continuation@3.8.2
+  # dynamic: bjd2385/dynamic-continuation@dev:alpha
+  dynamic: bjd2385/dynamic-continuation@3.8.2
   general: premiscale/general@1.2.8
   slack: circleci/slack@4.13.3
 
@@ -18,7 +18,7 @@ workflows:
       # Development branches
 
       - dynamic/continue:
-          library-config: library-config
+          # library-config: library-config
           context: orb-publishing
 
       # On tag
