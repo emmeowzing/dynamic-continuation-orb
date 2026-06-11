@@ -9,7 +9,7 @@ orbs:
   # dynamic: bjd2385/dynamic-continuation@dev:alpha
   dynamic: bjd2385/dynamic-continuation@3.9.1
   general: premiscale/general@1.2.8
-  slack: circleci/slack@5.0.0
+  slack: circleci/slack@6.1.3
 
 
 workflows:
