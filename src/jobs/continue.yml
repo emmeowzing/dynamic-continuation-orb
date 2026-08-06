@@ -193,8 +193,12 @@ steps:
       debug: << parameters.debug >>
   - run:
       name: Validate
-      command: |
-        circleci config validate << parameters.continue-config >> --org-slug <<parameters.project-type >>/<< parameters.circle-organization >> --token << parameters.circle-token >>
+      environment:
+        SH_CONTINUE_CONFIG: << parameters.continue-config >>
+        SH_PROJECT_TYPE: << parameters.project-type >>
+        SH_CIRCLE_ORGANIZATION: << parameters.circle-organization >>
+        SH_CIRCLE_TOKEN: << parameters.circle-token >>
+      command: << include(scripts/validate.sh) >>
   - continuation/continue:
       configuration_path: << parameters.continue-config >>
       parameters: << parameters.parameters >>
