@@ -16,6 +16,22 @@ For users familiar with GitHub actions, this orb is analogous to the [paths-filt
 
 ## Usage
 
+### CircleCI CLI compatibility
+
+The `continue` job supports both CircleCI CLI 0.1.x and 1.x. Validation detects
+the installed command's flags, using `--org-slug` and `--token` on legacy CLIs,
+or `--org` and the `CIRCLE_TOKEN` environment variable on CLI 1.x.
+
+The `circleci-cli-version` parameter defaults to `v0.1.26837`; set it to a full
+release tag such as `v1.0.46955` to use CLI 1.x. The selected version is passed
+explicitly to the installer, including when a different CLI is already installed.
+
+The `circle-token` and `circle-organization` parameters accept literal values or
+environment references such as `$CIRCLE_TOKEN` and `${CIRCLE_ORGANIZATION}`.
+Store tokens in a CircleCI context or project environment variable.
+
+### Configure continuation
+
 Get up-and-running with dynamically continued pipelines in these 4 steps:
 
 1. Add this orb, a `continue` job to your CI config (`.circleci/config.yml`), and the `setup` keyword, such as
@@ -24,7 +40,7 @@ Get up-and-running with dynamically continued pipelines in these 4 steps:
    setup: true
 
    orbs:
-     dynamic: bjd2385/dynamic-continuation@<version>
+     dynamic: bjd2385/dynamic-continuation@3.9.2
 
    workflows:
      on-commit:
@@ -92,7 +108,7 @@ The `dynamic/continue` workflow would look like
 setup: true
 
 orbs:
-  dynamic: bjd2385/dynamic-continuation@<version>
+  dynamic: bjd2385/dynamic-continuation@3.9.2
 
 workflows:
   on-commit:
@@ -148,7 +164,7 @@ with a corresponding `dynamic/continue` workflow in our standard `config.yml`
 setup: true
 
 orbs:
-  dynamic: bjd2385/dynamic-continuation@<version>
+  dynamic: bjd2385/dynamic-continuation@3.9.2
 
 workflows:
   on-commit:
@@ -267,8 +283,8 @@ Standard CircleCI config validation pre-commit hooks will only validate the defa
 Append the following to your `.pre-commit-config.yaml` -
 
 ```yaml
-- repo: https://github.com/bjd2385/dynamic-continuation-orb
-    rev: v<version>
+- repo: https://github.com/emmeowzing/dynamic-continuation-orb
+    rev: v3.9.2
     hooks:
       - id: circleci-config-validate
 ```

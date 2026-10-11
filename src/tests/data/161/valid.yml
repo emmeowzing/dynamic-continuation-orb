@@ -1,0 +1,11 @@
+version: 2.1
+jobs:
+  example:
+    docker:
+      - image: cimg/base:2024.09
+    steps:
+      - run: echo compatible
+workflows:
+  example:
+    jobs:
+      - example

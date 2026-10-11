@@ -3,8 +3,6 @@ version: 2.1
 
 orbs:
   orb-tools: circleci/orb-tools@11.6.1
-  circleci-cli: circleci/circleci-cli@0.1.9
-  general: premiscale/general@1.2.8
   # bats: circleci/bats@1.1.0
 
 
@@ -14,7 +12,73 @@ executors:
       - image: cimg/base:2024.09
 
 
-jobs: {}
+jobs:
+  bats-tests:
+    parameters:
+      yq-version:
+        description: |+
+          Version of yq to install.
+
+          https://github.com/mikefarah/yq/releases
+        type: string
+        default: 4.40.5
+      tests-directory:
+        description: Directory in which bats tests reside.
+        type: string
+        default: tests/
+      formatter:
+        description: Bats formatter.
+        type: string
+        default: tap
+      resource-class:
+        description: Resource class to execute as.
+        type: enum
+        default: small
+        enum:
+          - small
+          - medium
+          - large
+          - 2xlarge
+    executor: default
+    resource_class: << parameters.resource-class >>
+    steps:
+      - checkout
+      - run:
+          name: Install bats
+          command: |+
+            sudo apt update
+            sudo apt install -y bats
+      - run:
+          name: Install yq
+          command: |+
+            wget https://github.com/mikefarah/yq/releases/download/v<< parameters.yq-version >>/yq_linux_amd64 -O yq
+            sudo install yq /usr/bin/yq
+            rm yq
+      - run:
+          name: Bats tests
+          command: |+
+            bats --formatter << parameters.formatter >> --timing --recursive << parameters.tests-directory >>
+
+  cli-compatibility:
+    parameters:
+      cli-version:
+        type: string
+    executor: default
+    steps:
+      - checkout
+      - run:
+          name: Install selected CLI
+          environment:
+            SH_CIRCLECI_CLI_VERSION: << parameters.cli-version >>
+          command: bash src/scripts/install-circleci.sh
+      - run:
+          name: Validate with selected CLI
+          environment:
+            SH_CONTINUE_CONFIG: src/tests/data/161/valid.yml
+            SH_PROJECT_TYPE: github
+            SH_CIRCLE_ORGANIZATION: $CIRCLE_PROJECT_USERNAME
+            SH_CIRCLE_TOKEN: $CIRCLE_TOKEN
+          command: bash -eo pipefail src/scripts/validate.sh
 
 
 workflows:
@@ -36,22 +100,31 @@ workflows:
       - bats-tests:
           tests-directory: ./src/tests/
 
-      - general/orb-pack:
+      - cli-compatibility:
+          context: orb-publishing
+          matrix:
+            parameters:
+              cli-version: [v0.1.26837, v1.0.46955]
+
+      - orb-tools/pack:
+          tag: '0.1.26837'
           requires:
             - orb-tools/lint
             - orb-tools/review
             # - bats/run
             - bats-tests
+            - cli-compatibility
 
       - orb-tools/publish:
           name: publish development orb
-          enable-pr-comment: true
+          tag: '0.1.26837'
+          enable-pr-comment: false
           vcs-type: << pipeline.project.type >>
           orb-name: bjd2385/dynamic-continuation
           pub-type: dev
           resource_class: small
           requires:
-            - general/orb-pack
+            - orb-tools/pack
           context:
             - orb-publishing
             - github
