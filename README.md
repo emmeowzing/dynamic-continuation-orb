@@ -40,7 +40,7 @@ Get up-and-running with dynamically continued pipelines in these 4 steps:
    setup: true
 
    orbs:
-     dynamic: bjd2385/dynamic-continuation@3.9.2
+     dynamic: bjd2385/dynamic-continuation@4.0.0
 
    workflows:
      on-commit:
@@ -108,7 +108,7 @@ The `dynamic/continue` workflow would look like
 setup: true
 
 orbs:
-  dynamic: bjd2385/dynamic-continuation@3.9.2
+  dynamic: bjd2385/dynamic-continuation@4.0.0
 
 workflows:
   on-commit:
@@ -164,7 +164,7 @@ with a corresponding `dynamic/continue` workflow in our standard `config.yml`
 setup: true
 
 orbs:
-  dynamic: bjd2385/dynamic-continuation@3.9.2
+  dynamic: bjd2385/dynamic-continuation@4.0.0
 
 workflows:
   on-commit:
@@ -284,7 +284,7 @@ Append the following to your `.pre-commit-config.yaml` -
 
 ```yaml
 - repo: https://github.com/emmeowzing/dynamic-continuation-orb
-    rev: v3.9.2
+    rev: v4.0.0
     hooks:
       - id: circleci-config-validate
 ```
