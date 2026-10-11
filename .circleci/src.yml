@@ -118,7 +118,7 @@ workflows:
       - orb-tools/publish:
           name: publish development orb
           tag: '0.1.26837'
-          enable-pr-comment: true
+          enable-pr-comment: false
           vcs-type: << pipeline.project.type >>
           orb-name: bjd2385/dynamic-continuation
           pub-type: dev
