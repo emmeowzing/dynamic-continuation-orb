@@ -104,6 +104,7 @@ workflows:
           context: orb-publishing
           matrix:
             parameters:
+              # Retain both generations; compatibility pins are explained in CHANGELOG.md.
               cli-version: [v0.1.26837, v1.0.46955]
 
       - orb-tools/pack:

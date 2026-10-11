@@ -6,7 +6,7 @@ setup: true
 orbs:
   orb-tools: circleci/orb-tools@11.6.1
   # dynamic: bjd2385/dynamic-continuation@dev:alpha
-  dynamic: bjd2385/dynamic-continuation@3.9.1
+  dynamic: bjd2385/dynamic-continuation@3.9.2
   general: premiscale/general@1.2.8
   slack: circleci/slack@5.0.0
 
@@ -17,7 +17,6 @@ workflows:
       # Development branches
 
       - dynamic/continue:
-          pre-script: SH_CIRCLECI_CLI_VERSION=v0.1.26837 bash src/scripts/install-circleci.sh
           context: orb-publishing
 
       # On tag

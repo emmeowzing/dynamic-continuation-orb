@@ -14,9 +14,9 @@
 
 ### Version policy for this patch
 
-The orb, usage examples and pre-commit example use 3.9.2. CI bootstrap stays on
-3.9.1 until 3.9.2 is published, then moves to 3.9.2 in a follow-up commit. This
-avoids referencing an unpublished orb during its own release.
+The orb, CI bootstrap, usage examples and pre-commit example use 3.9.2. The
+release tag bootstrapped with 3.9.1; CI advanced to 3.9.2 after registry
+publication to avoid referencing an unpublished orb during its own release.
 
 The default CLI stays at v0.1.26837 for backward compatibility; CLI v1.0.46955 is
 tested as the first stable 1.x release. The obsolete circleci-cli orb dependency
