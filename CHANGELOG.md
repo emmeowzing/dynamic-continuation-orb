@@ -16,8 +16,9 @@ retain their existing major versions. Release jobs use CLI 0.1.26837 because
 those orb-tools commands require legacy flags. Unrelated dependency majors
 are unchanged.
 
-The 4.0.0 release tag bootstraps with the already published 3.9.2 orb. CI moves
-to 4.0.0 after registry publication, avoiding an unpublished self-dependency.
+The 4.0.0 release tag bootstrapped with the already published 3.9.2 orb. CI now
+uses 4.0.0 following registry publication, avoiding an unpublished
+self-dependency.
 
 ## 3.9.2
 
