@@ -3,15 +3,17 @@
 # shellcheck disable=SC2030,SC2031
 
 setup() {
-    export PATH="$BATS_TEST_TMPDIR:$PATH"
-    export INSTALL_LOG="$BATS_TEST_TMPDIR/install-log"
+    TEST_DIR="$(mktemp -d)"
+    export TEST_DIR
+    export PATH="$TEST_DIR:$PATH"
+    export INSTALL_LOG="$TEST_DIR/install-log"
     export SH_CIRCLECI_CLI_VERSION=v0.1.26837 INSTALLED_VERSION='circleci 1.0.46955 (test)'
     export SCRIPT="$BATS_TEST_DIRNAME/../scripts/install-circleci.sh"
-    cat > "$BATS_TEST_TMPDIR/circleci" <<'MOCK'
+    cat > "$TEST_DIR/circleci" <<'MOCK'
 #!/usr/bin/env bash
 printf '%s\n' "$INSTALLED_VERSION"
 MOCK
-    cat > "$BATS_TEST_TMPDIR/curl" <<'MOCK'
+    cat > "$TEST_DIR/curl" <<'MOCK'
 #!/usr/bin/env bash
 if [[ "${DOWNLOAD_FAILURE:-0}" != 0 ]]; then exit "$DOWNLOAD_FAILURE"; fi
 cat > "$4" <<'INSTALLER'
@@ -19,7 +21,11 @@ printf '%s\n' "$VERSION" "$DESTDIR" > "$INSTALL_LOG"
 exit "${INSTALL_FAILURE:-0}"
 INSTALLER
 MOCK
-    chmod +x "$BATS_TEST_TMPDIR/circleci" "$BATS_TEST_TMPDIR/curl"
+    chmod +x "$TEST_DIR/circleci" "$TEST_DIR/curl"
+}
+
+teardown() {
+    rm -rf "${TEST_DIR:?}"
 }
 
 @test 'requested legacy version is forwarded to installer' {

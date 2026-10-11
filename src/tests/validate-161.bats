@@ -3,13 +3,15 @@
 # shellcheck disable=SC2016,SC2030,SC2031
 
 setup() {
-    export PATH="$BATS_TEST_TMPDIR:$PATH"
-    export CLI_LOG="$BATS_TEST_TMPDIR/arguments" TOKEN_LOG="$BATS_TEST_TMPDIR/token"
+    TEST_DIR="$(mktemp -d)"
+    export TEST_DIR
+    export PATH="$TEST_DIR:$PATH"
+    export CLI_LOG="$TEST_DIR/arguments" TOKEN_LOG="$TEST_DIR/token"
     export SH_CONTINUE_CONFIG='config with spaces.yml'
     export SH_PROJECT_TYPE=github SH_CIRCLE_ORGANIZATION=example
     export SH_CIRCLE_TOKEN='test token' CLI_STYLE=legacy
     export SCRIPT="$BATS_TEST_DIRNAME/../scripts/validate.sh"
-    cat > "$BATS_TEST_TMPDIR/circleci" <<'MOCK'
+    cat > "$TEST_DIR/circleci" <<'MOCK'
 #!/usr/bin/env bash
 if [[ "$*" == 'config validate --help' ]]; then
     if [[ "${HELP_FAILURE:-0}" != 0 ]]; then exit "$HELP_FAILURE"; fi
@@ -26,7 +28,11 @@ printf '%s\n' "$@" > "$CLI_LOG"
 printf '%s' "${CIRCLE_TOKEN:-}" > "$TOKEN_LOG"
 exit "${VALIDATE_FAILURE:-0}"
 MOCK
-    chmod +x "$BATS_TEST_TMPDIR/circleci"
+    chmod +x "$TEST_DIR/circleci"
+}
+
+teardown() {
+    rm -rf "${TEST_DIR:?}"
 }
 
 @test 'legacy CLI receives org-slug and token with quoted config path' {
@@ -64,10 +70,10 @@ MOCK
 
 @test 'parameter text is never executed' {
     export CLI_STYLE=modern
-    export SH_CIRCLE_TOKEN='$(touch "$BATS_TEST_TMPDIR/executed")'
+    export SH_CIRCLE_TOKEN='$(touch "$TEST_DIR/executed")'
     run bash -eo pipefail "$SCRIPT"
     [ "$status" -eq 0 ]
-    [ ! -e "$BATS_TEST_TMPDIR/executed" ]
+    [ ! -e "$TEST_DIR/executed" ]
     [ "$(cat "$TOKEN_LOG")" = "$SH_CIRCLE_TOKEN" ]
 }
 
