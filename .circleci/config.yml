@@ -19,11 +19,13 @@ workflows:
 
       - dynamic/continue:
           library-config: library-config
+          pre-script: SH_CIRCLECI_CLI_VERSION=v0.1.26837 bash src/scripts/install-circleci.sh
           context: orb-publishing
 
       # On tag
 
-      - general/orb-pack:
+      - orb-tools/pack:
+          tag: '0.1.26837'
           filters:
             branches:
               ignore: /.*/
@@ -33,7 +35,7 @@ workflows:
       - slack/on-hold:
           context: slack
           requires:
-            - general/orb-pack
+            - orb-tools/pack
           filters:
             branches:
               ignore: /.*/
@@ -52,6 +54,7 @@ workflows:
 
       - orb-tools/publish:
           name: publish production orb
+          tag: '0.1.26837'
           enable-pr-comment: false
           vcs-type: << pipeline.project.type >>
           orb-name: bjd2385/dynamic-continuation

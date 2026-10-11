@@ -16,6 +16,22 @@ For users familiar with GitHub actions, this orb is analogous to the [paths-filt
 
 ## Usage
 
+### CircleCI CLI compatibility
+
+The `continue` job supports both CircleCI CLI 0.1.x and 1.x. Validation detects
+the installed command's flags, using `--org-slug` and `--token` on legacy CLIs,
+or `--org` and the `CIRCLE_TOKEN` environment variable on CLI 1.x.
+
+The `circleci-cli-version` parameter defaults to `v0.1.26837`; set it to a full
+release tag such as `v1.0.46955` to use CLI 1.x. The selected version is passed
+explicitly to the installer, including when a different CLI is already installed.
+
+The `circle-token` and `circle-organization` parameters accept literal values or
+environment references such as `$CIRCLE_TOKEN` and `${CIRCLE_ORGANIZATION}`.
+Store tokens in a CircleCI context or project environment variable.
+
+### Configure continuation
+
 Get up-and-running with dynamically continued pipelines in these 4 steps:
 
 1. Add this orb, a `continue` job to your CI config (`.circleci/config.yml`), and the `setup` keyword, such as
