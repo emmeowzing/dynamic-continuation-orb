@@ -70,7 +70,7 @@ workflows:
 
       - general/github-release:
           context:
-            - github
+            - dynamic-continuation-github-release
             - orb-publishing
           filters:
             branches:
