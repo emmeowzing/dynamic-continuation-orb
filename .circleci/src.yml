@@ -9,7 +9,7 @@ orbs:
 executors:
   default:
     docker:
-      - image: cimg/base:2024.09
+      - image: cimg/base:2026.10
 
 
 jobs:
